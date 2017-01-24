@@ -1,0 +1,21 @@
+/*
+This is a CellBuilder-like file written for the simulator NEURON
+by an automatic procedure "neuron_template_tree" 
+in MATLAB, based on a script of Hermann Cuntz
+copyright 2014 Marcel Beining
+*/
+
+begintemplate cell_VecStim
+
+public cell
+public is_artificial
+objref cell
+proc celldef() {
+cell = new VecStim()
+is_artificial = 1}
+proc init() {
+  celldef()
+}
+
+endtemplate cell_VecStim
+
