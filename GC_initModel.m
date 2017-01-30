@@ -18,12 +18,12 @@ end
 origfolder = pwd;
 
 AHflag = false;
-if ostruct.vmodel == 0
+if ostruct.vmodel == 0  % passive model
     mechoptions = '-p';
 elseif ostruct.vmodel > 0
-    mechoptions = '-a-p-zz';
+    mechoptions = '-a-p-n';  % active model as published in Beining et al 2017
 else
-    mechoptions = '-o-a-p';
+    mechoptions = '-o-a-p';  % old AH99 model
     AHflag = true;
 end
 if ostruct.newborn

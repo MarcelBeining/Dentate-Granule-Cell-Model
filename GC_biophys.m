@@ -3,7 +3,7 @@ function strct = GC_biophys(options)
 % -p    include passive parameters (default)
 % -a    include active parameters (default)
 % -o    old AH99....also calcium channels with uncorrected Ca buffer shell model
-% -zz   latest changes as published in Beining et al 2016
+% -n   latest changes as published in Beining et al 2017
 
 %% Paramters
 %Kir parameter
@@ -17,7 +17,7 @@ Kv4usethismodel = 2;
 Ca_tau = 240;  %calcium decay! orig 9
 
 %         backup August 2015 struct('Kir',1,'Kv11',0,'Kv14',4*0.5,'Kv21',1,'Kv33',1,'Kv34',20,'Kv42',2,'Kv72u3',100,'Na',1,'NCa',1,'LCa',3,'TCa',0.5,'BK',1,'SK',1);
-if ~isempty(strfind(options,'-zz'))
+if ~isempty(strfind(options,'-n'))
     on = struct('HCN',1,'Kir',1.07,'Kv11',0.5/4,'Kv14',0.5/4,'Kv21',0.6*1.3/1.1 ,'Kv33',0,'Kv34',5 /4/2*2.5,'Kv42',0.145 *3 *2/2/2 *2,'Kv72u3',6.7,'Na',1.728,'Nav19',0,'NCa',0.5,'LCa',6,'TCa',0.33,'BK',1*1.5*2*2/1.5,'SK',0.2/2);%*3
 else
     on = struct('HCN',1,'Kir',1.07,'Kv11',0,'Kv14',0.5/4,'Kv21',0.6*1.3/1.1 ,'Kv33',0,'Kv34',5 /4/2,'Kv42',0.145 *3 *2/2/2,'Kv72u3',6.7,'Na',1.728,'Nav19',0,'NCa',0.5,'LCa',6,'TCa',0.33,'BK',1*1.5*2*2,'SK',0.2/2);
@@ -59,7 +59,7 @@ if ~isempty(strfind(options,'-p'))
         % -80.4 for SH07 pure passive model reproduction
         Rm = 36.4;
         
-        if ~isempty(strfind(options,'-zz'))
+        if ~isempty(strfind(options,'-n'))
             chg = 0.48;
             gax = chg*0.5;
             chg = chg * 1.05;
@@ -126,7 +126,7 @@ if ~isempty(strfind(options,'-a'))
                     b = 0.105;%0.0855;%0.105;
                     fac = 0.005 ;
                     mg_i = 4;
-                    if ~isempty(strfind(options,'-zz'))
+                    if ~isempty(strfind(options,'-n'))
                         Kirdistr = [1.05, 1.05, 1.05, 1.05, 1.05, 0.5]*0.9;
                     else
                         Kirdistr = [1, 1, 1, 1, 1, 1]*0.9;
@@ -476,7 +476,7 @@ if ~isempty(strfind(options,'-a'))
             %                 if ~isempty(strfind(options,'-y'))
             %                     diffsoma = 1;
             %                 else
-            if ~isempty(strfind(options,'-zz'))
+            if ~isempty(strfind(options,'-n'))
                 base = 4;
                 diffsoma = 1.5;%0.3;
                 gak = gabk * 4;

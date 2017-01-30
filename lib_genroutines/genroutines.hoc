@@ -28,6 +28,7 @@ proc init() {
 		
 		if (cvode.active()){
 			cvode.re_init()				// If cvode is active, initialize the integrator
+			print "cvode reinit"
 		} else {
 			fcurrent()					// If cvode is not active, make all assigned variables (currents, conductances, etc) consistent with the values of the states
 		}

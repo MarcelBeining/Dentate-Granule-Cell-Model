@@ -91,7 +91,12 @@ if ostruct.find_freq
     end
 end
 
+params.tstart = 0;
+params.cvode = 1;
+nneuron{1}.pp{1}.IClamp = struct('node',1,'del',0,'dur',1e4,'amp',0.09)
+
 out = t2n(tree,params,nneuron,'-q-d-w');
+
 
 
 numspikes = zeros(numel(tree),numel(cstepsSpikingModel));
