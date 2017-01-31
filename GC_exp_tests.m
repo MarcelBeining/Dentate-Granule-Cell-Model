@@ -7,9 +7,8 @@ params = [];
 targetfolder_results = 'D:\GCModel\results';  % the folder where the graphs and pictures are saved
 targetfolder_data = 'D:\GCModel\simdata';  % the folder where simulated data is saved (that you do not need to simulate it again if you just want to plot something)
 % these params are t2n specific
-params.nrnmech = 'nrnmech_win1.dll';   % the name of the compiled mech file (use rename_nrnmech.m to rename your nrnmech.dll file if you use the same lib_mech folder on different machines and thus need different dll files)
 params.neuronpath = 'C:/nrn73w64/bin64/nrniv.exe';   % the path to your NEURON exe
-params.path = 'D:/Dropbox/PhD Deller/Modeling/P5 GC Model/aProject Mongiat';  % your main folder of the model
+params.path = pwd;  % your main folder of the model
 params.morphfolder = 'morphos/NEURON2_hocs';   % folder relative to "path" containing the hoc morphology files
 params.exchfolder = 't2nexchange';  % folder which is used to exchange data between Matlab and NEURON
 % ***********

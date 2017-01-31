@@ -14,9 +14,6 @@ adjust_channels =  {'all'};{'na8st','Kv34','Kv14','BK'};%,'HKir'}; % only scalin
 switch animal
     case 'm'
         Rho_exemplary = [100,19];%%%!!;  % Rho value for axon vs soma % 13 is too high as width goes up and 2nd amp down
-%         treex = load_tree('D:\Dropbox\PhD Deller\Modeling\P5 GC Model\aProject Mongiat\morphos\SH_07_MLyzed_new3_soma_loadadjusted.mtr');
-%         Rho_exemplary = [treex{(cellfun(@(x) strcmp(x.NID,'cell_SH07_03'),treex))}.Rho_AIS, treex{(cellfun(@(x) strcmp(x.NID,'cell_SH07_03'),treex))}.Rho_soma];  % get Rho from morph 3
-        
     case 'r'
         if nargin < 3 || ostruct.ratadjust == 0
             Rho_exemplary = [100,19];  % Rho value for axon vs soma
