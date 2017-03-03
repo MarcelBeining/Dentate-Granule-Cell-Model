@@ -64,7 +64,7 @@ for f = 1:ostruct.extract_kir+1
         nneuron{s} = t2n_as(1,nneuron{s});
     end
     out = t2n(tree,params,nneuron,'-q-d-w');
-    if any(cellfun(@(x) x.error,out))
+    if any(cellfun(@(x) x.error,out(cellfun(@(x) isfield(x,'error'),out))))
         return
     end
     if f == 1
