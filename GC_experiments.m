@@ -146,7 +146,7 @@ neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_Final');
 ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
-ostruct.amp = 0:5:120;% current steps in pA which are to be simulated
+ostruct.amp = 75;0:5:120;% current steps in pA which are to be simulated
 ostruct.variabledt = 0;  % 1 = variable dt
 ostruct.coarse = 0.5;  % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 if ostruct.newborn
