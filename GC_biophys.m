@@ -14,37 +14,17 @@ Kv4composition = 4; % {'wt','wt + KChIP2','wt + DPPX','wt + KChIP2 + DPPX'};
 Kv4usethismodel = 2;
 
 
-Ca_tau = 240;  %calcium decay! orig 9
+Ca_tau = 240;  %calcium decay! orig 9 ms
 
-%         backup August 2015 struct('Kir',1,'Kv11',0,'Kv14',4*0.5,'Kv21',1,'Kv33',1,'Kv34',20,'Kv42',2,'Kv72u3',100,'Na',1,'NCa',1,'LCa',3,'TCa',0.5,'BK',1,'SK',1);
 if ~isempty(strfind(options,'-n'))
     on = struct('HCN',1,'Kir',1.07,'Kv11',0.5/4,'Kv14',0.5/4,'Kv21',0.6*1.3/1.1 ,'Kv33',0,'Kv34',5 /4/2*2.5,'Kv42',0.145 *3 *2/2/2 *2,'Kv72u3',6.7,'Na',1.728,'Nav19',0,'NCa',0.5,'LCa',6,'TCa',0.33,'BK',1*1.5*2*2/1.5,'SK',0.2/2);%*3
 else
     on = struct('HCN',1,'Kir',1.07,'Kv11',0,'Kv14',0.5/4,'Kv21',0.6*1.3/1.1 ,'Kv33',0,'Kv34',5 /4/2,'Kv42',0.145 *3 *2/2/2,'Kv72u3',6.7,'Na',1.728,'Nav19',0,'NCa',0.5,'LCa',6,'TCa',0.33,'BK',1*1.5*2*2,'SK',0.2/2);
 end
 
-% only needed if tree is also an input. not needed anymore
-% if nargin < 2 || isempty(tree)
-%     tree = [];
-% else
-%     if iscell(tree) && isstruct(tree{1})
-%         tree = tree{1};
-%     elseif isstruct(tree)
-%         ver = ver_tree(tree);
-%         if ver == 0
-%             errordlg('Tree has no correct structure')
-%             return
-%         end
-%     else
-%         errordlg('Tree has no correct structure')
-%         return
-%     end
-% end
 if nargin < 1 || isempty(options)
     options = '-a-p';
 end
-
-
 
 strct = struct;
 if ~isempty(strfind(options,'-p'))
@@ -72,10 +52,10 @@ if ~isempty(strfind(options,'-p'))
         end
         if ~isempty(strfind(options,'-cm'))
             cm = 0.7;
-            Ra = 200; %163.. 200 as SH2010 did...
+            Ra = 200; % 200 as SH2010 did...
         else
-            cm = 0.9;1; %1; !!!!!!!
-            Ra = 200; %163.. 200 as SH2010 did...
+            cm = 0.9;
+            Ra = 200; %200 as SH2010 did...
         end
         Raax = 100;
         
@@ -109,7 +89,6 @@ if ~isempty(strfind(options,'-a'))
         %%
         if on.Kir > 0
             Kirdistr = [1, 0.286, 0.143, 0.143, 0.143];
-            %                 Kirdistr = [0.5, 0.5, 0.5, 0.5, 0.5];
             % Kir in axons probably only for G-Protein activated Kirs (Kir3.x)...
             switch Kirusemodel
                 case 'Own'
@@ -117,13 +96,13 @@ if ~isempty(strfind(options,'-a'))
                     % Kir current
                     spm_i = 3.5;%µM %7.5; %sollte ¸ber 3.5 sein f¸r tau bei tiefen vclamps  %-10 possible!
                     chg_Kir = on.Kir * gkbar_Kir;%5.3; %2.5;
-                    gsub = 0.15;%0.15; % substate conductance (between 0.2 (spermidine) and 0.07 (spermine) Liu 2012)
-                    fac = 0.001;%0.0003;%0.0001;
+                    gsub = 0.15; % substate conductance (between 0.2 (spermidine) and 0.07 (spermine) Liu 2012)
+                    fac = 0.001;
                     vshiftbs = 10;
                     vshiftbb = 0;
                     shiftmg = 1;
                     mg_i = 4;
-                    b = 0.105;%0.0855;%0.105;
+                    b = 0.105;
                     fac = 0.005 ;
                     mg_i = 4;
                     if ~isempty(strfind(options,'-n'))
@@ -135,7 +114,7 @@ if ~isempty(strfind(options,'-a'))
                     
                     gsub = 0.25 ;
                     
-                    spm_i = 1;%7/10;
+                    spm_i = 1;
                     shiftmg = 0.5    ; % means only 0.5 of ek shift
                     vshiftbs = 0;
                     cas = 1/7;  % tau made larger due to kir 2.3
@@ -152,7 +131,7 @@ if ~isempty(strfind(options,'-a'))
                 case 'Hanuschkin'
                     Kirdistr(:) = 1;
                     vhalfl_kir_fit     = -107.609612;
-                    kl_kir_fit         = 10;%10.000000 ;               %     // NOTE: sign changed in comparison with publication
+                    kl_kir_fit         = 10;               %     // NOTE: sign changed in comparison with publication
                     vhalft_kir_fit     =   67.0828 ;
                     at_kir_fit         = 0.00610779;
                     bt_kir_fit         = 0.0817741  ;             %      // NOTE: error in publication (here the correct value)
@@ -168,15 +147,15 @@ if ~isempty(strfind(options,'-a'))
         
         if on.HCN > 0
             e_hcn 		= -41.9;
-            vhalfl_hcn 	= -100;%-73.799700; % shifted hcn since is much more left in other models and I have much Mg2+ and I have implemented the cAMP dependency
-            kl_hcn 	= 8;%8.806480;			%// NOTE: sign changed in comparison with publication
+            vhalfl_hcn 	= -100; % shifted hcn since is much more left in other models and I have much Mg2+ and I have implemented the cAMP dependency
+            kl_hcn 	= 8;			%// NOTE: sign changed in comparison with publication
             vhalft_hcn 	=   30.4;			%// (see manuscript)
             at_hcn    	= 0.00052;
             bt_hcn     	= 0.2151;
             cAMP = 0; % mM cAMP concentration
             
             ghcnbar = 4e-6; %1.7561e-5;
-            % according to Notomi und Shigemoto 2004 nur in dendriten
+            % according to Notomi und Shigemoto 2004 only in dendrites
             strct.adendIML.HCN = struct('cAMP',cAMP,'e',e_hcn,'gbar',on.HCN*ghcnbar,'vhalfl',vhalfl_hcn,'kl',kl_hcn,'vhalft',vhalft_hcn,'at',at_hcn,'bt',bt_hcn);
             strct.adendMML.HCN = struct('cAMP',cAMP,'e',e_hcn,'gbar',on.HCN*ghcnbar,'vhalfl',vhalfl_hcn,'kl',kl_hcn,'vhalft',vhalft_hcn,'at',at_hcn,'bt',bt_hcn);
             strct.adendOML.HCN = struct('cAMP',cAMP,'e',e_hcn,'gbar',on.HCN*ghcnbar,'vhalfl',vhalfl_hcn,'kl',kl_hcn,'vhalft',vhalft_hcn,'at',at_hcn,'bt',bt_hcn);
@@ -200,11 +179,11 @@ if ~isempty(strfind(options,'-a'))
             rates_axon = textscan(f, '%.20f','Delimiter','\n');
             fclose(f);
             
-            gnabar_soma = on.Na*0.03 * 1.7;%18.8 *1.7 neu uum load adj. zu ‰ndern  %conversion to siemens;
+            gnabar_soma = on.Na*0.03 * 1.7;  %conversion to siemens;
             gnabar_axonh= on.Na*0.2*1.5;
-            gnabar_axon = on.Na*0.03 * 1.7;%*0.05;%0.0386152 *nafac ;  %siemens;
+            gnabar_axon = on.Na*0.03 * 1.7;  %siemens;
             
-            gnabar_dend = 0*on.Na*0.0005; %!!!!!!!!!!!!!!!!!!!!!
+            gnabar_dend = 0*on.Na*0.0005;  % only for test purpose
             
             rates_axon{1}(13:end) = [2.9807,0.4679,--0.0596,0.3962,2982.1,0.0635];%  ah = [0.3962,2982.1,0.0635]; bh = [2.9807,0.4679,--0.0596];
             rates_soma{1}(13:end) = [2.9713,0.6443,--0.0594,1.5860,2306.7,0.0493]; % new fitted inactivation kinetics since SH10 seems not to consider recov from inact values
@@ -416,66 +395,57 @@ if ~isempty(strfind(options,'-a'))
         
         %AH Calcium channels
         if on.TCa > 0 || on.NCa > 0 || on.LCa > 0
-            % Ntype distribution (coor with BK) laut mehreren papers haupts‰chlich in soma!
-            % L-type distribution (corr with SK) in dendrites and soma (40% of
-            % Ca current), most of it in spines!!
-            % t-type verh‰ltnisse passen jetzt, also ‰ndere nur tfac!!!!
+
+            strct.all.Cabuffer = struct('brat',50,'tau',Ca_tau ); 
+            strct.axon.Cabuffer = struct('brat',10,'tau',43 ); 
+            strct.soma.Cabuffer = struct('brat',200,'tau',Ca_tau );
+            strct.all.Cabuffer.depth = 0.05; %µm   
             
-            strct.all.Cabuffer = struct('brat',50,'tau',Ca_tau ); %!%!%!%!%!%!%!%!
-            strct.axon.Cabuffer = struct('brat',10,'tau',43 ); %!%!%!%!%!%!%!%!
-            strct.soma.Cabuffer = struct('brat',200,'tau',Ca_tau ); %!%!%!%!%!%!%!%!
-            strct.all.Cabuffer.depth = 0.05; %µm   %!%!%!%!%!%!%!%!%!%!
-            
-            tfac = on.TCa ;% / 2; % neu durch 2 weil Ra auf 150
-            fac = 10 * 1.5 ;  %new / 100 to account for binding ratio...
-            fac3 = fac * 5 / 6; % /6 new
-            on.LCa = on.LCa /30; %prev 45
+            tfac = on.TCa ;
+            fac = 10 * 1.5 ;  
+            fac3 = fac * 5 / 6;
+            on.LCa = on.LCa /30; 
             on.NCa = on.NCa *3;
             kf = 0.0005; % = 0.5µM = 500 nM
-            strct.axon.Cav22 = struct('gbar', on.NCa * 0.0001 * 5 / fac,'hTau',80);%, 'vshift', vshift); *5 dass BK besser geht   *2
-            strct.axonh.Cav22 = struct('gbar', on.NCa * 0.0001 * 5/ fac,'hTau',80);%, 'vshift', vshift);                          *2
-            strct.soma.Cav22 = struct('gbar', on.NCa * 0.0015 *2 / fac,'hTau',80);%, 'vshift', vshift);
-            strct.SGCL.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);%, 'vshift', vshift); *5 dass BK besser geht
-            strct.GCL.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac);%, 'vshift', vshift);
-            strct.adendIML.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);%, 'vshift', vshift);
-            strct.adendMML.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);%, 'vshift', vshift); *5 dass BK besser geht
-            strct.adendOML.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);%, 'vshift', vshift); *5 dass BK besser geht
+            strct.axon.Cav22 = struct('gbar', on.NCa * 0.0001 * 5 / fac,'hTau',80);
+            strct.axonh.Cav22 = struct('gbar', on.NCa * 0.0001 * 5/ fac,'hTau',80);
+            strct.soma.Cav22 = struct('gbar', on.NCa * 0.0015 *2 / fac,'hTau',80);
+            strct.SGCL.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);
+            strct.GCL.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac);
+            strct.adendIML.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);
+            strct.adendMML.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);
+            strct.adendOML.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);
             
+            strct.axonh.Cav12 = struct('gbar', on.LCa * 0.0005 * 3/2 / fac,'kf',kf);
+            strct.soma.Cav12 = struct('gbar', on.LCa  * 0.0015 / fac,'kf',kf);
+            strct.SGCL.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 / fac,'kf',kf);
+            strct.GCL.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 / fac,'kf',kf);
+            strct.adendIML.Cav12 = struct('gbar', on.LCa  *  0.0005 * 3/2 * 4 / fac,'kf',kf);
+            strct.adendMML.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 * 4 / fac,'kf',kf);
+            strct.adendOML.Cav12 = struct('gbar', on.LCa  *  0.0005 * 3/2 * 4 / fac,'kf',kf);
             
-            %                     strct.axon.Cav12 = struct('gbar', on.LCa * 0 / fac);%, 'vshift', vshift); *5 dass BK besser geht
-            strct.axonh.Cav12 = struct('gbar', on.LCa * 0.0005 * 3/2 / fac,'kf',kf);%, 'vshift', vshift);
-            strct.soma.Cav12 = struct('gbar', on.LCa  * 0.0015 / fac,'kf',kf);%, 'vshift', vshift);
-            strct.SGCL.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 / fac,'kf',kf);%, 'vshift', vshift);
-            strct.GCL.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 / fac,'kf',kf);%, 'vshift', vshift);
-            strct.adendIML.Cav12 = struct('gbar', on.LCa  *  0.0005 * 3/2 * 4 / fac,'kf',kf);%, 'vshift', vshift);
-            strct.adendMML.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 * 4 / fac,'kf',kf);%, 'vshift', vshift);
-            strct.adendOML.Cav12 = struct('gbar', on.LCa  *  0.0005 * 3/2 * 4 / fac,'kf',kf);%, 'vshift', vshift);
-            
-            strct.axon.Cav13 = struct('gbar', on.LCa * 0.0005 / 2 / fac3,'kf',kf);%, 'vshift', vshift); *5 dass BK besser geht
-            strct.axonh.Cav13 = struct('gbar', on.LCa * 0.0005 / fac3,'kf',kf);%, 'vshift', vshift);
-            strct.soma.Cav13 = struct('gbar', on.LCa  * 0.0005 * 2 / fac3,'kf',kf);%, 'vshift', vshift);
-            strct.SGCL.Cav13 = struct('gbar', on.LCa  * 0.0005 /2  / fac3,'kf',kf);%, 'vshift', vshift);   *2
-            strct.GCL.Cav13 = struct('gbar', on.LCa  * 0.0005 /2 / fac3);%, 'vshift', vshift);   *2
-            strct.adendIML.Cav13 = struct('gbar', on.LCa  *  0.0005 * 4/2 / 2 / fac3,'kf',kf);%, 'vshift', vshift);   *2
-            strct.adendMML.Cav13 = struct('gbar', on.LCa  * 0.0005 * 4/2 / 2 / fac3,'kf',kf);%, 'vshift', vshift);   *2
-            strct.adendOML.Cav13 = struct('gbar', on.LCa  *  0.0005 * 4/2 / 2 / fac3,'kf',kf);%, 'vshift', vshift);   *2
+            strct.axon.Cav13 = struct('gbar', on.LCa * 0.0005 / 2 / fac3,'kf',kf);
+            strct.axonh.Cav13 = struct('gbar', on.LCa * 0.0005 / fac3,'kf',kf);
+            strct.soma.Cav13 = struct('gbar', on.LCa  * 0.0005 * 2 / fac3,'kf',kf);
+            strct.SGCL.Cav13 = struct('gbar', on.LCa  * 0.0005 /2  / fac3,'kf',kf);
+            strct.GCL.Cav13 = struct('gbar', on.LCa  * 0.0005 /2 / fac3);
+            strct.adendIML.Cav13 = struct('gbar', on.LCa  *  0.0005 * 4/2 / 2 / fac3,'kf',kf);
+            strct.adendMML.Cav13 = struct('gbar', on.LCa  * 0.0005 * 4/2 / 2 / fac3,'kf',kf);
+            strct.adendOML.Cav13 = struct('gbar', on.LCa  *  0.0005 * 4/2 / 2 / fac3,'kf',kf);
             %
-            strct.axon.Cav32 = struct('gbar', 0.0005/1.375 *tfac / fac);%_,'vShift', vshift); no T-type in axon bouton (Li,Bischofberger 2007) but Martinello finds some immunogold...
-            strct.axonh.Cav32 = struct('gbar', 0.0005/1.375  *tfac / fac);%,'vShift', vshift);%_____________________________________________________________________________
-            strct.soma.Cav32 = struct('gbar', 0.001 *tfac / fac);%,'vShift', vshift);
-            strct.SGCL.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac  / fac);% ,'vShift', vshift);  * 4
-            strct.GCL.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac / fac);% ,'vShift', vshift);  * 4
-            strct.adendIML.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac / fac);%,'vShift', vshift);  * 4
-            strct.adendMML.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac / fac);% ,'vShift', vshift);  * 4
-            strct.adendOML.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac / fac);% ,'vShift', vshift);  * 4
+            strct.axon.Cav32 = struct('gbar', 0.0005/1.375 *tfac / fac);% no T-type in axon bouton (Li,Bischofberger 2007) but Martinello finds some immunogold...
+            strct.axonh.Cav32 = struct('gbar', 0.0005/1.375  *tfac / fac);
+            strct.soma.Cav32 = struct('gbar', 0.001 *tfac / fac);
+            strct.SGCL.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac  / fac);
+            strct.GCL.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac / fac);
+            strct.adendIML.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac / fac);
+            strct.adendMML.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac / fac);
+            strct.adendOML.Cav32 = struct('gbar', 0.0002 * 2.5 *2 *tfac / fac);
         end
         
         if on.BK > 0
             gabk =  13 * 0.0003 * on.BK ;
-            
-            %                 if ~isempty(strfind(options,'-y'))
-            %                     diffsoma = 1;
-            %                 else
+
             if ~isempty(strfind(options,'-n'))
                 base = 4;
                 diffsoma = 1.5;%0.3;
@@ -490,8 +460,7 @@ if ~isempty(strfind(options,'-a'))
                 gak = 0;%gak / 2 ;
                 gak_soma = 0;
             end
-            %                 end
-            
+
             % BK: 0.05 - 0.3 S/cm≤! (from model)
             strct.axon.BK = struct('gabkbar',  gabk,'gakbar', gak,'diff',100000,'base',base);  % no Calcium channel - BK clusters in axon, this is why high diff value
             strct.axonh.BK = struct('gabkbar', gabk,'gakbar', gak,'diff',100000,'base',base); % axonh i dont know, but made it same as axon...
@@ -500,8 +469,8 @@ if ~isempty(strfind(options,'-a'))
         end
         if on.SK > 0
             Q10 = 5;
-            skfac = on.SK / 24; % * 8 15.04.2016
-            dif = 3; %achtung achtung neu neu 12.05. test test
+            skfac = on.SK / 24; 
+            dif = 3; 
             strct.soma.SK2 = struct('gkbar',0.004 / 20 * skfac,'diff',dif,'Q10',Q10,'fac',2.5,'diro2',0.1,'invc3',0.09,'invc1',0.16*2,'invc2',0.16*2,'dirc4',320); % this is not really SK2 but SK1
             strct.axonh.SK2 = struct('gkbar',0.02* skfac,'diff',dif,'Q10',Q10,'fac',2.5,'diro2',0.1,'invc3',0.09,'invc1',0.16*2,'invc2',0.16*2,'dirc4',320); % this is not really SK2 but SK1
             strct.axon.SK2 = struct('gkbar',0.003 * skfac,'diff',dif,'Q10',Q10,'fac',2.5,'diro2',0.1,'invc3',0.09,'invc1',0.16*2,'invc2',0.16*2,'dirc4',320); % this is not really SK2 but SK1/3
@@ -513,9 +482,9 @@ if ~isempty(strfind(options,'-a'))
             strct.adendOML.SK2 = struct('gkbar',0.00105 * skfac,'diff',dif,'Q10',Q10,'fac',2.5,'diro2',0.1,'invc3',0.09,'invc1',0.16*2,'invc2',0.16*2,'dirc4',320);
         end
 
-        strct.all.k_ion = struct('ek',-103);%-100); !!-85phys!!!!!!      % calculated from concentrations in Mongiat paper (SH07 very similar)
-        strct.all.na_ion = struct('ena',87);   %87 !63phys!!!!!!!!    % calculated from concentrations in Mongiat paper (SH07 very similar)
-        strct.all.ca_ion = struct('cao0',2,'cai0',0.00007);   %!!138phys!!!!!!    % calculated from concentrations in Mongiat paper (SH07 very similar)
+        strct.all.k_ion = struct('ek',-103);      % calculated from concentrations in Mongiat paper (SH07 very similar)
+        strct.all.na_ion = struct('ena',87);     % calculated from concentrations in Mongiat paper (SH07 very similar)
+        strct.all.ca_ion = struct('cao0',2,'cai0',0.00007);   % calculated from concentrations in Mongiat paper (SH07 very similar)
         
     else
         %already with corrected Ca buffer model...
@@ -539,9 +508,9 @@ if ~isempty(strfind(options,'-a'))
         strct.adendOML.ichan3 = struct('gnabar',0,'gkfbar',0.001,'gksbar',0.004,'gkabar',0);
         strct.adendOML.Caold = struct('gtcabar',0.002,'gncabar',0.001,'glcabar',0);
         strct.adendOML.CadepK = struct('gbkbar',0.0012,'gskbar',0);  
-        strct.all.k_ion = struct('ek',-85);%-100); !!-85phys!!!!!!      % calculated from concentrations in Mongiat paper (SH07 very similar)
-        strct.all.na_ion = struct('ena',45);   %87 !63phys!!!!!!!!    % calculated from concentrations in Mongiat paper (SH07 very similar)
-        strct.all.ca_ion = struct('cao0',2,'cai0',0.00007);   %!!138phys!!!!!!    % calculated from concentrations in Mongiat paper (SH07 very similar)
+        strct.all.k_ion = struct('ek',-85);     % calculated from concentrations in Mongiat paper (SH07 very similar)
+        strct.all.na_ion = struct('ena',45);   %  % calculated from concentrations in Mongiat paper (SH07 very similar)
+        strct.all.ca_ion = struct('cao0',2,'cai0',0.00007);    % calculated from concentrations in Mongiat paper (SH07 very similar)
     end
     % L-type (Cav1)
     % (a1C&D)
@@ -553,19 +522,14 @@ if ~isempty(strfind(options,'-a'))
     %
     % N-type Cav2.2 strong in dentate granule cells
     %(Cav2.2) only during low freq transmission (ricoy 2014)
-    % alles deutet daraufhin, dass es lediglich somatisch (evt auch nicht) und axonal vorhanden ist (axonal unklar ob
-    % terminals oder allgemein, eher terminal)
+    % should be somatodendritic
     %
     % P/Q- and R-type (Cav2.1,2.3)
-    % kann ich mitsamt N-type modeln, da sich die nicht wirklich groﬂ
-    % unterscheiden auﬂer etwas in Tau... scheinen haupts‰chlich in MFBs zu
-    % sein (Li 2007) daher vllt auch weglassen...
+    % can be modeled with N-type modeln, since they have similar kinetics.. are mainly in MFBs (Li 2007) 
     %
     % T-type (Cav3.2)
     % seems to be mainly in dendrites and spines, little in soma and much
-    % less in axons (Martinello 2015) ist aber per µm und nicht fl‰che
-    % wobei McKay2006 sagt es w‰re nur im soma vorhanden...hmpf...aber nur
-    % light microscopy
+    % less in axons (Martinello 2015)
     % ratios:
     % spines    1.35  = 35.5  %
     % dendrites 2     = 53.6  %  bzw 81.6  %
@@ -575,16 +539,11 @@ if ~isempty(strfind(options,'-a'))
     % BK
     % alpha: strong in (soma and) axons, moderate in OML (caution, might be presynaptic fibers of EC??), NOT
     % in IML!  (Grunnet 2004)..caution..strong soma staining is probably
-    % artifact!!! Misonou 2006 hat einen guten  AK und zeigt eindeutig NUR axon
+    % artifact!!! Misonou 2006 has a good antibody and shows only axon...
     % und terminal staining of BK!
     % beta4 (might not be assoc with BK): strong in soma, moderate in dendrites and axons (Brenner 2005)
     % strong in soma, moderate in dendrites (Piwonska 2008)
     % ASSOCIATED MAINLY WITH MITOCHONDRIA!!!! (Piwonska 2008)
-    %
-    % BRENNER 2005 SPRICHT EHER DAF‹R DASS SK CHANNELS DEN HAUPTEINFLUSS HABEN AUF SPIKING FREQ, DA BAPTA
-    % DRAMATICALLY FREQUENCY ERH÷HT (SK kann nicht mehr arbeiten) w‰hrend paxilline (BK blocker) sich kaum
-    % auf WT auswirkt, nur auf ﬂ4 KO mice (klar, da hier viele typeI BK channels an oberfl‰che), siehe auch
-    % Figure 6, wo apamine (SK blocker) in WT starke auswirkung hat!
     %
     % SK channels
     % Ballesteros-Merino 2014

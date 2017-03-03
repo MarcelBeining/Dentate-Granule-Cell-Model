@@ -7,7 +7,7 @@ params = [];
 targetfolder_results = 'C:/GCModel/results';  % the folder where the graphs and pictures are saved
 targetfolder_data = 'C:\GCModel\simdata';  % the folder where simulated data is saved (to avoid resimulating if not necessary)
 % these params are t2n specific
-params.neuronpath = 'C:\nrn7.4\bin\nrniv.exe';   % the path to your NEURON exe
+params.neuronpath = 'C:\nrn73w64\bin64\nrniv.exe';'C:\nrn7.4\bin\nrniv.exe';   % the path to your NEURON exe
 params.path = pwd;  % your main folder of the model (pwd if you are already in the main folder)
 params.morphfolder = 'morphos/NEURON2_hocs';   % folder relative to "path" containing the hoc morphology files
 params.exchfolder = 't2nexchange';  % folder name which will be created and is used to exchange data between Matlab and NEURON
@@ -34,7 +34,7 @@ ostruct.scalespines = 1;  % scaling of g_pas and cm to implicitly model spines
 ostruct.adjustloads = 0;  % the Hay et al 2013 implementation of adjust dendritic loads to reduce variability between cells (not used in publication)
 ostruct.noise = 0;       % add noise to the membrane voltage by injecting gaussian noise current to the soma (not working with variable dt / cvode)
 %
-ostruct.reducecells = 1;  % reduce number of cells for faster simulation (e.g. for testing)
+ostruct.reducecells = 0;  % reduce number of cells for faster simulation (e.g. for testing)
 ostruct.usemorph = 1;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining AAV, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
 ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
 
@@ -146,7 +146,7 @@ neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_Final');
 ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
-ostruct.amp = 70;0:5:120;% current steps in pA which are to be simulated
+ostruct.amp = 0:5:120;% current steps in pA which are to be simulated
 ostruct.variabledt = 0;  % 1 = variable dt
 ostruct.coarse = 0.5;  % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 if ostruct.newborn
