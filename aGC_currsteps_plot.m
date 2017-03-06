@@ -148,7 +148,7 @@ if any(ostruct.show == 2)
     end
 end
 if any(ostruct.show == 1) && ~isempty(intersect(cstepsSpiking,steps))
-    if isfield(ostruct,'handles') && ~isempty(ostruct.handles) && ishandle(ostruct.handles(2))
+    if isfield(ostruct,'handles') && ~isempty(ostruct.handles) && numel(ostruct.handles) > 1 && ishandle(ostruct.handles(2))
         fig(2) = ostruct.handles(2);
         figure(fig(2))
     else
@@ -181,7 +181,7 @@ if any(ostruct.show == 1) && ~isempty(intersect(cstepsSpiking,steps))
     end
 end
 if any(ostruct.show == 2) && ~isempty(intersect(cstepsSpikingModel,steps))
-    if isfield(ostruct,'handles') && ~isempty(ostruct.handles) && ishandle(ostruct.handles(3))
+    if isfield(ostruct,'handles') && ~isempty(ostruct.handles) && numel(ostruct.handles) > 2  && ishandle(ostruct.handles(3))
         fig(3) = ostruct.handles(3);
         figure(fig(3))
     else

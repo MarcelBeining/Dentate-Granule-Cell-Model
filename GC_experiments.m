@@ -144,6 +144,7 @@ ostruct.handles = [];
 %% Mongiat FI + Ba, simulate the F-I relationship with and without blocking Kir by application of Barium, Figure 2 & 6
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_Final');
+ostruct.holding_voltage = -80; % mV % -80 or NaN
 ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
 ostruct.amp = 75;0:5:120;% current steps in pA which are to be simulated
