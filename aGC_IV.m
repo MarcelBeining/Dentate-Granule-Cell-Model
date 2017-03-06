@@ -6,17 +6,7 @@ elecnode = 1;
 if ~isfield(ostruct,'extract_kir')
     ostruct.extract_kir = 0;
 end
-% neuron = setionconcentrations(neuron,'Mongiat');
-% if holding_voltage == -80 % new mongiat steps
-%     newmongiat = 1;
-% else
-%     newmongiat = 0;
-% end
-% if newmongiat
-%     vstepsKir =;%(-130:10:-0); %-120:5:-30
-% else  % old (wrong) Mongiat steps
-%     vstepsKir = -120:5:-30;%(-130:10:-0); %-120:5:-30
-% end
+
 LJP = params.LJP;  % use LJP only for current clamps now...
 if ostruct.coarse
     vstepsModel =  (-130:10:-40) - LJP;
@@ -34,17 +24,7 @@ else
     params.dt=0.25;
     params.cvode = 0;
 end
-% %first calculate leak substractions! p/6 method  --> NOT DONE BY MONGIAT
-% THOUGH IT WAS SAID!!!
-% nneuron = repmat({neuron},numel(vsteps),1);
-% for s = 1:numel(vsteps)
-%     amp = [-70, -(vsteps(s)+70)/6-70, -70];       % this is the calculation of the /6th amplitude for leak substraction..six measurements are not necessary because model cells do not have noise
-%     for t = 1:numel(tree)
-%         nneuron{s}.record{t} = {1,'i','stim'};%;recnode,'ik_Kir';recnode,'gka_ichan3';recnode,'i_pas'};
-%         nneuron{s}.stim{t} = {'SEClamp',elecnode,struct('rs',15,'dur', dur,'amp', amp)}; %n,del,dur,amp
-%     end
-% end
-% [outleaksub, minterf] = t2n(tree,params,nneuron,'-q-d');
+
 for f = 1:ostruct.extract_kir+1
     if f == 2
         neuron2 = neuron; % backup neuron struct
@@ -79,8 +59,7 @@ for f = 1:ostruct.extract_kir+1
         end
     end
 end
-% mask = ones(1,numel(outleaksub{1}.record{t}.i{1}));
-% mask(outleaksub{s}.t<= 105 | outleaksub{s}.t>= 205) = 0;
+
 ind = vstepsModel == holding_voltage;
 for t = 1:numel(tree)
     mholding_current(t) = mean(out{ind}.record{t}.SEClamp.i{1}(find(out{ind}.t>=180,1,'first'):find(out{ind}.t>=200,1,'first')) *1000); % + 6 * mean(outleaksub{s}.record{t}.i{1}(find(outleaksub{s}.t>=180,1,'first'):find(outleaksub{s}.t>=200,1,'first')) *1000);

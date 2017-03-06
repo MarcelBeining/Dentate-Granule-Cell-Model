@@ -13,9 +13,9 @@ else
     str = '';
 end
 if isfield(ostruct,'variabledt') && ostruct.variabledt == 0
-    load(expcat(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,str,'_fixed-dt')))
+    load(expcat(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,str,'_fixed-dt')),'vol_new_curr_dend','tvol_new_curr_dend','numspikes','params','cstepsSpiking','cstepsSpikingModel','tree','nneuron')
 else
-    load(expcat(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,str)))
+    load(expcat(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,str)),'vol_new_curr_dend','tvol_new_curr_dend','numspikes','params','cstepsSpiking','cstepsSpikingModel','tree','nneuron')
 end
 if any(ostruct.usemorph == [2,3,5,6])  % artificial cells
     modelcol = [0 1 0];
