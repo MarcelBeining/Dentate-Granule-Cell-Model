@@ -70,7 +70,7 @@ if ostruct.show
 end
 
 for n = 1:numel(nneuron)
-    load(expcat(targetfolder_data,'Exp_bAP',nneuron{n}.experiment))
+    load(expcat(targetfolder_data,'Exp_bAP',nneuron{n}.experiment),'bAP','plotvals','params','nodes','neuron','tree','CaNodes','mCai','stdCai','mV','stdV','tim','tw','maxcai')
     
     spiked = cellfun(@(x) any(x>0),mV(:,1));
     

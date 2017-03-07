@@ -39,3 +39,5 @@ morphos/NEURON2_hocs/cell_SH07all2_08_minterf.mat
 *.o
 morphos/NEURON2_hocs/
 t2nexchange_aGCmorphsim/
+t2nexchange_aGCmorphsim6/
+*.asv

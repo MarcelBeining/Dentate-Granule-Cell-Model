@@ -155,7 +155,7 @@ for t = 1:numel(tree)
     tree{t} = sort_tree(tree{t},'-LO');
     
     neuron.mech{t} = [];
-    if ostruct.scalespines
+    if ~AHflag && ostruct.scalespines  % spine scaling ignored in AH99 as already taken into account in the biophys
         neuron.mech{t} =  cat_struct(GC_biophys(mechoptions),GC_spinedensity(ostruct.scalespines*0.9));
     else
         neuron.mech{t} =  cat_struct(GC_biophys(mechoptions));

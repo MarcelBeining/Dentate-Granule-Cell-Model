@@ -15,7 +15,7 @@ if ~isfield(ostruct,'show')
     ostruct.show = 1:2;
 end
 
-load(loadingfile)
+load(loadingfile,'mholding_current','neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')
 if any(ostruct.show==1)
     [exp_vclamp,vsteps,rate] = load_ephys(ostruct.dataset,'VClamp',ostruct.extract_kir);
     vsteps = vsteps - params.LJP;

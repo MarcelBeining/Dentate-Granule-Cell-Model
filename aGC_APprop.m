@@ -249,7 +249,7 @@ for u = 1:numel(uu)
                         props.fAHPabs{u,t}(count) = NaN;
                     else
                         props.fAHPabs{u,t}(count) = thisv(thist(:,t)==tim,t);
-                        if tim - props.APt{u,t}(count) > 5 %(thist(ind(ind2),t) - props.APt{u,t}(count)) > 5 % if time from spike to props.fAHP is longer than 5ms then it is propably no props.fAHP
+                        if tim - props.APt{u,t}(count) > 5 %(thist(ind(ind2),t) - props.APt{u,t}(count)) > 5 % if time from spike to fAHP is longer than 5ms then it is propably no fAHP
                             props.APdeact{u,t}(count) = NaN;
                             [~,ind2] = min(diff(thisv(ind,t),1,1));  % find minimum of derivative
                             ind2 = ind(ind2-1+find(diff(thisv(ind(ind2:end),t),1,1)> -0.005,1,'first'));  %attempt to rescue fAHP calculation..check were derivative negative steepness is over
@@ -264,12 +264,10 @@ for u = 1:numel(uu)
                         else
                             props.fAHP{u,t}(count) = props.APiv{u,t}(count)-props.fAHPabs{u,t}(count);
                             
-                            %                     indabs = find(ind);
                             thist2 = thist(ind(thist(ind,t)==tim):end,t);
                             thist2 = thist2(1:find(thist2(1)+5 <= thist2,1,'first')); % nur bis +5ms
                             
                             thisv2 = thisv(ind(thist(ind,t)==tim):ind(thist(ind,t)==tim)+numel(thist2)-1,t);
-                            
                             
                             lthisv2 = log(thisv2(end)-thisv2);
                             imagind = find(imag(lthisv2)~=0 | isinf(lthisv2),1,'first')-1;
@@ -395,7 +393,6 @@ if ostruct.show
         else
             tprint(fullfile2(targetfolder_results,expcat(strcat(figname{f}),neuron.experiment)),'-pdf');
         end
-        %     tprint(fullfile2(targetfolder_results,strcat('Fig2-',figname{f},neuron.experiment)),'-png');
     end
 end
 for u = 1:numel(uu)
@@ -405,7 +402,7 @@ for u = 1:numel(uu)
     display(sprintf('AP current threshold for group %d is: %g +- %g pA (s.e.m.)',uu(u),mean(props.APic{u}),std(props.APic{u})/sqrt(numel(props.APic{u})) ))
     display(sprintf('AP width for group %d is: %g +- %g ms (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.APwidth(u,~cellfun(@isempty,props.APwidth(u,:))))),std(cellfun(@(x) x(1),props.APwidth(u,~cellfun(@isempty,props.APwidth(u,:)))))/sqrt(numel(props.APic{u})) ))
     display(sprintf('AP voltage threshold for group %d is: %g +- %g mV (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.APiv(u,~cellfun(@isempty,props.APiv(u,:))))),std(cellfun(@(x) x(1),props.APiv(u,~cellfun(@isempty,props.APiv(u,:)))))/sqrt(numel(props.APic{u})) ))
-    display(sprintf('AP props.fAHP for group %d is: %g +- %g mV (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.fAHP(u,~cellfun(@isempty,props.fAHP(u,:))))),std(cellfun(@(x) x(1),props.fAHP(u,~cellfun(@isempty,props.fAHP(u,:)))))/sqrt(numel(props.APic{u})) ))
+    display(sprintf('AP fAHP for group %d is: %g +- %g mV (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.fAHP(u,~cellfun(@isempty,props.fAHP(u,:))))),std(cellfun(@(x) x(1),props.fAHP(u,~cellfun(@isempty,props.fAHP(u,:)))))/sqrt(numel(props.APic{u})) ))
     display(sprintf('AP interspike interval for group %d is: %g +- %g ms (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.APISI(u,~cellfun(@isempty,props.APISI(u,:))))),std(cellfun(@(x) x(1),props.APISI(u,~cellfun(@isempty,props.APISI(u,:)))))/sqrt(numel(props.APic{u})) ))
     display(sprintf('AP amplitude for group %d is: %g +- %g mV (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.APamp(u,~cellfun(@isempty,props.APamp(u,:))))),std(cellfun(@(x) x(1),props.APamp(u,~cellfun(@isempty,props.APamp(u,:)))))/sqrt(numel(props.APic{u})) ))
 end

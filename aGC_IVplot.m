@@ -1,10 +1,5 @@
 function fig = aGC_IVplot(loadingfile,targetfolder_results,ostruct)
 
-%  the Kir conductances, we calculate the slope (conductance) at hiperpolarized
-% values (-140 to -110mV) and subtracted the slope (conductance) at slightly
-% depolarized values (-50 to -70mV). By doing this we calculate only the Kir
-% conductance, without the leak conductance at resting potential.
-
 if nargin < 3
     ostruct.dataset = 2;
 end
@@ -21,7 +16,7 @@ if ~isfield(ostruct,'extract_kir')
     ostruct.extract_kir = 0;
 end
 
-    load(loadingfile,'mholding_current','neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')
+load(loadingfile,'mholding_current','neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')
 
 if any(ostruct.show == 1) && ostruct.dataset ~= 0
     [exp_vclamp,vsteps,rate] = load_ephys(ostruct.dataset,'VClamp',ostruct.extract_kir);
@@ -52,34 +47,32 @@ if any(ostruct.show == 1) && ostruct.dataset ~= 0
     end
 end
 amp = [-10,10];
-    for a = 1:2
-        for t = 1:numel(tree)
-            ind = find(vstepsModel+params.LJP == -80+amp(a));
-            I0 = mean(inewcurr_dend{t,ind}(2,inewcurr_dend{t,ind}(1,:)<104));
-            if ~any(inewcurr_dend{t,ind}(1,:)>190 & inewcurr_dend{t,ind}(1,:)<204)
-                is(t) = mean(inewcurr_dend{t,ind}(2,inewcurr_dend{t,ind}(1,:)>175 & inewcurr_dend{t,ind}(1,:)<204));
-            else
-                is(t) = mean(inewcurr_dend{t,ind}(2,inewcurr_dend{t,ind}(1,:)>190 & inewcurr_dend{t,ind}(1,:)<204));
-            end
-            y = inewcurr_dend{t,ind}(2,sign(amp(a))*inewcurr_dend{t,ind}(2,:) > sign(amp(a))*is(t))-is(t);
-            x = inewcurr_dend{t,ind}(1,sign(amp(a))*inewcurr_dend{t,ind}(2,:) > sign(amp(a))*is(t));
-            capm(a,t) = trapz(x,y)/amp(a);
+for a = 1:2
+    for t = 1:numel(tree)
+        ind = find(vstepsModel+params.LJP == -80+amp(a));
+        I0 = mean(inewcurr_dend{t,ind}(2,inewcurr_dend{t,ind}(1,:)<104));
+        if ~any(inewcurr_dend{t,ind}(1,:)>190 & inewcurr_dend{t,ind}(1,:)<204)
+            is(t) = mean(inewcurr_dend{t,ind}(2,inewcurr_dend{t,ind}(1,:)>175 & inewcurr_dend{t,ind}(1,:)<204));
+        else
+            is(t) = mean(inewcurr_dend{t,ind}(2,inewcurr_dend{t,ind}(1,:)>190 & inewcurr_dend{t,ind}(1,:)<204));
         end
+        y = inewcurr_dend{t,ind}(2,sign(amp(a))*inewcurr_dend{t,ind}(2,:) > sign(amp(a))*is(t))-is(t);
+        x = inewcurr_dend{t,ind}(1,sign(amp(a))*inewcurr_dend{t,ind}(2,:) > sign(amp(a))*is(t));
+        capm(a,t) = trapz(x,y)/amp(a);
     end
+end
 if any(ostruct.show == 1) && ostruct.dataset ~= 0 && (ostruct.dataset ~= 2.28)  % dont use that VClamp dataset, as it had been done after spiking experiment
     fprintf('Mean Rin in Exp(@-90mV-LJP) is %g +- %g MOhm (s.e.m., -10mV)\n',mean(Rin),std(Rin)/sqrt(numel(Rin)))
     fprintf('Mean Rin in Exp(@-70mV-LJP) is %g +- %g MOhm (s.e.m., +10mV)\n',mean(Rin2),std(Rin2)/sqrt(numel(Rin2)))
 end
-    if  any(cellfun(@(x) ~any(x(1,:)>190&x(1,:)<204),inewcurr_dend(:,vstepsModel+params.LJP==-80-10)))
-        Rin = 1000*(-10)./cellfun(@(x) mean(x(2,(x(1,:)>175&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),inewcurr_dend(:,vstepsModel+params.LJP==-80-10));
-    else
-        Rin = 1000*(-10)./cellfun(@(x) mean(x(2,(x(1,:)>190&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),inewcurr_dend(:,vstepsModel+params.LJP==-80-10));
-    end
+if  any(cellfun(@(x) ~any(x(1,:)>190&x(1,:)<204),inewcurr_dend(:,vstepsModel+params.LJP==-80-10)))
+    Rin = 1000*(-10)./cellfun(@(x) mean(x(2,(x(1,:)>175&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),inewcurr_dend(:,vstepsModel+params.LJP==-80-10));
+else
+    Rin = 1000*(-10)./cellfun(@(x) mean(x(2,(x(1,:)>190&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),inewcurr_dend(:,vstepsModel+params.LJP==-80-10));
+end
 fprintf('\nMean Rin in Model(@-90mV-LJP) is %g +- %g MOhm (s.e.m., -10mV)\n',mean(Rin),std(Rin)/sqrt(numel(Rin)))
 Rin = 1000*(+10)./cellfun(@(x) mean(x(2,(x(1,:)>190&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),inewcurr_dend(:,vstepsModel+params.LJP==-80+10));
 fprintf('Mean Rin in Model(@-70mV-LJP) is %g +- %g MOhm (s.e.m., +10mV)\n',mean(Rin),std(Rin)/sqrt(numel(Rin)))
-% Rin = 1000*(+15)/cellfun(@(x) mean(x(2,(x(1,:)>190&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),inewcurr_dend(:,vstepsModel+params.LJP==-80+15));
-% fprintf('Mean Rin in Model(@-65mV-LJP) is %g +- %g MOhm (s.e.m., +10mV)\n',mean(Rin),std(Rin)/sqrt(numel(Rin)))
 if any(ostruct.show == 1) && ostruct.dataset ~= 0 && ostruct.dataset ~= 2.28  % dont use that VClamp dataset, as it had been done after spiking experiment
     fprintf('\nMean capacitance in Exp(@-90mV-LJP) is %g +- %g pF (s.e.m. -10mV)',mean(cap),std(cap)/sqrt(numel(cap)))
     fprintf('\nMean capacitance in Exp(@-70mV-LJP) is %g +- %g pF (s.e.m. +10mV)\n',mean(cap2),std(cap2)/sqrt(numel(cap2)))
@@ -104,16 +97,13 @@ end
 if any(ostruct.show == 1) && ostruct.dataset ~= 0
     if exist('delind','var')
         meas_curr = squeeze(mean(exp_vclamp(194*rate+1:204*rate+1,setdiff(1:size(exp_vclamp,2),delind),:),1));
-        % mean(curr_mature(:,1)-curr_mature(:,2))
         basl = squeeze(mean(exp_vclamp(94*rate+1:104*rate+1,setdiff(1:size(exp_vclamp,2),delind),:),1));
     else
         meas_curr = squeeze(mean(exp_vclamp(194*rate+1:204*rate+1,:,:),1));
-        % mean(curr_mature(:,1)-curr_mature(:,2))
         basl = squeeze(mean(exp_vclamp(94*rate+1:104*rate+1,:,:),1));
     end
 end
 if ostruct.subtract_hv
-    %     curr_mature = curr_mature - repmat(curr_mature(:,vstepsMeasure_Mongiat==holding_voltage),1,size(curr_mature,2)); % subtract current at baseline holding voltage (as Mongiat did)
     if any(ostruct.show == 1) && ostruct.dataset ~= 0
         meas_curr = meas_curr - basl;
     end
@@ -121,10 +111,10 @@ if ostruct.subtract_hv
 end
 
 
-Kirind_mine = vstepsModel+LJP <= -110;
-otherind_mine = vstepsModel+LJP >= -70 & vstepsModel+LJP <= -50;
+Kirind_model = vstepsModel+LJP <= -110;
+otherind_model = vstepsModel+LJP >= -70 & vstepsModel+LJP <= -50;
 
-Restind_mine = vstepsModel+LJP >= -100 & vstepsModel+LJP <= -70;
+Restind_model = vstepsModel+LJP >= -100 & vstepsModel+LJP <= -70;
 
 
 gKirModel = zeros(size(newcurr_dend,2),1);
@@ -138,29 +128,22 @@ if any(ostruct.show == 1) && ostruct.dataset ~= 0
     end
 end
 for t =1:size(newcurr_dend,2)
-    tmp = polyfit(vstepsModel(Kirind_mine)+LJP,newcurr_dend(Kirind_mine,t)',1) - polyfit(vstepsModel(otherind_mine)+LJP,newcurr_dend(otherind_mine,t)',1) ;
+    tmp = polyfit(vstepsModel(Kirind_model)+LJP,newcurr_dend(Kirind_model,t)',1) - polyfit(vstepsModel(otherind_model)+LJP,newcurr_dend(otherind_model,t)',1) ;
     gKirModel(t) = tmp(1);
 end
 
-tmp = polyfit(vstepsModel(Restind_mine)+LJP,newcurr_dend(Restind_mine,t)',1);
+tmp = polyfit(vstepsModel(Restind_model)+LJP,newcurr_dend(Restind_model,t)',1);
 display(sprintf('g at rest: %.3g nS',tmp(1)))
 
 if any(ostruct.show==1) && ostruct.dataset ~= 0
-    %     if options.subtract_hv
-    %         mIV = mean(curr_mature-repmat(curr_mature(:,indhvexp),1,size(curr_mature,2)),1);
-    %         stdIV = std (curr_mature-repmat(curr_mature(:,indhvexp),1,size(curr_mature,2)),1);
-    %     else
-    
-    %     end
+
     mIV = mean(meas_curr,1);
     if ostruct.single
-        %         for f = 1:size(curr_mature,1)
         plot(vstepsreal,meas_curr,'Color','k')
         for n = 1:size(meas_curr,1)
             vrest(n) = interp1(meas_curr(n,:),vstepsreal,0) ;
         end
         sprintf('Mean Vrest %g +- %g mV\n',mean(vrest),std(vrest))
-        %         end
     else
         
         stdIV = std (meas_curr,1);
@@ -220,10 +203,9 @@ ylabel('Measured Current [pA]')
 
 
 %% add paper data
-if 1%~any(ostruct.show==1)
-    vstepsreal = vstepsModel;
-    mIV = mean(newcurr_dend,2);
-end
+vstepsreal = vstepsModel;
+mIV = mean(newcurr_dend,2);
+
 Brenner05 = [-80,-20,600,10]; %HV, pA step, MOhm, stdevMOhm
 Mongiat09 = [-70-12.1,-10,224,7]; %HV, mV step, MOhm, stdevMOhm  LJP corrected
 SH07 = [-80,-3,308,26]; %HV, pA step, MOhm, stdevMOhm
@@ -248,36 +230,27 @@ Mehranfard = [-70,-50,295.6,11.5]; %grün
 Brunner14yRAT21 = [-80,-10,378,20]; %HV, pA step, MOhm, stdevMOhm   % 21 dpi
 Brunner14yRAT28 = [-80,-10,358,13]; %HV, pA step, MOhm, stdevMOhm   % 26 dpi
 
-% figure;hold all
 col = colorme({'red','yellow','dim green','violett','cyan','pink'});
 if isfield(ostruct,'savename')
     FigureResizer(ostruct.figureheight,ostruct.figurewidth)   % has to come before arrows to avoid distortions
 end
 if ~ostruct.newborn && ~ostruct.bablock
     if ostruct.usemorph <= 3  % mouse morphologies
-        %         plot([Brenner05(1),Brenner05(1) + Brenner05(3) * Brenner05(2)/1000],[0 Brenner05(2)]+interp1(vstepsreal,mIV,Brenner05(1)),'Marker','o','LineStyle','-','MarkerSize',10,'LineWidth',1)
         a=arrow([Brenner05(1),0+interp1(vstepsreal,mIV,Brenner05(1))],[Brenner05(1) + Brenner05(3) * Brenner05(2)/1000,Brenner05(2)+interp1(vstepsreal,mIV,Brenner05(1))]);
         set(a,'FaceColor',col{1},'EdgeColor',col{1},'LineWidth',1.5,'FaceAlpha',0.5,'EdgeAlpha',0.5)
-        %         errorbar([Mongiat09(1),Mongiat09(1) + Mongiat09(2)],[0 Mongiat09(2)/Mongiat09(3)*1000]+interp1(vstepsreal,mIV,Mongiat09(1)),[0 ((Mongiat09(2)/(Mongiat09(3)+Mongiat09(4)))-Mongiat09(2)/Mongiat09(3))*1000],'Marker','o','LineStyle','-','MarkerSize',10,'LineWidth',1)
         a=arrow([Mongiat09(1), interp1(vstepsreal,mIV,Mongiat09(1))],[Mongiat09(1) + Mongiat09(2), Mongiat09(2)/Mongiat09(3)*1000+interp1(vstepsreal,mIV,Mongiat09(1))]);
         set(a,'FaceColor',col{2},'EdgeColor',col{2},'LineWidth',1.5,'FaceAlpha',0.5,'EdgeAlpha',0.5)
-        %         plot([SH07(1),SH07(1) + SH07(3) * SH07(2)/1000],[0 SH07(2)]+interp1(vstepsreal,mIV,SH07(1)),'Marker','o','LineStyle','-','MarkerSize',10,'LineWidth',1)
         a=arrow([SH07(1),interp1(vstepsreal,mIV,SH07(1))],[SH07(1) + SH07(3) * SH07(2)/1000,SH07(2)+interp1(vstepsreal,mIV,SH07(1))]);
         set(a,'FaceColor',col{3},'EdgeColor',col{3},'LineWidth',1.5,'FaceAlpha',0.5,'EdgeAlpha',0.5)
     else                            % rat model
-        %         errorbar([Staley92a(1),Staley92a(1) + Staley92a(2)],[0 Staley92a(2)/Staley92a(3)*1000]+interp1(vstepsreal,mIV,Staley92a(1)),[0 ((Staley92a(2)/(Staley92a(3)+Staley92a(4)))-Staley92a(2)/Staley92a(3))*1000],'Marker','o','LineStyle','-','MarkerSize',10,'LineWidth',1)
         a=arrow([Staley92a(1),interp1(vstepsreal,mIV,Staley92a(1))],[Staley92a(1) + Staley92a(2),Staley92a(2)/Staley92a(3)*1000+interp1(vstepsreal,mIV,Staley92a(1))]);
         set(a,'FaceColor',col{1},'EdgeColor',col{1},'LineWidth',1.5,'FaceAlpha',0.5,'EdgeAlpha',0.5)
-        %         errorbar([Staley92b(1),Staley92b(1) + Staley92b(2)],[0 Staley92b(2)/Staley92b(3)*1000]+interp1(vstepsreal,mIV,Staley92b(1)),[0 ((Staley92b(2)/(Staley92b(3)+Staley92b(4)))-Staley92b(2)/Staley92b(3))*1000],'Marker','o','LineStyle','-','MarkerSize',10,'LineWidth',1)
         a=arrow([Staley92b(1),interp1(vstepsreal,mIV,Staley92b(1))],[Staley92b(1) + Staley92b(2),Staley92b(2)/Staley92b(3)*1000+interp1(vstepsreal,mIV,Staley92b(1))]);
         set(a,'FaceColor',col{1},'EdgeColor',col{1},'LineWidth',1.5,'FaceAlpha',0.5,'EdgeAlpha',0.5)
-        %         plot([MA14(1),MA14(1) + MA14(3) * MA14(2)/1000],[0 MA14(2)]+interp1(vstepsreal,mIV,MA14(1)),'Marker','o','LineStyle','-','MarkerSize',10,'LineWidth',1)
         a=arrow([MA14(1),interp1(vstepsreal,mIV,MA14(1))],[MA14(1) + MA14(3) * MA14(2)/1000 , MA14(2)+interp1(vstepsreal,mIV,MA14(1))]);
         set(a,'FaceColor',col{2},'EdgeColor',col{2},'LineWidth',1.5,'FaceAlpha',0.5,'EdgeAlpha',0.5)
-        %         plot([Mehranfard(1),Mehranfard(1) + Mehranfard(3) * Mehranfard(2)/1000],[0 Mehranfard(2)]+interp1(vstepsreal,mIV,Mehranfard(1)),'Marker','o','LineStyle','-','MarkerSize',10,'LineWidth',1)
         a=arrow([Mehranfard(1),interp1(vstepsreal,mIV,Mehranfard(1))],[Mehranfard(1) + Mehranfard(3) * Mehranfard(2)/1000 , Mehranfard(2)+interp1(vstepsreal,mIV,Mehranfard(1))]);
         set(a,'FaceColor',col{3},'EdgeColor',col{3},'LineWidth',1.5,'FaceAlpha',0.5,'EdgeAlpha',0.5)
-        %         errorbar([SH04(1),SH04(1) + SH04(2)],[0 SH04(2)/SH04(3)*1000]+interp1(vstepsreal,mIV,SH04(1)),[0 ((SH04(2)/(SH04(3)+SH04(4)))-SH04(2)/SH04(3))*1000],'Marker','o','LineStyle','-','MarkerSize',10,'LineWidth',1)
         a=arrow([SH04(1), interp1(vstepsreal,mIV,SH04(1))],[SH04(1) + SH04(2), SH04(2)/SH04(3)*1000+interp1(vstepsreal,mIV,SH04(1))]);
         set(a,'FaceColor',col{4},'EdgeColor',col{4},'LineWidth',1.5,'FaceAlpha',0.5,'EdgeAlpha',0.5)
     end
@@ -319,10 +292,8 @@ elseif ostruct.newborn && ~ ostruct.bablock
     end
 end
 %%
-% title('IV Kir Mature Fits with experimental equilibrium potentials')
 FontResizer
 
-% tprint(fullfile2(targetfolder_results,expcat('Fig.2-IV',neuron.experiment)),'-svg');
 if isfield(ostruct,'savename')
     if ~isempty(ostruct.savename)
         
@@ -331,8 +302,6 @@ if isfield(ostruct,'savename')
 else
     tprint(fullfile2(targetfolder_results,expcat('Fig.2-IV',neuron.experiment)),'-pdf');
 end
-% tprint(fullfile2(targetfolder_results,strcat('Fig2-IV',neuron.experiment)),'-png')
-% close(fig)
 if any(ostruct.show == 1) && ostruct.dataset ~= 0
     fprintf('Kir Slope Conductance real cells %s\n',sprintf(' %.3g+-%.3g nS, ',mean(gKirReal),std(gKirReal)))
 end
