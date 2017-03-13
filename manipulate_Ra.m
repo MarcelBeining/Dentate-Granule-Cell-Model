@@ -24,8 +24,13 @@ for t = 1:numel(neuron.mech)
         fields = intersect(fields,regions);  % only take the specified regions
     end
     for f1 = 1:numel(fields)
-        if isfield(neuron.mech{t}.(fields{f1}),'pas')
-            neuron.mech{t}.(fields{f1}).pas.Ra = neuron.mech{t}.(fields{f1}).pas.Ra * scale;
+        if ~isfield(neuron.mech{t}.(fields{f1}),'pas')
+            if isfield(neuron.mech{t}.all,'pas')
+                neuron.mech{t}.(fields{f1}).pas = neuron.mech{t}.all.pas;
+            else
+                error('cannot manipulate Ra because mechanism "pas" does neither exist in this region nor defined for all regions')
+            end
         end
+        neuron.mech{t}.(fields{f1}).pas.Ra = neuron.mech{t}.(fields{f1}).pas.Ra * scale;
     end
 end

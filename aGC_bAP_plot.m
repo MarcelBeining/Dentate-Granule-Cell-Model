@@ -333,8 +333,14 @@ for n = 1:numel(nneuron)
         figure;%(fig(6))
         [~,~,barwidth] = barme([],data_stocca,sem,gstruct);
         ylabel('Peak Ca amplitude [nM]')
+        ax = gca;
+        
         FontResizer
-        ylim([0 1200])
+        if ax.YLim(2) > 2000
+            ylim([0 3.5E+5])
+        else
+            ylim([0 1200])
+        end
         FigureResizer(5,8,[barwidth,0.4])
         tprint(fullfile2(targetfolder_results,expcat('Fig.4-CaAmp',nneuron{n}.experiment)),'-pdf');
         
