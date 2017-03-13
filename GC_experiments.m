@@ -7,7 +7,7 @@ params = [];
 targetfolder_results = 'C:/GCModel/results';  % the folder where the graphs and pictures are saved
 targetfolder_data = 'C:\GCModel\simdata';  % the folder where simulated data is saved (to avoid resimulating if not necessary)
 % these params are t2n specific
-params.neuronpath = 'C:\nrn73w64\bin64\nrniv.exe';'C:\nrn7.4\bin\nrniv.exe';   % the path to your NEURON exe
+params.neuronpath = 'C:\nrn73w64\bin64\nrniv.exe';%'C:\nrn7.4\bin\nrniv.exe';   % the path to your NEURON exe
 params.path = pwd;  % your main folder of the model (pwd if you are already in the main folder)
 params.morphfolder = 'morphos/NEURON2_hocs';   % folder relative to "path" containing the hoc morphology files
 params.exchfolder = 't2nexchange';  % folder name which will be created and is used to exchange data between Matlab and NEURON
@@ -16,7 +16,6 @@ params.exchfolder = 't2nexchange';  % folder name which will be created and is u
 params.celsius = 24;   % temperature
 params.prerun = 400;   % large-dt prerun to let the system equilibrate
 params.v_init = -90;  % initial membrane voltage
-params.dt = 1;       % standard time step (is automatically changed to a smaller dt in most simulations below)
 params.nseg = 'dlambda';  % number of segments, can be constant or 'd_lambda' to adjust it according to the d-lambda rule
 params.openNeuron = 0;   % make it 1 to open each NEURON instance (is suppressed if t2n is run with the -q argument)
 
@@ -24,21 +23,21 @@ ostruct = struct('plot','auto','show',3,'legend',0,'marker','o','sem',1,'FontSiz
 ostruct.usecol = 1;  % 0 = pseudorandom colors for each simulated cell in graph, 1 = green or blue grading
 
 
-
-ostruct.vmodel = 1; % 0 = passive model, > 0 = active model, everything else (e.g. NaN) = old AH99 model
+% change biophysical model here
+ostruct.vmodel = NaN; % 0 = passive model, > 0 = active model, everything else (e.g. NaN) = old AH99 model
 ostruct.changeAHion = 0;  % only important when using the AH99 model. Boolean to decide if standard AH99 ion reversal potentials are used (0) or if they are adjusted to the experiments (1)
 
-
-
-ostruct.scalespines = 1;  % scaling of g_pas and cm to implicitly model spines
-ostruct.adjustloads = 0;  % the Hay et al 2013 implementation of adjust dendritic loads to reduce variability between cells (not used in publication)
-ostruct.noise = 0;       % add noise to the membrane voltage by injecting gaussian noise current to the soma (not working with variable dt / cvode)
-%
-ostruct.reducecells = 0;  % reduce number of cells for faster simulation (e.g. for testing)
-ostruct.usemorph = 1;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining AAV, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
+% change morphologies here
+ostruct.usemorph = 2;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
 ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
 
+% more parameters
+ostruct.reducecells = 0;  % reduce number of cells for faster simulation (e.g. for testing)
+ostruct.scalespines = 1;  % scaling of g_pas and cm to implicitly model spines. is ignored in AH99 model, as this is already taken into account in the biophys model!
+ostruct.adjustloads = 0;  % the Hay et al 2013 implementation of adjust dendritic loads to reduce variability between cells (not used in publication)
+ostruct.noise = 0;       % add noise to the membrane voltage by injecting gaussian noise current to the soma (not working with variable dt / cvode)
 
+% do not change from here
 if ostruct.usemorph >= 4
     ostruct.ratadjust = 1;  % adjust Kir channel in rats
     params.LJP = 0; % no LJP with rat
@@ -147,7 +146,7 @@ neuron.experiment = strcat(neuron.experiment,'_Final');
 ostruct.holding_voltage = -80; % mV % -80 or NaN
 ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
-ostruct.amp = 75;0:5:120;% current steps in pA which are to be simulated
+ostruct.amp = 0:5:120;% current steps in pA which are to be simulated
 ostruct.variabledt = 0;  % 1 = variable dt
 ostruct.coarse = 0.5;  % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 if ostruct.newborn
@@ -334,7 +333,7 @@ ostruct.single = 0; % show single data curves instead of mean
 aGC_IV(neuron,tree,params,targetfolder_data,ostruct);
 
 ostruct.savename = sprintf('Fig3-IV_Mehranfard15-%s',neuron.experiment);
-if ostruct.ratadjust
+if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
 
@@ -359,19 +358,19 @@ ostruct.holding_voltage = -80;  % leider unknown. ABER OHNE LJP
 aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 
 % ostruct.savename = sprintf('Fig3_spiking_Mehranfahrd15-%s',neuron.experiment);
-% if ostruct.ratadjust
+% if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
 %     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 % end
 ostruct.dataset = 0;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
 ostruct.show = 1:2; % data (Meranfahrd) &  simulation
 ostruct.savename = sprintf('Fig3_FI_Mehranfahrd15-%s',neuron.experiment);
-if ostruct.ratadjust
+if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
 aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 ostruct.show = 2:3; %   simulation & explicit spikes
 ostruct.savename = sprintf('Fig3_Final-%s',neuron.experiment);
-if ostruct.ratadjust
+if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
 aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,0.1);
@@ -397,7 +396,7 @@ ostruct.duration = 100;
 ostruct.variabledt = 0;
 ostruct.ampprop = 200; 
 ostruct.savename = 'Fig5-ISIadapt100ms_MA14';
-if ostruct.ratadjust
+if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
 ostruct.dataset = 0;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
@@ -472,18 +471,17 @@ params.celsius = 24;
 ostruct = rmfield(ostruct,'find_freq');
 %% bAP simulation (Krueppel 2011) +  Calcium dynamics (Stocca 2008) Teil Ratte, Figure 4
 neuron = neuron_orig;
-ostruct.simple = 0;
-ostruct.reduce = 0;
+ostruct.simple = 0;  % only recording along longest dendrite
+ostruct.reduce = 0;  % only measure every second node
 ostruct.dist = 'Eucl.'; % PL., Eucl.
-ostruct.relamp = 0;
+ostruct.relamp = 0;  % relative amplitudes
 celsius_orig = params.celsius;
-params.celsius = 33;
+params.celsius = 33;  % temperature
 neuron = Q10pas(neuron,params.celsius);
 neuron.experiment = sprintf('%s_%d°',neuron.experiment,params.celsius);
 ostruct.show = 1;
 
 aGC_bAP(neuron,tree,params,targetfolder_data,ostruct)
-
 
 params.celsius = celsius_orig; % back to normal temp
 aGC_bAP_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
@@ -819,11 +817,6 @@ aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct)
 
-%% attempt to put together real and synth results for bAP
-nneuron{1}.experiment = 'rat_mGC_Beining_scaledspines_ratadjust_Q10pas_33°';
-nneuron{2}.experiment = 'rat_matGC_art_scaledspines_ratadjust_Q10pas_33°';
-params.celsius = celsius_orig; % back to normal temp
-aGC_bAP_plot(targetfolder_data,targetfolder_results,nneuron,ostruct);
 %% Calcium channel contributions (Eliot Johnston 1994), no Figure
 neuron = neuron_orig;
 

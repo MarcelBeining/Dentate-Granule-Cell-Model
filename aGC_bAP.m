@@ -12,17 +12,20 @@ else
     cstep = 1300*0.001; %nA
 end
 
-params.tstop = 1000;60;
+params.tstop = 1000;
 params.dt=0.025;
 params.cvode = 1;
 nodes = cell(3,1);
 plen = nodes;
 eucl = nodes;
-plotvals = nodes;
+plotvals = nodes;  
 bAP = nodes;
 
-if ~(ostruct.vmodel>=0)  % AH99 model, does not have real calcium handling, thus variable has a different name
-    cai = 'caim_Caold';
+if ~(ostruct.vmodel>=0) 
+    cai = 'caim_Caold';  % AH99 model, does not have an own calcium buffer mechanism, thus variable has a different name
+    neuron = manipulate_Ra(neuron,1,'axon'); % necessary because otherwise the axon spikes permanently after the buzz and Ca decay measurement is not possible
+    params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
+    params.accuracy = 1; % improve AIS segment number for more accurate simulation
 else
     cai = 'cai';
 end
