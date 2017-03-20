@@ -153,9 +153,9 @@ end
 
 figure(fig(1))
 if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-    tprint(fullfile2(targetfolder_results,sprintf('%s-PhasePlotAll',ostruct.savename)),'-pdf')
+    tprint(fullfile(targetfolder_results,sprintf('%s-PhasePlotAll',ostruct.savename)),'-pdf')
 else
-    tprint(fullfile2(targetfolder_results,expcat('PhasePlotAll',nneuron{1}.experiment)),'-pdf')
+    tprint(fullfile(targetfolder_results,expcat('PhasePlotAll',nneuron{1}.experiment)),'-pdf')
 end
 xlim([-80 80])             
 set(gca,'XTick',-80:40:80)
@@ -173,9 +173,9 @@ if any(ostruct.show == 1)
     FontResizer
     FigureResizer(ostruct.figureheight,ostruct.figurewidth,ostruct)
     if  isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-        tprint(fullfile2(targetfolder_results,sprintf('%s-PhasePlotExp',ostruct.savename)),'-pdf')
+        tprint(fullfile(targetfolder_results,sprintf('%s-PhasePlotExp',ostruct.savename)),'-pdf')
     else
-        tprint(fullfile2(targetfolder_results,expcat('PhasePlotExp',nneuron{1}.experiment)),'-pdf')
+        tprint(fullfile(targetfolder_results,expcat('PhasePlotExp',nneuron{1}.experiment)),'-pdf')
     end
     
     figure(fig(3))  %EXP 2nd spike
@@ -186,9 +186,9 @@ if any(ostruct.show == 1)
     FontResizer
     FigureResizer(ostruct.figureheight,ostruct.figurewidth,ostruct)
     if  isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-        tprint(fullfile2(targetfolder_results,sprintf('%s-PhasePlotExp2',ostruct.savename)),'-pdf')
+        tprint(fullfile(targetfolder_results,sprintf('%s-PhasePlotExp2',ostruct.savename)),'-pdf')
     else
-        tprint(fullfile2(targetfolder_results,expcat('PhasePlotExp2',nneuron{1}.experiment)),'-pdf')
+        tprint(fullfile(targetfolder_results,expcat('PhasePlotExp2',nneuron{1}.experiment)),'-pdf')
     end
 end
 
@@ -204,9 +204,9 @@ if any(ostruct.show == 2)
     FigureResizer(ostruct.figureheight,ostruct.figurewidth,ostruct)
     ylabel('')
     if  isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-        tprint(fullfile2(targetfolder_results,sprintf('%s-PhasePlotModel',ostruct.savename)),'-pdf')
+        tprint(fullfile(targetfolder_results,sprintf('%s-PhasePlotModel',ostruct.savename)),'-pdf')
     else
-        tprint(fullfile2(targetfolder_results,expcat('PhasePlotModel',nneuron{1}.experiment)),'-pdf')
+        tprint(fullfile(targetfolder_results,expcat('PhasePlotModel',nneuron{1}.experiment)),'-pdf')
     end
     figure(fig(5))
     xlim([-80 80])             
@@ -218,9 +218,9 @@ if any(ostruct.show == 2)
     FontResizer
     FigureResizer(ostruct.figureheight,ostruct.figurewidth,ostruct)
     if  isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-        tprint(fullfile2(targetfolder_results,sprintf('%s-PhasePlotModel2',ostruct.savename)),'-pdf')
+        tprint(fullfile(targetfolder_results,sprintf('%s-PhasePlotModel2',ostruct.savename)),'-pdf')
     else
-        tprint(fullfile2(targetfolder_results,expcat('PhasePlotModel2',nneuron{1}.experiment)),'-pdf')
+        tprint(fullfile(targetfolder_results,expcat('PhasePlotModel2',nneuron{1}.experiment)),'-pdf')
     end
 end
 figure;hold all
@@ -238,9 +238,9 @@ ylabel('Maximal dV/dt [mV/ms]')
 xlabel('current steps [pA]')
 % legend('Experiment','Model')
 if  isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-    tprint(fullfile2(targetfolder_results,sprintf('%s-MaxdV',ostruct.savename)),'-pdf')
+    tprint(fullfile(targetfolder_results,sprintf('%s-MaxdV',ostruct.savename)),'-pdf')
 else
-    tprint(fullfile2(targetfolder_results,expcat('MaxdV',nneuron{1}.experiment)),'-pdf')
+    tprint(fullfile(targetfolder_results,expcat('MaxdV',nneuron{1}.experiment)),'-pdf')
 end
 
 display(sprintf('Max dv of experiment: %g +- %g mV/ms (s.e.m.)',mean(maxdv{1}(:,ostruct.ampprop/1000==cstepsSpiking)),std(maxdv{1}(:,ostruct.ampprop/1000==cstepsSpiking))/sqrt(size(maxdv{1},1)) ))

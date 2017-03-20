@@ -98,23 +98,23 @@ if any(ostruct.show == 1)
         if all(ostruct.show == 1)
         plot (x, mFI, 'k')
         end
-    elseif ostruct.duration == 900 && exist(fullfile2(targetfolder_results,'FI_Brenner.csv'),'file')
-        dataBrenner = importdata(fullfile2(targetfolder_results,'FI_Brenner.csv'));
+    elseif ostruct.duration == 900 && exist(fullfile(targetfolder_results,'FI_Brenner.csv'),'file')
+        dataBrenner = importdata(fullfile(targetfolder_results,'FI_Brenner.csv'));
         hp = patch ([50:50:400 (fliplr (50:50:400))], [(dataBrenner.data(2:2:end))' (fliplr (2*dataBrenner.data(1:2:end)'-dataBrenner.data(2:2:end)'))], [0 0 0]);
         set (hp, 'facealpha', 0.2, 'edgecolor', 'none')
         plot (50:50:400, dataBrenner.data(1:2:end), 'k')
-    elseif ostruct.duration == 1000 && exist(fullfile2(targetfolder_results,'FI_Mehranfard15b_RAT.csv'),'file')
-        dataMA = importdata(fullfile2(targetfolder_results,'FI_Mehranfard15b_RAT.csv'));
+    elseif ostruct.duration == 1000 && exist(fullfile(targetfolder_results,'FI_Mehranfard15b_RAT.csv'),'file')
+        dataMA = importdata(fullfile(targetfolder_results,'FI_Mehranfard15b_RAT.csv'));
         MAstd = dataMA(7:end,2)-dataMA(1:6,2);
         hp = patch ([dataMA(1:6,1); (flipud (dataMA(1:6,1)))], [dataMA(1:6,2)-MAstd ;(flipud (dataMA(1:6,2)+MAstd))], [0 0 0]);
         set (hp, 'facealpha', 0.2, 'edgecolor', 'none')
         plot (dataMA(1:6,1), dataMA(1:6,2), 'k')
-        dataMA = importdata(fullfile2(targetfolder_results,'FI_Mehranfard14_RAT.csv'));
+        dataMA = importdata(fullfile(targetfolder_results,'FI_Mehranfard14_RAT.csv'));
         MAstd = -dataMA.data(1:2:end-1)+dataMA.data(2:2:end);
         hp = patch ([(100:50:250)'; (fliplr (100:50:250)')], [dataMA.data(1:2:end-1)-MAstd ;(flipud (dataMA.data(1:2:end-1)+MAstd))], [0 0 0]);
         set (hp, 'facecolor',[0.7,0.7,0.7],'facealpha', 0.2, 'edgecolor', 'none')
         plot (100:50:250, dataMA.data(1:2:end-1), 'Color',[0.7,0.7,0.7])
-        dataMA = importdata(fullfile2(targetfolder_results,'FI_Mehranfard15a_RAT.csv'));
+        dataMA = importdata(fullfile(targetfolder_results,'FI_Mehranfard15a_RAT.csv'));
         MAstd = dataMA(2:2:end,2)-dataMA(1:2:end-1,2);
         hp = patch ([(50:50:250)'; (flipud ((50:50:250)'))], [dataMA(1:2:end-1,2)-MAstd ;(flipud (dataMA(1:2:end-1,2)+MAstd))], [0 0 0]);
         set (hp, 'facecolor',[0.5,0.5,0.5],'facealpha', 0.2, 'edgecolor', 'none')
@@ -148,9 +148,9 @@ ylabel('Number of spikes')
 FontResizer
 FigureResizer(ostruct.figureheight,ostruct.figurewidth)
 if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-        tprint(fullfile2(targetfolder_results,ostruct.savename),'-pdf')
+        tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf')
 else
-    tprint(fullfile2(targetfolder_results,expcat('Fig.4-FI',neuron.experiment)),'-pdf')
+    tprint(fullfile(targetfolder_results,expcat('Fig.4-FI',neuron.experiment)),'-pdf')
 end
 
 
@@ -175,18 +175,18 @@ if any(ostruct.show == 1)
         hp = patch ([50:50:400 (fliplr (50:50:400))], [(dataBrenner.data(2:2:end))' (fliplr (2*dataBrenner.data(1:2:end)'-dataBrenner.data(2:2:end)'))]/0.9, [0 0 0]);
         set (hp, 'facealpha', 0.2, 'edgecolor', 'none')
         plot (50:50:400, dataBrenner.data(1:2:end)/0.9, 'k')
-    elseif ostruct.duration == 1000 && exist(fullfile2(targetfolder_results,'FI_Mehranfard15b_RAT.csv'),'file')
-        dataMA = importdata(fullfile2(targetfolder_results,'FI_Mehranfard15b_RAT.csv'));
+    elseif ostruct.duration == 1000 && exist(fullfile(targetfolder_results,'FI_Mehranfard15b_RAT.csv'),'file')
+        dataMA = importdata(fullfile(targetfolder_results,'FI_Mehranfard15b_RAT.csv'));
         MAstd = dataMA(7:end,2)-dataMA(1:6,2);
         hp = patch ([dataMA(1:6,1); (flipud (dataMA(1:6,1)))], [dataMA(1:6,2)-MAstd ;(flipud (dataMA(1:6,2)+MAstd))], [0 0 0]);
         set (hp, 'facealpha', 0.2, 'edgecolor', 'none')
         plot (dataMA(1:6,1), dataMA(1:6,2), 'k')
-        dataMA = importdata(fullfile2(targetfolder_results,'FI_Mehranfard14_RAT.csv'));
+        dataMA = importdata(fullfile(targetfolder_results,'FI_Mehranfard14_RAT.csv'));
         MAstd = -dataMA.data(1:2:end-1)+dataMA.data(2:2:end);
         hp = patch ([(100:50:250)'; (fliplr (100:50:250)')], [dataMA.data(1:2:end-1)-MAstd ;(flipud (dataMA.data(1:2:end-1)+MAstd))], [0 0 0]);
         set (hp, 'facecolor',[0.7,0.7,0.7],'facealpha', 0.2, 'edgecolor', 'none')
         plot (100:50:250, dataMA.data(1:2:end-1), 'Color',[0.7,0.7,0.7])
-        dataMA = importdata(fullfile2(targetfolder_results,'FI_Mehranfard15a_RAT.csv'));
+        dataMA = importdata(fullfile(targetfolder_results,'FI_Mehranfard15a_RAT.csv'));
         MAstd = dataMA(2:2:end,2)-dataMA(1:2:end-1,2);
         hp = patch ([(50:50:250)'; (flipud ((50:50:250)'))], [dataMA(1:2:end-1,2)-MAstd ;(flipud (dataMA(1:2:end-1,2)+MAstd))], [0 0 0]);
         set (hp, 'facecolor',[0.5,0.5,0.5],'facealpha', 0.2, 'edgecolor', 'none')
@@ -214,8 +214,8 @@ FontResizer
         FigureResizer(ostruct.figureheight,ostruct.figurewidth) 
 if isfield(ostruct,'savename')  && ~isempty(ostruct.savename)
     if ~isempty(ostruct.savename)
-        tprint(fullfile2(targetfolder_results,[ostruct.savename,'_Hz']),'-pdf')
+        tprint(fullfile(targetfolder_results,[ostruct.savename,'_Hz']),'-pdf')
     end
 else
-    tprint(fullfile2(targetfolder_results,expcat('Fig.4-FI_Hz',neuron.experiment)),'-pdf')
+    tprint(fullfile(targetfolder_results,expcat('Fig.4-FI_Hz',neuron.experiment)),'-pdf')
 end

@@ -95,4 +95,4 @@ for s = nsyn:-1:1
     end
     
 end
-save(sprintf(fullfile2(targetfolder_data,'/Exp_syngain_%s_%s.mat'),tit,nneuron_orig.experiment),'nneuron','params','tree','EPSP','nsyn','tit')
+save(fullfile(targetfolder_data,sprintf('Exp_syngain_%s_%s.mat',tit,nneuron_orig.experiment)),'nneuron','params','tree','EPSP','nsyn','tit')

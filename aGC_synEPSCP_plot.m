@@ -4,10 +4,10 @@ function aGC_synEPSCP_plot(targetfolder_data,targetfolder_results,neuron,ostruct
 
 
 if isfield(ostruct,'bablock') && ostruct.bablock
-   load(fullfile2(targetfolder_data,'/Exp_synEPSCP_Ba.mat'))
-   sim1 = load(fullfile2(targetfolder_data,'/Exp_synEPSCP_CTRL.mat'));
+   load(fullfile(targetfolder_data,'/Exp_synEPSCP_Ba.mat'))
+   sim1 = load(fullfile(targetfolder_data,'/Exp_synEPSCP_CTRL.mat'));
 else
-    load(fullfile2(targetfolder_data,'/Exp_synEPSCP_CTRL.mat'));
+    load(fullfile(targetfolder_data,'/Exp_synEPSCP_CTRL.mat'));
 end
 
 
@@ -23,4 +23,4 @@ xlim([0 300]),ylim([0 35])
 ylabel('peak EPSP [mV]')
 xlabel('peak EPSC [pA]')
 
-tprint(fullfile2(targetfolder_results,expcat('Fig.X-EPSPC',nneuron.experiment)),'-HR-pdf');
+tprint(fullfile(targetfolder_results,expcat('Fig.X-EPSPC',nneuron.experiment)),'-HR-pdf');

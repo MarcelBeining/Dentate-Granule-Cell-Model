@@ -26,5 +26,4 @@ text(260,15,sprintf('%.3g Hz',freq(1,t)),'fontname','Arial','fontsize',8,'color'
 text(260,-5,'SK block','fontname','Arial','fontsize',8,'color',col{2})
 text(260,-20,sprintf('%.3g Hz',freq(2,t)),'fontname','Arial','fontsize',8,'color',col{2})
 
-tprint(fullfile2(targetfolder_results,'Fig5-blockSK'),'-HR-pdf')
-% tprint(fullfile2(targetfolder_results,'Fig2-blockSK'),'-HR-png')
+tprint(fullfile(targetfolder_results,'Fig5-blockSK'),'-HR-pdf')

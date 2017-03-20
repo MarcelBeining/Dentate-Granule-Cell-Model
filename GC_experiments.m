@@ -24,11 +24,11 @@ ostruct.usecol = 1;  % 0 = pseudorandom colors for each simulated cell in graph,
 
 
 % change biophysical model here
-ostruct.vmodel = NaN; % 0 = passive model, > 0 = active model, everything else (e.g. NaN) = old AH99 model
+ostruct.vmodel = 1; % 0 = passive model, > 0 = active model, everything else (e.g. NaN) = old AH99 model
 ostruct.changeAHion = 0;  % only important when using the AH99 model. Boolean to decide if standard AH99 ion reversal potentials are used (0) or if they are adjusted to the experiments (1)
 
 % change morphologies here
-ostruct.usemorph = 2;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
+ostruct.usemorph = 1;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
 ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
 
 % more parameters
@@ -182,11 +182,11 @@ aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,steps)
 %     figure(fig(6))
 %     [~,fig2] = plot2dens(gca,[2 2 1],ostruct);
 %     figure(fig2(4))
-%     tprint(fullfile2(targetfolder_results,strcat(ostruct.savename,'-','APvthreshVSAPwidth_densitypatch')),'-pdf');
+%     tprint(fullfile(targetfolder_results,strcat(ostruct.savename,'-','APvthreshVSAPwidth_densitypatch')),'-pdf');
 %     figure(fig(7))
 %     [~,fig2] = plot2dens(gca,[20 0.2 1],ostruct);
 %     figure(fig2(4))
-%     tprint(fullfile2(targetfolder_results,strcat(ostruct.savename,'-','APampVSfahp_densitypatch')),'-pdf');
+%     tprint(fullfile(targetfolder_results,strcat(ostruct.savename,'-','APampVSfahp_densitypatch')),'-pdf');
 % end
 % ostruct.savename = ostruct.savename(1:end-8);
 
@@ -465,7 +465,7 @@ end
 handle = Megaplotter(dstruct,gstruct,[],ostruct);
 neuron = neuron_orig;
 neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
-tprint(fullfile2(targetfolder_results,expcat('Fig.5-ISIadapt',neuron.experiment)),'-pdf')
+tprint(fullfile(targetfolder_results,expcat('Fig.5-ISIadapt',neuron.experiment)),'-pdf')
 
 params.celsius = 24;
 ostruct = rmfield(ostruct,'find_freq');
@@ -614,17 +614,17 @@ ostruct.handles(1).Children(end-1).XLim = [-5 20];
 FontResizer
 FigureResizer(5,8)
 % if ostruct.newborn
-%     tprint(fullfile2(targetfolder_results,'RobustnessMatrix_newborn'),'-pdf');
+%     tprint(fullfile(targetfolder_results,'RobustnessMatrix_newborn'),'-pdf');
 % else
-    tprint(fullfile2(targetfolder_results,sprintf('Fig.5_APwidthSpiking_%s',neuron.experiment)),'-pdf');
+    tprint(fullfile(targetfolder_results,sprintf('Fig.5_APwidthSpiking_%s',neuron.experiment)),'-pdf');
     
 % end
 ostruct.gap = 0.3;
 handle = Megaplotter(dstruct,gstruct,[],ostruct);
 figure(handle{1})
-tprint(fullfile2(targetfolder_results,sprintf('Fig.5_APhalfwidth_%s',neuron.experiment)),'-pdf');
+tprint(fullfile(targetfolder_results,sprintf('Fig.5_APhalfwidth_%s',neuron.experiment)),'-pdf');
 figure(handle{2})
-tprint(fullfile2(targetfolder_results,sprintf('Fig.5_APwidth_%s',neuron.experiment)),'-pdf');
+tprint(fullfile(targetfolder_results,sprintf('Fig.5_APwidth_%s',neuron.experiment)),'-pdf');
 
 %% resonance test with Ba and ZD application, Suppl. Fig.
 
@@ -790,10 +790,10 @@ o.border = [8,2];
 FigureResizer(8,20,[],o)
 if ostruct.newborn
     save(fullfile(targetfolder_data,sprintf('Fig.5_SensitivityMatrix_%s_newborn_%s.mat',type,neuron.experiment)),'rmatrix')
-    tprint(fullfile2(targetfolder_results,sprintf('Fig.5_SensitivityMatrix_%s_newborn_%s',type,neuron.experiment)),'-pdf');
+    tprint(fullfile(targetfolder_results,sprintf('Fig.5_SensitivityMatrix_%s_newborn_%s',type,neuron.experiment)),'-pdf');
 else
     save(fullfile(targetfolder_data,sprintf('Fig.5_SensitivityMatrix_%s_%s.mat',type,neuron.experiment)),'rmatrix')
-    tprint(fullfile2(targetfolder_results,sprintf('Fig.5_SensitivityMatrix_%s_%s',type,neuron.experiment)),'-pdf');
+    tprint(fullfile(targetfolder_results,sprintf('Fig.5_SensitivityMatrix_%s_%s',type,neuron.experiment)),'-pdf');
 end
 
 
@@ -858,7 +858,7 @@ aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,steps);
 % ostruct.handles(2).Children(end).Children(1).Color = [0 0 0];
 % ostruct.handles(3).Children(end).Children(1).Color = [0 0 0];
 % figure(ostruct.handles(2))
-% dataMA = importdata(fullfile2(targetfolder_results,'FI_MA-CTRL.csv')); 
+% dataMA = importdata(fullfile(targetfolder_results,'FI_MA-CTRL.csv')); 
 % plot (dataMA(:,1)*1000, dataMA(:,2), 'k')
 % 
 % tmphandles = ostruct.handles; ostruct.handles =[];
@@ -874,7 +874,7 @@ aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,steps);
 % ostruct.handles(2).Children(end).Children(1).Color = [1 0 0];
 % ostruct.handles(3).Children(end).Children(1).Color = [1 0 0];
 % figure(ostruct.handles(2))
-% dataMA = importdata(fullfile2(targetfolder_results,'FI_MA-Apamin.csv'));
+% dataMA = importdata(fullfile(targetfolder_results,'FI_MA-Apamin.csv'));
 % plot (dataMA(:,1)*1000, dataMA(:,2), 'r')
 
 % tmphandles = ostruct.handles; ostruct.handles = ostruct.handles2;
@@ -893,11 +893,11 @@ aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,steps);
 % ostruct.handles(2).Children(end).Children(1).Color = [0 0.5 0];
 % ostruct.handles(3).Children(end).Children(1).Color = [0 0.5 0];
 % figure(ostruct.handles(2))
-% dataMA = importdata(fullfile2(targetfolder_results,'FI_MA-XE991.csv'));
+% dataMA = importdata(fullfile(targetfolder_results,'FI_MA-XE991.csv'));
 % plot (dataMA(:,1)*1000, dataMA(:,2), 'Color',[0 0.5 0])
-% tprint(fullfile2(targetfolder_results,expcat('Fig.5-FI',neuron.experiment)),'-pdf')
+% tprint(fullfile(targetfolder_results,expcat('Fig.5-FI',neuron.experiment)),'-pdf')
 % figure(ostruct.handles(1))
-% tprint(fullfile2(targetfolder_results,expcat('Fig.5-instFI',neuron.experiment)),'-pdf')
+% tprint(fullfile(targetfolder_results,expcat('Fig.5-instFI',neuron.experiment)),'-pdf')
 
 % tmphandles = ostruct.handles; ostruct.handles = ostruct.handles2;
 % ostruct.handles2 = aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct);

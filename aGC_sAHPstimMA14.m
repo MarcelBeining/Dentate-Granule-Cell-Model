@@ -32,4 +32,4 @@ end
 if isfield(out,'error')
     return
 end
-save(sprintf(fullfile2(targetfolder,'Exp_MA14stimsAHP%s.mat'),neuron.experiment),'tree','out')
+save(fullfile(targetfolder,sprintf('Exp_MA14stimsAHP%s.mat',neuron.experiment)),'tree','out')

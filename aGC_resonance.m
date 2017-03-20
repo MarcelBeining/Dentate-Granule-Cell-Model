@@ -20,9 +20,9 @@ figure;hold all;
 xlabel('Frequency [Hz]')
 ylabel('Impedance [M\Omega]')
 
-data{1} = importdata(fullfile2(targetfolder_results,'StegenHanuschkin_Resonance_CTRL.csv'));
-data{2} = importdata(fullfile2(targetfolder_results,'StegenHanuschkin_Resonance_Ba.csv'));
-data{3} = importdata(fullfile2(targetfolder_results,'StegenHanuschkin_Resonance_Ba+ZD.csv'));
+data{1} = importdata(fullfile(targetfolder_results,'StegenHanuschkin_Resonance_CTRL.csv'));
+data{2} = importdata(fullfile(targetfolder_results,'StegenHanuschkin_Resonance_Ba.csv'));
+data{3} = importdata(fullfile(targetfolder_results,'StegenHanuschkin_Resonance_Ba+ZD.csv'));
 plot(data{1}(:,1),data{1}(:,2),'k')
 plot(data{2}(:,1),data{2}(:,2),'b')
 plot(data{3}(:,1),data{3}(:,2),'r')
@@ -200,8 +200,7 @@ end
 save(sprintf('%s%s%s_Resonance.mat',targetfolder_results,params.tname,str));
 
 if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-    tprint(fullfile2(targetfolder_results,ostruct.savename),'-pdf');
+    tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
 else
-    tprint(fullfile2(targetfolder_results,sprintf('Fig5-Resonance_%s%s',params.tname,str)),'-pdf');
+    tprint(fullfile(targetfolder_results,sprintf('Fig5-Resonance_%s%s',params.tname,str)),'-pdf');
 end
-'g'

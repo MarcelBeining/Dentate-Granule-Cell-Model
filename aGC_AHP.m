@@ -72,4 +72,4 @@ for s = 1:3
     end
 end
 
-save(sprintf(fullfile2(targetfolder_data,'EphysModel/Exp_msAHP_%s.mat'),neuron.experiment),'AHPvol_new_curr_dend','AHPtvol_new_curr_dend','params','neuron','tree')
+save(fullfile(targetfolder_data,'EphysModel',sprintf('Exp_msAHP_%s.mat',neuron.experiment)),'AHPvol_new_curr_dend','AHPtvol_new_curr_dend','params','neuron','tree')

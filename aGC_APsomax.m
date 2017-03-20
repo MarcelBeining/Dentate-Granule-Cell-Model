@@ -67,7 +67,7 @@ for t=1%:numel(tree)
 end
 FontResizer
 FigureResizer(5,8)
-tprint(fullfile2(targetfolder_results,expcat('Fig.3-APinit',neuron.experiment)),'-HR-pdf')
+tprint(fullfile(targetfolder_results,expcat('Fig.3-APinit',neuron.experiment)),'-HR-pdf')
 
 
 figure;
@@ -105,4 +105,4 @@ title('Axon')
 
 FontResizer
 % FigureResizer(5,8)
-tprint(fullfile2(targetfolder_results,expcat('Fig.3-APinitdata',neuron.experiment)),'-HR-pdf')
+tprint(fullfile(targetfolder_results,expcat('Fig.3-APinitdata',neuron.experiment)),'-HR-pdf')

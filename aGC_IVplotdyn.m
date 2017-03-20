@@ -119,8 +119,8 @@ FontResizer
 FigureResizer(ostruct.figureheight,ostruct.figurewidth)
 if isfield(ostruct,'savename')
     if ~isempty(ostruct.savename)
-        tprint(fullfile2(targetfolder_results,ostruct.savename),'-pdf');
+        tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
     end
 else
-    tprint(fullfile2(targetfolder_results,expcat('Fig.2-IV_dyn',neuron.experiment)),'-pdf');
+    tprint(fullfile(targetfolder_results,expcat('Fig.2-IV_dyn',neuron.experiment)),'-pdf');
 end

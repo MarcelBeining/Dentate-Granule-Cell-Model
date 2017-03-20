@@ -140,4 +140,4 @@ legend([p1(1),p2(1),p3(1),p4(1)],'N-type','L-type','T-type','Total')
 
 
 % 
-% save(sprintf(fullfile2(targetfolder,'/Exp_Shruti_current_%s.mat'),neuron.experiment),'neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')
+% save(sprintf(fullfile(targetfolder,'/Exp_Shruti_current_%s.mat'),neuron.experiment),'neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')

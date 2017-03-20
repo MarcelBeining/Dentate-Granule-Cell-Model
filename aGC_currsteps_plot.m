@@ -220,11 +220,11 @@ if any(ostruct.show == 3)
         ylabel('Membrane voltage [mV]')
         xlim([0 350])
         ylim([-85 -30])
-        tprint(fullfile2(targetfolder_results,'Fig.2-SpikingExp'),'-HR-pdf');
+        tprint(fullfile(targetfolder_results,'Fig.2-SpikingExp'),'-HR-pdf');
         if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-            tprint(fullfile2(targetfolder_results,strcat(ostruct.savename,'-SpikingExp')),'-pdf');
+            tprint(fullfile(targetfolder_results,strcat(ostruct.savename,'-SpikingExp')),'-pdf');
         else
-            tprint(fullfile2(targetfolder_results,strcat('Fig.2-SpikingExp_',neuron.experiment)),'-pdf');
+            tprint(fullfile(targetfolder_results,strcat('Fig.2-SpikingExp_',neuron.experiment)),'-pdf');
         end
     end
     if any(ostruct.show == 2) && ~isempty(intersect(cstepsSpikingModel,steps))
@@ -240,9 +240,9 @@ if any(ostruct.show == 3)
         end
         ylim([-85 -30])
         if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-            tprint(fullfile2(targetfolder_results,strcat(ostruct.savename,'-SpikingModel')),'-pdf');
+            tprint(fullfile(targetfolder_results,strcat(ostruct.savename,'-SpikingModel')),'-pdf');
         else
-            tprint(fullfile2(targetfolder_results,strcat('Fig.2-SpikingModel_',neuron.experiment)),'-pdf');
+            tprint(fullfile(targetfolder_results,strcat('Fig.2-SpikingModel_',neuron.experiment)),'-pdf');
         end
     end
 end

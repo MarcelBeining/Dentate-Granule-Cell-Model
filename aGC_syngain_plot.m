@@ -13,7 +13,7 @@ switch ostruct.mode
         tit = 'AMPAR+NMDAR (Nickel)';
 end
 
-load(sprintf(fullfile2(targetfolder_data,'/Exp_syngain_%s_%s.mat'),tit,neuron.experiment))
+load(fullfile(targetfolder_data,sprintf('Exp_syngain_%s_%s.mat',tit,neuron.experiment)))
 
 
 figure;hold all

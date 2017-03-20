@@ -148,8 +148,8 @@ if any(ostruct.show==1) && ostruct.dataset ~= 0
         
         stdIV = std (meas_curr,1);
         if ostruct.newborn
-            if ostruct.dataset == 2.28 && exist(fullfile2(targetfolder_results,'IV_29dpi_S3.csv'),'file')
-                meas_curr = importdata(fullfile2(targetfolder_results,'IV_29dpi_S3.csv'));
+            if ostruct.dataset == 2.28 && exist(fullfile(targetfolder_results,'IV_29dpi_S3.csv'),'file')
+                meas_curr = importdata(fullfile(targetfolder_results,'IV_29dpi_S3.csv'));
                 mIV = meas_curr(1:19,2)';
                 stdIV = meas_curr(20:end,2)' - mIV;
             else
@@ -297,10 +297,10 @@ FontResizer
 if isfield(ostruct,'savename')
     if ~isempty(ostruct.savename)
         
-        tprint(fullfile2(targetfolder_results,ostruct.savename),'-pdf');
+        tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
     end
 else
-    tprint(fullfile2(targetfolder_results,expcat('Fig.2-IV',neuron.experiment)),'-pdf');
+    tprint(fullfile(targetfolder_results,expcat('Fig.2-IV',neuron.experiment)),'-pdf');
 end
 if any(ostruct.show == 1) && ostruct.dataset ~= 0
     fprintf('Kir Slope Conductance real cells %s\n',sprintf(' %.3g+-%.3g nS, ',mean(gKirReal),std(gKirReal)))

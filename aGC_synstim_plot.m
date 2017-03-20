@@ -25,7 +25,7 @@ else
     answer = listdlg('ListString',folds,'selectionmode','single','promptstring','Please select file to load','listsize',[300,200]);
 end
 if ~isempty(answer)
-    load(fullfile2(targetfolder_data,folds{answer}))
+    load(fullfile(targetfolder_data,folds{answer}))
 else
     return
 end
@@ -214,9 +214,9 @@ switch type
         FontResizer
 %         FigureResizer(ostruct.figureheight,ostruct.figurewidth,[],ostruct)
         if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-                tprint(fullfile2(targetfolder_results,ostruct.savename),'-pdf');
+                tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
         else
-            tprint(fullfile2(targetfolder_results,sprintf('TemporalSumRaster_%s_%s%s',type,params.tname,str)),'-pdf');
+            tprint(fullfile(targetfolder_results,sprintf('TemporalSumRaster_%s_%s%s',type,params.tname,str)),'-pdf');
         end
         if any(freq == 10)
             figure(handles(counter))
@@ -245,9 +245,9 @@ switch type
         FontResizer
 %         FigureResizer(ostruct.figureheight,ostruct.figurewidth,[],ostruct)
         if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-                tprint(fullfile2(targetfolder_results,ostruct.savename),'-pdf');
+                tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
         else
-            tprint(fullfile2(targetfolder_results,sprintf('TemporalSumPlot_%s_%s%s',type,params.tname,str)),'-pdf');
+            tprint(fullfile(targetfolder_results,sprintf('TemporalSumPlot_%s_%s%s',type,params.tname,str)),'-pdf');
         end
         if numel(handles)>=counter && ishandle(handles(counter))
             figure(handles(counter))
@@ -260,14 +260,13 @@ switch type
         xlabel('delta time [ms]')
         ylabel('input frequency [Hz]')
         colorbar
-        'g'
         FontResizer
 %         ostruct.image = 1;
 %         FigureResizer(5,6,[],ostruct);%ostruct.figureheight,ostruct.figurewidth,[],ostruct)
         if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
-                tprint(fullfile2(targetfolder_results,ostruct.savename),'-pdf');
+                tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
         else
-            tprint(fullfile2(targetfolder_results,sprintf('TemporalSumImag_%s_%s%s',type,params.tname,str)),'-pdf');
+            tprint(fullfile(targetfolder_results,sprintf('TemporalSumImag_%s_%s%s',type,params.tname,str)),'-pdf');
         end
     case 'spatial'
         if numel(handles)>=counter && ishandle(handles(counter))

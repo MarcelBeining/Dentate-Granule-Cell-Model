@@ -85,9 +85,9 @@ for s = numel(nsyns):-1:1
 end
 
 if ostruct.bablock
-    save(fullfile2(targetfolder_data,'/Exp_synEPSCP_Ba.mat'),'nneuron','params','tree','EPSP1','EPSC','dists','nsyns')
+    save(fullfile(targetfolder_data,'Exp_synEPSCP_Ba.mat'),'nneuron','params','tree','EPSP1','EPSC','dists','nsyns')
 else
-    save(fullfile2(targetfolder_data,'/Exp_synEPSCP_CTRL.mat'),'nneuron','params','tree','EPSP1','EPSC','dists','nsyns')
+    save(fullfile(targetfolder_data,'Exp_synEPSCP_CTRL.mat'),'nneuron','params','tree','EPSP1','EPSC','dists','nsyns')
 end
 %%
 % t=0:0.01:50;

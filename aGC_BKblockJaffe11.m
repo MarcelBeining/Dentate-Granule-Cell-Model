@@ -50,6 +50,6 @@ for t=1:numel(tree)
         end
     end
     legend('Control','BK block')
-    tprint(fullfile2(targetfolder_results,expcat(sprintf('Fig5-blockBK%d',t),neuron.experiment)),'-HR-pdf')
+    tprint(fullfile(targetfolder_results,expcat(sprintf('Fig5-blockBK%d',t),neuron.experiment)),'-HR-pdf')
 end
 'g'

@@ -155,7 +155,7 @@ end
 title('dim blue: mat1, light blue mat2, turqois matBaCl, dark red: young1, light red young2, orange youngBaCl')
 FontResizer
 % FigureResizer(5,8)
-% tprint(fullfile2(targetfolder_results,expcat('Fig.2-IV',neuron.experiment)),'-svg');
-% tprint(fullfile2(targetfolder_results,expcat('Fig.2-IV',neuron.experiment)),'-pdf');
-% tprint(fullfile2(targetfolder_results,strcat('Fig2-IV',neuron.experiment)),'-png')
+% tprint(fullfile(targetfolder_results,expcat('Fig.2-IV',neuron.experiment)),'-svg');
+% tprint(fullfile(targetfolder_results,expcat('Fig.2-IV',neuron.experiment)),'-pdf');
+% tprint(fullfile(targetfolder_results,strcat('Fig2-IV',neuron.experiment)),'-png')
 % close(fig)

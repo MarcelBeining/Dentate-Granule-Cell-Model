@@ -70,4 +70,4 @@ for s = 1:numel(vstepsModel)
         inewcurr_dend{t,s} =  [out{s}.t';out{s}.record{t}.SEClamp.i{1}' *1000];% - mholding_current(t); % leak subtraction not done by Mongiat + 6 * [0*outleaksub{s}.t';mask.* outleaksub{s}.record{t}.i{1}' *1000];
     end
 end
-save(fullfile2(targetfolder_data,sprintf('/Exp_Kir_%s.mat',neuron.experiment)),'mholding_current','neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')
+save(fullfile(targetfolder_data,sprintf('Exp_Kir_%s.mat',neuron.experiment)),'mholding_current','neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')

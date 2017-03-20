@@ -20,23 +20,23 @@ if ostruct.show
         fig(6) = figure;hold on
     end
     fig(1) = figure;clf,hold all
-    if  exist(fullfile2(targetfolder_results,'krueppel_data_fig_1d.dat'),'file')
+    if  exist(fullfile(targetfolder_results,'krueppel_data_fig_1d.dat'),'file')
         if ~ostruct.relamp
-            data = importdata(fullfile2(targetfolder_results,'krueppel_data_fig_1d.dat'));
+            data = importdata(fullfile(targetfolder_results,'krueppel_data_fig_1d.dat'));
             
         else
-            data = importdata(fullfile2(targetfolder_results,'krueppel_data_fig_1e.csv'));
+            data = importdata(fullfile(targetfolder_results,'krueppel_data_fig_1e.csv'));
         end
     else
         data = NaN(1,2);
     end
-    if  exist(fullfile2(targetfolder_results,'krueppel_data_fig_1f.csv'),'file')
-        data2 = importdata(fullfile2(targetfolder_results,'krueppel_data_fig_1f.csv'));
+    if  exist(fullfile(targetfolder_results,'krueppel_data_fig_1f.csv'),'file')
+        data2 = importdata(fullfile(targetfolder_results,'krueppel_data_fig_1f.csv'));
     else
         data2 = NaN(1,2);
     end
-    if  exist(fullfile2(targetfolder_results,'AxonalVelocity_ratGC.csv'),'file')
-        data3 = importdata(fullfile2(targetfolder_results,'AxonalVelocity_ratGC.csv'));
+    if  exist(fullfile(targetfolder_results,'AxonalVelocity_ratGC.csv'),'file')
+        data3 = importdata(fullfile(targetfolder_results,'AxonalVelocity_ratGC.csv'));
     else
         data3 = NaN(1,2);
     end
@@ -216,13 +216,13 @@ for n = 1:numel(nneuron)
         FigureResizer(5,8)
         if ostruct.relamp
             ylim([0 1])
-            tprint(fullfile2(targetfolder_results,sprintf('Fig.2-bAP-rel-ampl_%s',nneuron{n}.experiment)),'-pdf')
+            tprint(fullfile(targetfolder_results,sprintf('Fig.2-bAP-rel-ampl_%s',nneuron{n}.experiment)),'-pdf')
         else
             ylim([0 150])
-            tprint(fullfile2(targetfolder_results,sprintf('Fig.2-bAP-ampl_%s',nneuron{n}.experiment)),'-pdf')
+            tprint(fullfile(targetfolder_results,sprintf('Fig.2-bAP-ampl_%s',nneuron{n}.experiment)),'-pdf')
         end
         
-        %     tprint(fullfile2(targetfolder_results,'Fig.2-bAP-ampl'),'-png')
+        %     tprint(fullfile(targetfolder_results,'Fig.2-bAP-ampl'),'-png')
         figure(fig(2))
         if ostruct.usemorph >= 4  % rat
             if ostruct.relamp
@@ -235,8 +235,8 @@ for n = 1:numel(nneuron)
         xlim([0 400])
         FigureResizer(5,8)
         
-        tprint(fullfile2(targetfolder_results,sprintf('Fig.2-bAP-del_%s',nneuron{n}.experiment)),'-pdf')
-        %     tprint(fullfile2(targetfolder_results,'Fig.2-bAP-del'),'-png')
+        tprint(fullfile(targetfolder_results,sprintf('Fig.2-bAP-del_%s',nneuron{n}.experiment)),'-pdf')
+        %     tprint(fullfile(targetfolder_results,'Fig.2-bAP-del'),'-png')
         figure(fig(n+3))
         ylim(ylims)
         xlim(xlims)
@@ -251,13 +251,13 @@ for n = 1:numel(nneuron)
 %         yl = get(c,'YLim');
         set(c,'YTick',[-80,0,80])
 %         set(c,'YTick',[ceil(yl(1)),0,floor(yl(2))])
-        tprint(fullfile2(targetfolder_results,expcat('Fig.2-bAP-trees',nneuron{n}.experiment)),'-SHR-pdf')
-        %     tprint(fullfile2(targetfolder_results,'Fig.2-bAP-trees'),'-SHR-png')
+        tprint(fullfile(targetfolder_results,expcat('Fig.2-bAP-trees',nneuron{n}.experiment)),'-SHR-pdf')
+        %     tprint(fullfile(targetfolder_results,'Fig.2-bAP-trees'),'-SHR-png')
 %         figure(fig(3))
 %         ylim([0 0.5])
 %         xlim([0 400])
 %         FigureResizer(5,8)
-%         tprint(fullfile2(targetfolder_results,expcat('Fig.2-bAP-axon',nneuron{n}.experiment)),'-SHR-pdf')
+%         tprint(fullfile(targetfolder_results,expcat('Fig.2-bAP-axon',nneuron{n}.experiment)),'-SHR-pdf')
     end
     %     set(p,'Visible','off')
     display(sprintf('Dendritic Velocity cell %d: %f µm/ms (time to max amp)\n',reshape(cat(1,(1:numel(mveloc_dend)),mveloc_dend),1,numel(mveloc_dend)*2)))
@@ -282,16 +282,16 @@ for n = 1:numel(nneuron)
             ylabel('Membrane Potential [mV]')
             xlabel('Time [ms]')
             
-            %     tprint(fullfile2(targetfolder_results,expcat(sprintf('Fig.X-CaDyn-tree%d',t),neuron{n}.experiment)),'-HR-png');
+            %     tprint(fullfile(targetfolder_results,expcat(sprintf('Fig.X-CaDyn-tree%d',t),neuron{n}.experiment)),'-HR-png');
             
             figure(fig(6))
             FontResizer
             FigureResizer(5,8)
-            %     tprint(fullfile2(targetfolder_results,expcat('Fig.4-CaDyn',neuron{n}.experiment)),'-pdf');
+            %     tprint(fullfile(targetfolder_results,expcat('Fig.4-CaDyn',neuron{n}.experiment)),'-pdf');
             figure(fig(8))
             FontResizer
             FigureResizer(5,8)
-            %     tprint(fullfile2(targetfolder_results,expcat('Fig.4-CaDynV',neuron{n}.experiment)),'-pdf');
+            %     tprint(fullfile(targetfolder_results,expcat('Fig.4-CaDynV',neuron{n}.experiment)),'-pdf');
         end
         gstruct.ugroupdef = {{'Data Prox.','Proximal','Distal','Soma','Axon','Data MFB'}};
         if ~isempty(strfind(nneuron{n}.experiment,'_art'))
@@ -318,7 +318,7 @@ for n = 1:numel(nneuron)
         ylim([0 300])
         FontResizer
         FigureResizer(5,8,[barwidth,0.4])
-        tprint(fullfile2(targetfolder_results,expcat('Fig.4-CaDecay',nneuron{n}.experiment)),'-pdf');
+        tprint(fullfile(targetfolder_results,expcat('Fig.4-CaDecay',nneuron{n}.experiment)),'-pdf');
         
         data_stocca= [194,mean(nanmean(maxcai,3),1)*1e6,mean([0.91,1.16]*1000)];
         sem = [23,std(nanmean(maxcai,3),[],1)/sqrt(numel(tree))*1e6,std([0.91,1.16]*1000)/sqrt(2)];
@@ -342,7 +342,7 @@ for n = 1:numel(nneuron)
             ylim([0 1200])
         end
         FigureResizer(5,8,[barwidth,0.4])
-        tprint(fullfile2(targetfolder_results,expcat('Fig.4-CaAmp',nneuron{n}.experiment)),'-pdf');
+        tprint(fullfile(targetfolder_results,expcat('Fig.4-CaAmp',nneuron{n}.experiment)),'-pdf');
         
     end
     if ~all(spiked)
