@@ -132,7 +132,7 @@ for n = 1:numel(nneuron)
             ptree = tran_tree(rot_tree(tran_tree(tree{t}),[],'-m3dY'),[350*t 300 0]);
             ptree.D(ptree.D<2) = 2;
             
-            [axind2,iaa] = intersect(nodes{t},axind);
+            axind2 = intersect(nodes{t},axind);
             plotvals{t}(axind2) = NaN;
             xlims = [min(xlims(1),min(ptree.X(dendind))),max(xlims(2),max(ptree.X(dendind)))];
             ylims = [min(ylims(1),min(ptree.Y(dendind))),max(ylims(2),max(ptree.Y(dendind)))];
