@@ -202,7 +202,7 @@ end
 if ~ostruct.newborn
     ostruct.figurewidth = 4;
 end
-ostruct.handles = aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
+ostruct.handles = aGC_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 
 if ~ostruct.newborn
     neuron = blockchannel(neuron,{'Kir21','pas'},[99 30]);
@@ -219,7 +219,7 @@ if ~ostruct.newborn
     if all(ostruct.show == 1)
         ostruct.savename = strcat(ostruct.savename,'_onlyexp');
     end
-    aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
+    aGC_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
     ostruct.handles = [];
     ostruct.savename = [];
 end
@@ -256,7 +256,7 @@ maxdv = aGC_dVplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 
 %% Kv1.1 overexpression, Figure 5, reproduce Kirchheim et al 2013, Kv1.1 overexpression after status epilepticus reduced FI and increases spiking delay
-steps = [70]/1000;
+steps = 70/1000;
 neuron = neuron_orig;
 ostruct.handles = [];
 neuron.experiment = strcat(neuron.experiment,'_Final');
@@ -276,7 +276,7 @@ ostruct.handles1 = aGC_currsteps_plot(targetfolder_data,targetfolder_results,neu
 
 ostruct.show = 2;
 
-ostruct.handles2 = aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
+ostruct.handles2 = aGC_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 
 %increase Kv1.1 10fold
 for t = 1:numel(neuron.mech)
@@ -303,7 +303,7 @@ ostruct.show = 2;
 ostruct.savename = ostruct.savename2;
 
 ostruct.handles = ostruct.handles2;
-aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
+aGC_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
     ostruct.handles = [];
     ostruct.savename = [];
 tree = tree_orig;
@@ -347,27 +347,21 @@ if isfield(ostruct,'handles')
     ostruct = rmfield(ostruct,'handles');
 end
 ostruct. handles = [];
-% params.celsius = 24;
 ostruct.amp = 50:50:300; % pA
 ostruct.duration = 1000;
 ostruct.variabledt = 0;
 ostruct.coarse = 0.5;
-ostruct.holding_voltage = -80;  % leider unknown. ABER OHNE LJP
-% ostruct = rmfield(ostruct,{'handles'});
+ostruct.holding_voltage = -80;  % unknown. but without LJP
 
 aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 
-% ostruct.savename = sprintf('Fig3_spiking_Mehranfahrd15-%s',neuron.experiment);
-% if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
-%     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
-% end
 ostruct.dataset = 0;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
 ostruct.show = 1:2; % data (Meranfahrd) &  simulation
 ostruct.savename = sprintf('Fig3_FI_Mehranfahrd15-%s',neuron.experiment);
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
-aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
+aGC_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 ostruct.show = 2:3; %   simulation & explicit spikes
 ostruct.savename = sprintf('Fig3_Final-%s',neuron.experiment);
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
@@ -389,7 +383,7 @@ if isfield(ostruct,'handles')
     ostruct = rmfield(ostruct,'handles');
 end
 ostruct. handles = [];
-steps = [0.15];%,0.2];
+steps = 0.15;%,0.2];
 ostruct.coarse = 0.5;
 ostruct.show = 2; % only simulation
 ostruct.duration = 100;
@@ -416,8 +410,7 @@ for t = 1:numel(tree)
 end
 ostruct.show = 2;
 
-neuron = blockchannel(neuron,{'SK2'},[100]);
-% ostruct.dataset =5;
+neuron = blockchannel(neuron,{'SK2'},100);
 aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,steps);
 
@@ -435,8 +428,7 @@ ostruct.show = 2;
 
 neuron = neuron_orig;
 neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
-neuron = blockchannel(neuron,{'Kv723'},[100]);
-% ostruct.dataset =5;
+neuron = blockchannel(neuron,{'Kv723'},100);
 aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,steps);
 
@@ -462,7 +454,7 @@ for n = 1:3
     dstruct.data.ISIadapt(1,(n-1)*numel(tree)+1:numel(tree)*n) = ISIadp{n}./ISIadp{1}*100; 
 end
 
-handle = Masterplotter(dstruct,gstruct,[],ostruct);
+Masterplotter(dstruct,gstruct,[],ostruct);
 neuron = neuron_orig;
 neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
 tprint(fullfile(targetfolder_results,expcat('Fig.5-ISIadapt',neuron.experiment)),'-pdf')
@@ -489,14 +481,12 @@ aGC_bAP_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
 %% AP width BK/Kv34 + spike adaptation, Figure 5
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_APwidth');
-% neuron.experiment = strcat('APwidth+adapt_',neuron.experiment);
 ostruct.amp = [90,250]; % pA  < 10 HZ and höher
 ostruct.duration = 1000;
 ostruct.variabledt = 0;
 ostruct.coarse = 0.5;
 ostruct.holding_voltage = -80;
 ostruct.ampprop = 90;
-% ostruct = rmfield(ostruct,{'handles'});
 if ostruct.newborn
     ostruct.savename = 'Fig5-APprop_newborn';
 else
@@ -508,7 +498,7 @@ aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 ostruct.handles = [];
 ostruct.show = 0;
 
-prop = [];
+prop = cell(2,1);
 for a = 1:2
     ostruct.ampprop = ostruct.amp(a);
     prop{a}(1) = aGC_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
@@ -585,8 +575,6 @@ gstruct.group{1} = [ones(1,numel(tree)), repmat(2,1,numel(tree)), repmat(3,1,num
 gstruct.ugroupdef{1} = {'CTRL','Kv3.4 block','BK block'};%,'CTRL data','Kv3.4 block data','BK block data'};
 xth = [1,5];
 for a = 1:2
-%     ostruct.handles(1).Children(end-2+a).XLabel.String = 'Time [ms]';
-%     ostruct.handles(1).Children(end-2+a).YLabel.String = 'Membrane Potential [mV]';
     for n = 1:3
         dstruct.data.APwidth(a,(n-1)*numel(tree)+1:numel(tree)*n) = cellfun(@(x) x(xth(a)),prop{a}(n).APwidth); % get AP widths of xth AP in all simulations
         dstruct.data.APwidth2(a,(n-1)*numel(tree)+1:numel(tree)*n) = cellfun(@(x) x(xth(a)),prop{a}(n).APwidth2); % get AP widths of xth AP in all simulations
@@ -612,7 +600,7 @@ ostruct.handles(1).Children(end).XLim = [-5 20];
 ostruct.handles(1).Children(end-1).YLim = [-80 70];
 ostruct.handles(1).Children(end-1).XLim = [-5 20];
 FontResizer
-FigureResizer(5,8)
+% FigureResizer(5,8)
 % if ostruct.newborn
 %     tprint(fullfile(targetfolder_results,'RobustnessMatrix_newborn'),'-pdf');
 % else
@@ -634,28 +622,27 @@ aGC_resonance(params,neuron,tree,ostruct,targetfolder_results)
 
 
 %% Sensitivity Matrix Fig. 5 & Suppl. Fig. 
+changs = {'','cm','Ra','pas','Kir21','HCN','cAMP','na8st','Kv14','Kv21','Kv34','Kv42','Kv7','BK','SK','Cav12','Cav13','Cav22','Cav32','E_K','E_N_a','E_P_a_s','[Ca]o','temp'};
+rmatrix = -Inf(14,numel(changs));
+
 type = 'up'; % possible values: up down   ... regulate channels up or down
 neuron = neuron_orig;
 params = params_orig;
 params.exchfolder = 't2nexchange_aGCmorphsim4';
 neuron.experiment = strcat('robust_',neuron.experiment);
-changs = {'','cm','Ra','pas','Kir21','HCN','cAMP','na8st','Kv14','Kv21','Kv34','Kv42','Kv7','BK','SK','Cav12','Cav13','Cav22','Cav32','E_K','E_N_a','E_P_a_s','[Ca]o','temp'};
-% rmatrix = zeros(15,numel(changs));
+
 ostruct.show = 0;
 
 if strcmp(type,'up')
-    amount = [-100,-10,20,4];
+    amount = [-100,-10,20,4]; %some fixed change values for cm, ek, ena, eca, epas
 else
     amount = [50,10,-20,1]; 
 end
 w = waitbar(0,'Matrix is calculating for some hours, please get yourself one or more snickers...');
+
 for v = 1:numel(changs) %
     
     switch changs{v}
-%         case {'pas','na8st','Kir21','HCN','Kv14','Kv21','Kv34','Kv42','Kv7','SK','Cav12','Cav13','Cav32','BK'}
-            
-%         case {'gabkbar'}
-%             neuron = blockchannel(neuron,'BK',50,changs{v}); % specify BK channel
         case 'cm'
             neuron = blockchannel(neuron,'pas',amount(1),changs{v}); % specify pas channel
         case 'Ra'
@@ -682,25 +669,23 @@ for v = 1:numel(changs) %
             neuron.experiment = strcat(neuron.experiment,'_epas');
         case '[Ca]o'
             for t = 1:numel(tree)
-                neuron.mech{t}.all.ca_ion.cao0 = amount(4);%neuron.mech{t}.all.ca_ion.cao0 / 2;
+                neuron.mech{t}.all.ca_ion.cao0 = amount(4);
             end
             neuron.experiment = strcat(neuron.experiment,'_eca');
         case 'temp'
             params.celsius = params.celsius + amount(2);
             neuron.experiment = strcat(neuron.experiment,'_temp');
         case 'cAMP'
-                neuron = changecAMP(neuron,1); % 1µM cAMP
+                neuron = changecamp(neuron,1); % 1µM cAMP
         otherwise
             if ~isempty(changs{v})
                 
                 neuron = blockchannel(neuron,changs{v},amount(1));
             end
-%             errordlg('not found')
-%             return
            
     end
     %a
-    ostruct.passtest = 'Std'; %Mongiat Mongiat2 SH Brenner Std
+    ostruct.passtest = 'Std'; 
     [Rin, tau, ~, Vrest] = aGC_passtests(neuron,tree,params,targetfolder_results,ostruct);
     % caution, VoltageClamps add the series resistance of the electrode (10MOhm
     % by now). With passive, capacitance is higher..? But Rin is always same
@@ -708,9 +693,9 @@ for v = 1:numel(changs) %
     rmatrix(2,v) = mean(Rin);
     rmatrix(3,v) = mean(tau);
     % b
-    ostruct.holding_voltage = -80; %  % CAUTION! no LJP subtraction if concrete value is given
-    ostruct.duration = 200;%200;%200;
-    ostruct.amp = 90; %15:5:90 pA  brauch die steps NICHT MEHR
+    ostruct.holding_voltage = -80; 
+    ostruct.duration = 200;
+    ostruct.amp = 90;
     ostruct.variabledt = 0;
     ostruct.coarse = 0.5;
     ostruct.ampprop = 90;
@@ -720,7 +705,6 @@ for v = 1:numel(changs) %
     aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
     props = aGC_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
     rmatrix(4,v) = nanmean(cellfun(@(y) nanmean(y),props.APiv(1,:)));
-%     rmatrix(5,v) = nanmean(cellfun(@(y) nanmean(y),props.APic(1,:)));
     rmatrix(6,v) = nanmean(cellfun(@(y) nanmean(y),props.APamp(1,:)));
     rmatrix(7,v) = nanmean(cellfun(@(y) nanmean(y),props.APwidth(1,:)));
     rmatrix(8,v) = nanmean(cellfun(@(y) nanmean(y),props.fAHPabs(1,:)));
@@ -745,8 +729,6 @@ for v = 1:numel(changs) %
            end
        end
        rmatrix(12,v) = nanmean(isia);
-%     end ISIadp{3}(t) = 1-props.APISI{1,t}(1)/props.APISI{1,t}(end);
-%     aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
 
     %d
     ostruct.ampprop = 200;
@@ -760,7 +742,6 @@ for v = 1:numel(changs) %
     [bAPdisthm,mveloc_dend,mveloc_farax,mveloc_nearax] = aGC_bAP_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
     rmatrix(13,v) = nanmean(mveloc_dend);
     rmatrix(14,v) = nanmean(mveloc_farax);
-%     rmatrix(15,v) = nanmean(bAPdisthm);
     
     neuron = neuron_orig;
     params = params_orig;
@@ -795,114 +776,3 @@ else
     save(fullfile(targetfolder_data,sprintf('Fig.5_SensitivityMatrix_%s_%s.mat',type,neuron.experiment)),'rmatrix')
     tprint(fullfile(targetfolder_results,sprintf('Fig.5_SensitivityMatrix_%s_%s',type,neuron.experiment)),'-pdf');
 end
-
-
-%% ********** NOT USED IN PUBLICATION ****************
-%% Brenner FI normal, this is the strong mouse stimulation protocol of Brenner et al 2005
-neuron = neuron_orig;
-ostruct.amp = 50:50:400; % pA
-ostruct.duration = 900;
-ostruct.variabledt = 0;
-ostruct.coarse = 0.5;
-ostruct.holding_voltage = -80;
-ostruct.show = 1:2;
-if ostruct.newborn
-    ostruct.savename = sprintf('Fig2_FI_Brenner_newborn-%s',neuron.experiment);
-else
-    ostruct.savename = sprintf('Fig2_FI_Brenner-%s',neuron.experiment);
-end
-ostruct.dataset = 7;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset, 7 = Brenner mouse
-aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
-
-aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
-aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct)
-
-%% Calcium channel contributions (Eliot Johnston 1994), no Figure
-neuron = neuron_orig;
-
-aGC_Ca_proportions_Elliot(neuron,tree,params,targetfolder_results)
-
-%% some FI curves similar to Mateos-Aparicio 2014
-%!!!
-params.celsius = 33;
-%!!!
-neuron = neuron_orig;
-neuron.experiment = strcat(sprintf('MA14_%dC_',params.celsius),neuron.experiment);
-
-if isfield(ostruct,'handles')
-    ostruct = rmfield(ostruct,'handles');
-end
-ostruct. handles = [];
-ostruct.amp = 50:50:200;%50:50:350; % pA
-steps = [0.1,0.2];
-ostruct.coarse = 0.5;
-ostruct.show = 2; % only simulation
-ostruct.duration = 1000;
-ostruct.variabledt = 0;
-ostruct.holding_voltage = -77;
-ostruct.ampprop = 100; % necessary for instFI
-% ostruct = rmfield(ostruct,{'handles'});
-ostruct.savename = 'Fig5-instFI_MA14';
-if ostruct.ratadjust
-    ostruct.savename = strcat(ostruct.savename,'_ratadjust');
-end
-ostruct.dataset = 0;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
-
-aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
-% 
-% % ostruct.handles = [];
-% ostruct.handles = aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
-% % ostruct.handles = 
-aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,steps);
-% ostruct.handles(1).Children(end).Children(1).Color = [0 0 0];
-% ostruct.handles(2).Children(end).Children(1).Color = [0 0 0];
-% ostruct.handles(3).Children(end).Children(1).Color = [0 0 0];
-% figure(ostruct.handles(2))
-% dataMA = importdata(fullfile(targetfolder_results,'FI_MA-CTRL.csv')); 
-% plot (dataMA(:,1)*1000, dataMA(:,2), 'k')
-% 
-% tmphandles = ostruct.handles; ostruct.handles =[];
-% ostruct.handles2 = aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
-% ostruct.handles = tmphandles;
-
-neuron = blockchannel(neuron,{'SK2'},[100]);
-% ostruct.dataset =5;
-aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
-aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,steps);
-% aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
-% ostruct.handles(1).Children(end).Children(1).Color = [1 0 0];
-% ostruct.handles(2).Children(end).Children(1).Color = [1 0 0];
-% ostruct.handles(3).Children(end).Children(1).Color = [1 0 0];
-% figure(ostruct.handles(2))
-% dataMA = importdata(fullfile(targetfolder_results,'FI_MA-Apamin.csv'));
-% plot (dataMA(:,1)*1000, dataMA(:,2), 'r')
-
-% tmphandles = ostruct.handles; ostruct.handles = ostruct.handles2;
-% ostruct.handles2 = aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
-% ostruct.handles = tmphandles;
-
-neuron = neuron_orig;
-neuron.experiment = strcat(sprintf('MA14_%dC_',params.celsius),neuron.experiment);
-neuron = blockchannel(neuron,{'Kv723'},[100]);
-% ostruct.dataset =5;
-aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
-aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct,steps);
-
-% aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
-% ostruct.handles(1).Children(end).Children(1).Color = [0 0.5 0];
-% ostruct.handles(2).Children(end).Children(1).Color = [0 0.5 0];
-% ostruct.handles(3).Children(end).Children(1).Color = [0 0.5 0];
-% figure(ostruct.handles(2))
-% dataMA = importdata(fullfile(targetfolder_results,'FI_MA-XE991.csv'));
-% plot (dataMA(:,1)*1000, dataMA(:,2), 'Color',[0 0.5 0])
-% tprint(fullfile(targetfolder_results,expcat('Fig.5-FI',neuron.experiment)),'-pdf')
-% figure(ostruct.handles(1))
-% tprint(fullfile(targetfolder_results,expcat('Fig.5-instFI',neuron.experiment)),'-pdf')
-
-% tmphandles = ostruct.handles; ostruct.handles = ostruct.handles2;
-% ostruct.handles2 = aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
-% ostruct.handles = tmphandles;
-
-
-
-params.celsius = 24;

@@ -20,23 +20,23 @@ if ostruct.show
         fig(6) = figure;hold on
     end
     fig(1) = figure;clf,hold all
-    if  exist(fullfile(targetfolder_results,'krueppel_data_fig_1d.dat'),'file')
+    if  exist(fullfile(params.path,'raw data','krueppel_data_fig_1d.dat'),'file')
         if ~ostruct.relamp
-            data = importdata(fullfile(targetfolder_results,'krueppel_data_fig_1d.dat'));
+            data = importdata(fullfile(params.path,'raw data','krueppel_data_fig_1d.dat'));
             
         else
-            data = importdata(fullfile(targetfolder_results,'krueppel_data_fig_1e.csv'));
+            data = importdata(fullfile(params.path,'raw data','krueppel_data_fig_1e.csv'));
         end
     else
         data = NaN(1,2);
     end
-    if  exist(fullfile(targetfolder_results,'krueppel_data_fig_1f.csv'),'file')
-        data2 = importdata(fullfile(targetfolder_results,'krueppel_data_fig_1f.csv'));
+    if  exist(fullfile(params.path,'raw data','krueppel_data_fig_1f.csv'),'file')
+        data2 = importdata(fullfile(params.path,'raw data','krueppel_data_fig_1f.csv'));
     else
         data2 = NaN(1,2);
     end
-    if  exist(fullfile(targetfolder_results,'AxonalVelocity_ratGC.csv'),'file')
-        data3 = importdata(fullfile(targetfolder_results,'AxonalVelocity_ratGC.csv'));
+    if  exist(fullfile(params.path,'raw data','AxonalVelocity_ratGC.csv'),'file')
+        data3 = importdata(fullfile(params.path,'raw data','AxonalVelocity_ratGC.csv'));
     else
         data3 = NaN(1,2);
     end
@@ -357,3 +357,15 @@ for n = 1:numel(nneuron)
     display(sprintf('Mean delay @ %d µm: %g +- %g ms (s.e.m.)',thisdist,mean(bAPdelaythisdist),std(bAPdelaythisdist)/sqrt(numel(tree))))
     
 end
+
+function h = plotadjval(x,y,tree,col)
+
+tree.Z(:) = 0;
+tree.X = x;
+tree.Y = y;
+if sum(isnan(tree.Y)) ~= 0
+    tree = delete_tree(tree,find(isnan(tree.Y)));
+end
+treecol = repmat(col,numel(tree.Y),1);
+h = plot_tree(tree,treecol,[],[],[],'-2l');
+axis normal

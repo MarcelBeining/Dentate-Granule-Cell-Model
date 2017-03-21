@@ -57,6 +57,14 @@ for t = 1:numel(tree)
     if ostruct.reduce
         nodes{t} = nodes{t}(1:3:end);
     end
+    
+    inode = zeros(numel(neuron{x}.record{t}.(recfields{f1})(r).node),1);
+    for in = 1:numel(neuron{x}.record{t}.(recfields{f1})(r).node)
+        inode(in) = find(minterf{thesetrees{n}(tt)}(:,1) == neuron{x}.record{t}.(recfields{f1})(r).node(in),1,'first');    %find the index of the node in minterf
+    end
+    [realrecs,~,ic] = unique(minterf{thesetrees{n}(tt)}(inode,[2,4]),'rows');
+    
+    
     neuron.record{t}.cell = struct('node',unique(cat(1,CaNodes{t}{:},nodes{t})),'record',{cai,'v'});
     neuron.pp{t}.IClamp = struct('node',1,'times',[-200 30,32.5],'amp', [hstep(t) hstep(t)+cstep hstep(t)]); %n,del,dur,amp
     eucl{t} = eucl_tree(tree{t});

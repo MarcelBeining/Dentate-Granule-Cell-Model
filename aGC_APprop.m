@@ -41,20 +41,26 @@ if any(uu==3)
 end
 
 if any(uu == 1)
-    [exp_iclamp,~,rate] = load_ephys(ostruct.dataset,'CClamp');
+    [exp_iclamp,cstepsSpiking,rate] = load_ephys(ostruct.dataset,'CClamp');
 end
 
 
 if numel(ostruct.amp)==1
     s2= 1;
-    s1 = find(sim1.cstepsSpiking == ostruct.amp/1000);
+    if any(uu == 1)
+        s1 = find(cstepsSpiking == ostruct.amp/1000);
+    end
 else
     if isfield(ostruct,'ampprop')
         s2=find(round(sim1.cstepsSpikingModel*1000) == ostruct.ampprop);
-        s1=find(sim1.cstepsSpiking == ostruct.ampprop/1000);
+        if any(uu == 1)
+            s1=find(cstepsSpiking == ostruct.ampprop/1000);
+        end
     else
         s2=find(round(sim1.cstepsSpikingModel*1000)/1000 == 0.09);
-        s1 = 19;
+        if any(uu == 1)
+            s1 = 19;
+        end
     end
 end
 dVthresh = 15;
@@ -394,7 +400,7 @@ if ostruct.show
     end
 end
 for u = 1:numel(uu)
-    if isempty(s1)
+    if uu(u) == 1 && isempty(s1)
         continue
     end
     display(sprintf('AP current threshold for group %d is: %g +- %g pA (s.e.m.)',uu(u),mean(props.APic{u}),std(props.APic{u})/sqrt(numel(props.APic{u})) ))

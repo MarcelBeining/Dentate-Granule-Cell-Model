@@ -26,8 +26,6 @@ end
 if ~isfield(ostruct,'amp')
     ostruct.amp = 0:5:90;
 end
-cstepsSpiking = (0:5:120)*0.001;
-
 
 if ~isfield(ostruct,'holding_voltage') || isnan(ostruct.holding_voltage)
     exp_iclamp = load_ephys(ostruct.dataset,'CClamp');
@@ -84,13 +82,11 @@ for s = 1:numel(cstepsSpikingModel)
     nneuron{s} = t2n_as(1,nneuron{s});
 end
 
-if ostruct.find_freq
+if ostruct.find_freq > 0
     amp = find_freq(params,nneuron{1},tree,ostruct.find_freq,'-q-d');
-else
-    amp = repmat(ostruct.amp,numel(tree),1);
-end
-for t = 1:numel(tree)
-    nneuron{1}.pp{t}.IClamp.amp = [hstep(t) amp(t) hstep(t)]; %n,del,dur,amp  %WICHTIG! nur amp da hstep nicht abgezogen
+    for t = 1:numel(tree)
+        nneuron{1}.pp{t}.IClamp.amp = [hstep(t) amp(t) hstep(t)]; %n,del,dur,amp  %WICHTIG! nur amp da hstep nicht abgezogen
+    end
 end
 
 out = t2n(tree,params,nneuron,'-q-d-w');
@@ -122,4 +118,4 @@ end
 if ~params.cvode
    str = strcat(str,'_fixed-dt'); 
 end
-save(fullfile(targetfolder_data,sprintf('Exp_Spiking_%s%s.mat',neuron.experiment,str)),'vol_new_curr_dend','tvol_new_curr_dend','numspikes','params','cstepsSpiking','cstepsSpikingModel','tree','nneuron')
+save(fullfile(targetfolder_data,sprintf('Exp_Spiking_%s%s.mat',neuron.experiment,str)),'vol_new_curr_dend','tvol_new_curr_dend','numspikes','params','cstepsSpikingModel','tree','nneuron')

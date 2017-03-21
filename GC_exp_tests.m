@@ -134,7 +134,7 @@ aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
 % % AP properties during current clamp
 prop =     aGC_APprop(targetfolder_data,targetfolder_results,neuron,ostruct,tree);
 % % end
-aGC_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
+aGC_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 
 %% Compare spike soma/axon with a axon bleb (simulation!) SH2010
 % aGC_APsomax(neuron,tree,params,fullfile(treepath,treename),targetfolder_results)
