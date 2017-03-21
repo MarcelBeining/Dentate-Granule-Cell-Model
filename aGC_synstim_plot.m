@@ -230,7 +230,7 @@ switch type
             handles(counter) = figure;hold all;
         end
         counter = counter +1;
-        col = colorme('dark blue','pink','cyan');
+        col = colorme('dim blue','pink','cyan');
         for f = 1:numel(freq)
             subplot(numel(freq)/2,numel(freq)/2,f)
             hold all,

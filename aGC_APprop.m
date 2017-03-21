@@ -1,9 +1,8 @@
 function [props, fig] = aGC_APprop(targetfolder_data,targetfolder_results,neuron,ostruct,tree)
 
-ap = -10; % amp threshold for detection [mV]
+ap = -10; % minimum amplitude threshold for detection [mV]
 
 newrate = 0.005; %ms
-marker = 'o';
 if numel(ostruct.amp)==1
     str = sprintf('_%dpA',ostruct.amp);
 else
@@ -223,7 +222,6 @@ for u = 1:numel(uu)
                 props.APit{u,t}(count) = thist(n);
                 props.APiv{u,t}(count) = thisv(n,t);
                 flag = true;
-                %             elseif flag && props.maxDV{t}(count) < thisdv(n,t)
             elseif flag && thisv(n,t) <= props.APiv{u,t}(count) % spike is over
                 
                 props.APamp{u,t}(count) = props.APampabs{u,t}(count) - props.APiv{u,t}(count);

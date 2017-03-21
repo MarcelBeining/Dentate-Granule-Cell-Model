@@ -28,7 +28,7 @@ ostruct.vmodel = 1; % 0 = passive model, > 0 = active model, everything else (e.
 ostruct.changeAHion = 0;  % only important when using the AH99 model. Boolean to decide if standard AH99 ion reversal potentials are used (0) or if they are adjusted to the experiments (1)
 
 % change morphologies here
-ostruct.usemorph = 1;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
+ostruct.usemorph = 4;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
 ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
 
 % more parameters
@@ -160,7 +160,7 @@ else
     ostruct.savename = sprintf('Fig2_Final-%s',neuron.experiment);
     ostruct.savename2 = sprintf('Fig2-FI-%s',neuron.experiment);
     ostruct.savename3 = sprintf('Fig2-FI+Ba-%s',neuron.experiment);
-    if isnan(ostruct.vmodel)
+    if isnan(ostruct.vmodel) % AH99 model. This is different to our model because no spiking occurred at 75 pA in the AH99 GC model
         steps = [30, 90]/1000;  % current step [pA] of which voltage trace is plotted
     else
         steps = [30, 75]/1000;  % current step [pA] of which voltage trace is plotted
@@ -381,14 +381,14 @@ params.celsius = 33;
 %!!!
 neuron = neuron_orig;
 ostruct.holding_voltage = -62;
-ostruct.find_freq = 6; % 6 spikes
+ostruct.find_freq = 6; % 6 spikes per current step
+% ostruct.amp = 200;%pA this value is ignored because of find_freq
 neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
 
 if isfield(ostruct,'handles')
     ostruct = rmfield(ostruct,'handles');
 end
 ostruct. handles = [];
-ostruct.amp = 200;%pA ACHTUNG, das wird an sich ignoriert durch das find_freq!
 steps = [0.15];%,0.2];
 ostruct.coarse = 0.5;
 ostruct.show = 2; % only simulation
