@@ -462,7 +462,7 @@ for n = 1:3
     dstruct.data.ISIadapt(1,(n-1)*numel(tree)+1:numel(tree)*n) = ISIadp{n}./ISIadp{1}*100; 
 end
 
-handle = Megaplotter(dstruct,gstruct,[],ostruct);
+handle = Masterplotter(dstruct,gstruct,[],ostruct);
 neuron = neuron_orig;
 neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
 tprint(fullfile(targetfolder_results,expcat('Fig.5-ISIadapt',neuron.experiment)),'-pdf')
@@ -620,7 +620,7 @@ FigureResizer(5,8)
     
 % end
 ostruct.gap = 0.3;
-handle = Megaplotter(dstruct,gstruct,[],ostruct);
+handle = Masterplotter(dstruct,gstruct,[],ostruct);
 figure(handle{1})
 tprint(fullfile(targetfolder_results,sprintf('Fig.5_APhalfwidth_%s',neuron.experiment)),'-pdf');
 figure(handle{2})
@@ -648,7 +648,7 @@ if strcmp(type,'up')
 else
     amount = [50,10,-20,1]; 
 end
-w = waitbar(0,'Matrix is calculating, please get yourself a snickers...');
+w = waitbar(0,'Matrix is calculating for some hours, please get yourself one or more snickers...');
 for v = 1:numel(changs) %
     
     switch changs{v}

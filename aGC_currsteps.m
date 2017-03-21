@@ -87,7 +87,7 @@ end
 if ostruct.find_freq
     amp = find_freq(params,nneuron{1},tree,ostruct.find_freq,'-q-d');
 else
-    amp = ostruct.amp;
+    amp = repmat(ostruct.amp,numel(tree),1);
 end
 for t = 1:numel(tree)
     nneuron{1}.pp{t}.IClamp.amp = [hstep(t) amp(t) hstep(t)]; %n,del,dur,amp  %WICHTIG! nur amp da hstep nicht abgezogen
