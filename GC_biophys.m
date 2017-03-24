@@ -147,7 +147,7 @@ if ~isempty(strfind(options,'-a'))
         
         if on.HCN > 0
             e_hcn 		= -41.9;
-            vhalfl_hcn 	= -100; % shifted hcn since is much more left in other models and I have much Mg2+ and I have implemented the cAMP dependency
+            vhalfl_hcn 	= -100; % shifted hcn since is much more left in other models. Furthermore, I have much Mg2+ and I have implemented the cAMP dependency
             kl_hcn 	= 8;			%// NOTE: sign changed in comparison with publication
             vhalft_hcn 	=   30.4;			%// (see manuscript)
             at_hcn    	= 0.00052;

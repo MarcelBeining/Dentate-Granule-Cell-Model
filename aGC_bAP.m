@@ -19,7 +19,7 @@ plotcaivals = nodes;
 bAP = nodes;
 CaNodes = nodes;
 ipar = nodes;
-realnodes = nodes;
+nodes = nodes;
 
 if ~(ostruct.vmodel>=0) 
     cai = 'caim_Caold';  % AH99 model, does not have an own calcium buffer mechanism, thus variable has a different name
@@ -65,12 +65,12 @@ for t = 1:numel(tree)
         inode(in) = find(minterf(:,1) == nodes{t}(in),1,'first');    %find the index of the node in minterf
     end
     [~,ia] = unique(minterf(inode,[2,4]),'rows');
-    realnodes{t} = nodes{t}(ia);
+    nodes{t} = nodes{t}(ia);
     if ostruct.reduce  % reduce number of real recorded nodes to every third.
-        realnodes{t} = realnodes{t}(1:3:end);
+        nodes{t} = nodes{t}(1:3:end);
     end
     
-    neuron.record{t}.cell = struct('node',unique(cat(1,CaNodes{t}{:},realnodes{t})),'record',{cai,'v'});
+    neuron.record{t}.cell = struct('node',unique(cat(1,CaNodes{t}{:},nodes{t})),'record',{cai,'v'});
     neuron.pp{t}.IClamp = struct('node',1,'times',[-200 30,32.5],'amp', [hstep(t) hstep(t)+cstep hstep(t)]); %n,del,dur,amp
     eucl{t} = eucl_tree(tree{t});
 end
@@ -89,22 +89,22 @@ stdV = mCai;
 for t = 1:numel(tree)
     plotvals{t} = NaN(numel(tree{t}.X),1);%ones(numel(tree{t}.X),1) * (-80);
     plotcaivals{t} = NaN(numel(tree{t}.X),1);%ones(numel(tree{t}.X),1) * (-80);
-    for x = 1:numel(realnodes{t})
-        [mx, ind] = max(out.record{t}.cell.v{realnodes{t}(x)});
-        basl = mean(out.record{t}.cell.v{realnodes{t}(x)}(out.t>=0 & out.t<=30));
-        ind2 = find(out.record{t}.cell.v{realnodes{t}(x)} > (mx-basl)/2 + basl,1,'first');
+    for x = 1:numel(nodes{t})
+        [mx, ind] = max(out.record{t}.cell.v{nodes{t}(x)});
+        basl = mean(out.record{t}.cell.v{nodes{t}(x)}(out.t>=0 & out.t<=30));
+        ind2 = find(out.record{t}.cell.v{nodes{t}(x)} > (mx-basl)/2 + basl,1,'first');
         
-        bAP{t}(x,:) = [realnodes{t}(x) out.t(ind) plen{t}(realnodes{t}(x)) eucl{t}(realnodes{t}(x)) mx basl out.t(ind2)]; % ind nodes, time of max amp, PL at nodes, eucl at nodes, max amplitude, baseline, time of halfmax amp
-        plotvals{t}(realnodes{t}(x)) = mx;
-        mx = max(out.record{t}.cell.(cai){realnodes{t}(x)});
-        plotcaivals{t}(realnodes{t}(x)) = mx;
+        bAP{t}(x,:) = [nodes{t}(x) out.t(ind) plen{t}(nodes{t}(x)) eucl{t}(nodes{t}(x)) mx basl out.t(ind2)]; % ind nodes, time of max amp, PL at nodes, eucl at nodes, max amplitude, baseline, time of halfmax amp
+        plotvals{t}(nodes{t}(x)) = mx;
+        mx = max(out.record{t}.cell.(cai){nodes{t}(x)});
+        plotcaivals{t}(nodes{t}(x)) = mx;
     end
     % as not all nodes were recorded, interpolate the value for the nodes
     % between the recorded ones (only affects plotting the tree, not the
     % data graphs)
     for x = 1:size(ipar{t},1)
-        plotvals{t}(ipar{t}(x,:)) = interp1(plen{t}(intersect(realnodes{t},ipar{t}(x,:))),plotvals{t}(intersect(realnodes{t},ipar{t}(x,:))),plen{t}(ipar{t}(x,:)),'pchip');
-        plotcaivals{t}(ipar{t}(x,:)) = interp1(plen{t}(intersect(realnodes{t},ipar{t}(x,:))),plotcaivals{t}(intersect(realnodes{t},ipar{t}(x,:))),plen{t}(ipar{t}(x,:)),'pchip');
+        plotvals{t}(ipar{t}(x,:)) = interp1(plen{t}(intersect(nodes{t},ipar{t}(x,:))),plotvals{t}(intersect(nodes{t},ipar{t}(x,:))),plen{t}(ipar{t}(x,:)),'pchip');
+        plotcaivals{t}(ipar{t}(x,:)) = interp1(plen{t}(intersect(nodes{t},ipar{t}(x,:))),plotcaivals{t}(intersect(nodes{t},ipar{t}(x,:))),plen{t}(ipar{t}(x,:)),'pchip');
     end
     for f =1:numel(CaNodes{t})
         for ff = 1:numel(CaNodes{t}{f})
@@ -139,4 +139,4 @@ for t = 1:numel(tree)
 end
 tim = out.t;
 
-save(fullfile(targetfolder_data,sprintf('Exp_bAP_%s.mat',neuron.experiment)),'mapind','bAP','plotvals','plotcaivals','params','nodes','neuron','tree','CaNodes','mCai','stdCai','mV','stdV','tim','tw','maxcai')
+save(fullfile(targetfolder_data,sprintf('Exp_bAP_%s.mat',neuron.experiment)),'bAP','plotvals','plotcaivals','params','nodes','neuron','tree','CaNodes','mCai','stdCai','mV','stdV','tim','tw','maxcai')

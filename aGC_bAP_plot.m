@@ -13,7 +13,7 @@ end
 if ~isfield(ostruct,'relamp')
     ostruct.relamp = 0;
 end
-
+load(expcat(targetfolder_data,'Exp_bAP',nneuron{1}.experiment),'params')
 if ostruct.show 
     if any(ostruct.show ==4)
         fig(8) = figure;hold on
@@ -35,11 +35,11 @@ if ostruct.show
     else
         data2 = NaN(1,2);
     end
-    if  exist(fullfile(params.path,'raw data','AxonalVelocity_ratGC.csv'),'file')
-        data3 = importdata(fullfile(params.path,'raw data','AxonalVelocity_ratGC.csv'));
-    else
-        data3 = NaN(1,2);
-    end
+%     if  exist(fullfile(params.path,'raw data','AxonalVelocity_ratGC.csv'),'file')
+%         data3 = importdata(fullfile(params.path,'raw data','AxonalVelocity_ratGC.csv'));
+%     else
+%         data3 = NaN(1,2);
+%     end
     % title('bAP vs Plen')
     if ostruct.relamp
         ylabel('Rel. amplitude')
@@ -119,9 +119,9 @@ for n = 1:numel(nneuron)
                 TP = T_tree(tree{t});
                 ipar = ipar(TP,:);
                 PL2 = NaN(numel(tree{t}.Y),1);
-                for n = 2:numel(dendind2)
-                    [x,~] = find(dendind2(n)==ipar);
-                    PL2(dendind2(n)) = L(dendind2(n))/max(L(ipar(x,1)));
+                for d = 2:numel(dendind2)
+                    [x,~] = find(dendind2(d)==ipar);
+                    PL2(dendind2(d)) = L(dendind2(d))/max(L(ipar(x,1)));
                 end
                 plotadjval(PL2,y,tree{t},col);
             else
@@ -136,7 +136,7 @@ for n = 1:numel(nneuron)
             plotvals{t}(axind2) = NaN;
             xlims = [min(xlims(1),min(ptree.X(dendind))),max(xlims(2),max(ptree.X(dendind)))];
             ylims = [min(ylims(1),min(ptree.Y(dendind))),max(ylims(2),max(ptree.Y(dendind)))];
-            p(t) = plot_tree(ptree,plotvals{t});
+            plot_tree(ptree,plotvals{t});
         end
         
         % ind nodes, time of max amp, PL at nodes, eucl at nodes, max amplitude, baseline, time of halfmax amp
@@ -155,7 +155,7 @@ for n = 1:numel(nneuron)
             veloc = bAP{t}(:,4)./(bAP{t}(:,2)-bAP{t}(som,2)); %L / Zeit die amp gebraucht hat von soma zu punkt, hier maxamp als zeitpunkt  (wie krueppel)
             veloc_dend = veloc(iad);
             veloc = abs(bAP{t}(:,4)-bAP{t}(spikeinitnode,4))./(bAP{t}(:,2+5)-bAP{t}(spikeinitnode,2+5)); %L / Zeit die amp gebraucht hat von spikeiniation zu punkt, hier halfmax als Zeitpunkt (wie kress bzw SH08)
-            latency = (bAP{t}(:,2+5)-bAP{t}(som,2+5));
+%             latency = (bAP{t}(:,2+5)-bAP{t}(som,2+5));
         end
         idpar = idpar_tree(tree{t});
         ind = intersect(iad,setdiff(ind,idpar(ind)));  % get only dendritic nodes and delete all direct parent nodes (due to rough distance search)
@@ -246,7 +246,7 @@ for n = 1:numel(nneuron)
         FigureResizer(5,17,[],ostruct)
         c = colorbar;
         c.Limits =[-80,80];
-        pos = get(c,'Position');
+%         pos = get(c,'Position');
         set(c,'Position',[0.93 0.35 0.02 0.4],'fontweight','bold','fontname','Arial')
 %         yl = get(c,'YLim');
         set(c,'YTick',[-80,0,80])
