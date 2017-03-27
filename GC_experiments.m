@@ -28,7 +28,7 @@ ostruct.vmodel = 1; % 0 = passive model, > 0 = active model, everything else (e.
 ostruct.changeAHion = 0;  % only important when using the AH99 model. Boolean to decide if standard AH99 ion reversal potentials are used (0) or if they are adjusted to the experiments (1)
 
 % change morphologies here
-ostruct.usemorph = 4;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
+ostruct.usemorph = 2;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
 ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
 
 % more parameters
@@ -464,7 +464,7 @@ ostruct = rmfield(ostruct,'find_freq');
 %% bAP simulation (Krueppel 2011) +  Calcium dynamics (Stocca 2008) Teil Ratte, Figure 4
 neuron = neuron_orig;
 ostruct.simple = 0;  % only recording along longest dendrite
-ostruct.reduce = 0;  % only measure every second node
+ostruct.reduce = 0;  % only measure every third node
 ostruct.dist = 'Eucl.'; % PL., Eucl.
 ostruct.relamp = 0;  % relative amplitudes
 celsius_orig = params.celsius;

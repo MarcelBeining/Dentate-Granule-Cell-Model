@@ -403,10 +403,10 @@ for u = 1:numel(uu)
     if uu(u) == 1 && isempty(s1)
         continue
     end
-    display(sprintf('AP current threshold for group %d is: %g +- %g pA (s.e.m.)',uu(u),mean(props.APic{u}),std(props.APic{u})/sqrt(numel(props.APic{u})) ))
-    display(sprintf('AP width for group %d is: %g +- %g ms (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.APwidth(u,~cellfun(@isempty,props.APwidth(u,:))))),std(cellfun(@(x) x(1),props.APwidth(u,~cellfun(@isempty,props.APwidth(u,:)))))/sqrt(numel(props.APic{u})) ))
-    display(sprintf('AP voltage threshold for group %d is: %g +- %g mV (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.APiv(u,~cellfun(@isempty,props.APiv(u,:))))),std(cellfun(@(x) x(1),props.APiv(u,~cellfun(@isempty,props.APiv(u,:)))))/sqrt(numel(props.APic{u})) ))
-    display(sprintf('AP fAHP for group %d is: %g +- %g mV (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.fAHP(u,~cellfun(@isempty,props.fAHP(u,:))))),std(cellfun(@(x) x(1),props.fAHP(u,~cellfun(@isempty,props.fAHP(u,:)))))/sqrt(numel(props.APic{u})) ))
-    display(sprintf('AP interspike interval for group %d is: %g +- %g ms (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.APISI(u,~cellfun(@isempty,props.APISI(u,:))))),std(cellfun(@(x) x(1),props.APISI(u,~cellfun(@isempty,props.APISI(u,:)))))/sqrt(numel(props.APic{u})) ))
-    display(sprintf('AP amplitude for group %d is: %g +- %g mV (s.e.m.)',uu(u),mean(cellfun(@(x) x(1),props.APamp(u,~cellfun(@isempty,props.APamp(u,:))))),std(cellfun(@(x) x(1),props.APamp(u,~cellfun(@isempty,props.APamp(u,:)))))/sqrt(numel(props.APic{u})) ))
+    fprintf('AP current threshold for group %d is: %g +- %g pA (s.e.m.)\n',uu(u),mean(props.APic{u}),std(props.APic{u})/sqrt(numel(props.APic{u})) )
+    fprintf('AP width for group %d is: %g +- %g ms (s.e.m.)\n',uu(u),mean(cellfun(@(x) x(1),props.APwidth(u,~cellfun(@isempty,props.APwidth(u,:))))),std(cellfun(@(x) x(1),props.APwidth(u,~cellfun(@isempty,props.APwidth(u,:)))))/sqrt(numel(props.APic{u})) )
+    fprintf('AP voltage threshold for group %d is: %g +- %g mV (s.e.m.)\n',uu(u),mean(cellfun(@(x) x(1),props.APiv(u,~cellfun(@isempty,props.APiv(u,:))))),std(cellfun(@(x) x(1),props.APiv(u,~cellfun(@isempty,props.APiv(u,:)))))/sqrt(numel(props.APic{u})) )
+    fprintf('AP fAHP for group %d is: %g +- %g mV (s.e.m.)\n',uu(u),mean(cellfun(@(x) x(1),props.fAHP(u,~cellfun(@isempty,props.fAHP(u,:))))),std(cellfun(@(x) x(1),props.fAHP(u,~cellfun(@isempty,props.fAHP(u,:)))))/sqrt(numel(props.APic{u})) )
+    fprintf('AP interspike interval for group %d is: %g +- %g ms (s.e.m.)\n',uu(u),mean(cellfun(@(x) x(1),props.APISI(u,~cellfun(@isempty,props.APISI(u,:))))),std(cellfun(@(x) x(1),props.APISI(u,~cellfun(@isempty,props.APISI(u,:)))))/sqrt(numel(props.APic{u})) )
+    fprintf('AP amplitude for group %d is: %g +- %g mV (s.e.m.)\n',uu(u),mean(cellfun(@(x) x(1),props.APamp(u,~cellfun(@isempty,props.APamp(u,:))))),std(cellfun(@(x) x(1),props.APamp(u,~cellfun(@isempty,props.APamp(u,:)))))/sqrt(numel(props.APic{u})) )
 end

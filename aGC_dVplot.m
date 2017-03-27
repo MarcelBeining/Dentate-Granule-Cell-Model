@@ -243,5 +243,5 @@ else
     tprint(fullfile(targetfolder_results,expcat('MaxdV',nneuron{1}.experiment)),'-pdf')
 end
 
-display(sprintf('Max dv of experiment: %g +- %g mV/ms (s.e.m.)',mean(maxdv{1}(:,ostruct.ampprop/1000==cstepsSpiking)),std(maxdv{1}(:,ostruct.ampprop/1000==cstepsSpiking))/sqrt(size(maxdv{1},1)) ))
-display(sprintf('Max dv of model: %g +- %g mV/ms (s.e.m.)',mean(maxdv{2}(:,ostruct.ampprop/1000==cstepsSpikingModel )),std(maxdv{2}(:,ostruct.ampprop/1000==cstepsSpikingModel))/sqrt(size(maxdv{2},1)) ))
+fprintf('Max dv of experiment: %g +- %g mV/ms (s.e.m.)\n',mean(maxdv{1}(:,ostruct.ampprop/1000==cstepsSpiking)),std(maxdv{1}(:,ostruct.ampprop/1000==cstepsSpiking))/sqrt(size(maxdv{1},1)) )
+fprintf('Max dv of model: %g +- %g mV/ms (s.e.m.)\n',mean(maxdv{2}(:,ostruct.ampprop/1000==cstepsSpikingModel )),std(maxdv{2}(:,ostruct.ampprop/1000==cstepsSpikingModel))/sqrt(size(maxdv{2},1)) )

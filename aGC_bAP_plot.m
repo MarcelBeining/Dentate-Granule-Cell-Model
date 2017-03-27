@@ -251,7 +251,7 @@ for n = 1:numel(nneuron)
 %         yl = get(c,'YLim');
         set(c,'YTick',[-80,0,80])
 %         set(c,'YTick',[ceil(yl(1)),0,floor(yl(2))])
-        tprint(fullfile(targetfolder_results,expcat('Fig.2-bAP-trees',nneuron{n}.experiment)),'-SHR-pdf')
+        tprint(fullfile(targetfolder_results,expcat('Fig.2-bAP-trees',nneuron{n}.experiment)),'-SHR-tif')
         %     tprint(fullfile(targetfolder_results,'Fig.2-bAP-trees'),'-SHR-png')
 %         figure(fig(3))
 %         ylim([0 0.5])
@@ -260,9 +260,9 @@ for n = 1:numel(nneuron)
 %         tprint(fullfile(targetfolder_results,expcat('Fig.2-bAP-axon',nneuron{n}.experiment)),'-SHR-pdf')
     end
     %     set(p,'Visible','off')
-    display(sprintf('Dendritic Velocity cell %d: %f µm/ms (time to max amp)\n',reshape(cat(1,(1:numel(mveloc_dend)),mveloc_dend),1,numel(mveloc_dend)*2)))
-    display(sprintf('Far Axonal Velocity cell %d: %f µm/ms (time to half-max amp)\n',reshape(cat(1,(1:numel(mveloc_farax)),mveloc_farax),1,numel(mveloc_farax)*2)))
-    display(sprintf('Near Axonal Velocity cell %d: %f µm/ms (time to half-max amp)\n',reshape(cat(1,(1:numel(mveloc_nearax)),mveloc_nearax),1,numel(mveloc_nearax)*2)))
+    fprintf('Dendritic Velocity cell %d: %f µm/ms (time to max amp)\n',reshape(cat(1,(1:numel(mveloc_dend)),mveloc_dend),1,numel(mveloc_dend)*2))
+    fprintf('Far Axonal Velocity cell %d: %f µm/ms (time to half-max amp)\n',reshape(cat(1,(1:numel(mveloc_farax)),mveloc_farax),1,numel(mveloc_farax)*2))
+    fprintf('Near Axonal Velocity cell %d: %f µm/ms (time to half-max amp)\n',reshape(cat(1,(1:numel(mveloc_nearax)),mveloc_nearax),1,numel(mveloc_nearax)*2))
     %     close(778:780)
     % hide p, set colorbar to border and save
     
@@ -348,13 +348,13 @@ for n = 1:numel(nneuron)
     if ~all(spiked)
         display('CAUTION: Not all cells spiked!')
     end
-    display(sprintf('Mean Calcium decay time: Axon: %g +- %g nM Soma: %g +- %g ms Proximal: %g +- %g ms Distal: %g +- %g ms',[mean(nanmean(tw,3),1);std(nanmean(tw,3),[],1)]))
-    display(sprintf('Mean Calcium peak amplitude was: Axon: %g +- %g nM Soma: %g +- %g nM Proximal: %g +- %g nM Distal: %g +- %g nM',[mean(nanmean(maxcai,3),1);std(nanmean(maxcai,3),[],1)]*1e6))
-    display(sprintf('Mean voltage attenuation @ %d µm: %g +- %g %% (s.e.m.)',thisdist,mean(bAPrelthisdist)*100,std(bAPrelthisdist)/sqrt(numel(tree))*100))
+    fprintf('Mean Calcium decay time: Axon: %g +- %g nM Soma: %g +- %g ms Proximal: %g +- %g ms Distal: %g +- %g ms',[mean(nanmean(tw,3),1);std(nanmean(tw,3),[],1)])
+    fprintf('Mean Calcium peak amplitude was: Axon: %g +- %g nM Soma: %g +- %g nM Proximal: %g +- %g nM Distal: %g +- %g nM',[mean(nanmean(maxcai,3),1);std(nanmean(maxcai,3),[],1)]*1e6)
+    fprintf('Mean voltage attenuation @ %d µm: %g +- %g %% (s.e.m.)\n',thisdist,mean(bAPrelthisdist)*100,std(bAPrelthisdist)/sqrt(numel(tree))*100)
     if ostruct.show && ~isnan(data(1))
-        display(sprintf('Mean voltage attenuation in exp @ 185 µm: %g +- %g %% (s.e.m.)',mean(data(17:20,2))/mean(cellfun(@(x) x(1,5)-x(1,6),bAP))*100,std(data(17:20,2))/mean(cellfun(@(x) x(1,5)-x(1,6),bAP))/sqrt(4)*100))  % bAP at 185 µm in exp
+        fprintf('Mean voltage attenuation in exp @ 185 µm: %g +- %g %% (s.e.m.)\n',mean(data(17:20,2))/mean(cellfun(@(x) x(1,5)-x(1,6),bAP))*100,std(data(17:20,2))/mean(cellfun(@(x) x(1,5)-x(1,6),bAP))/sqrt(4)*100)  % bAP at 185 µm in exp
     end
-    display(sprintf('Mean delay @ %d µm: %g +- %g ms (s.e.m.)',thisdist,mean(bAPdelaythisdist),std(bAPdelaythisdist)/sqrt(numel(tree))))
+    fprintf('Mean delay @ %d µm: %g +- %g ms (s.e.m.)\n',thisdist,mean(bAPdelaythisdist),std(bAPdelaythisdist)/sqrt(numel(tree)))
     
 end
 

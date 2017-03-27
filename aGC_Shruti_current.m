@@ -79,9 +79,9 @@ ylabel('Conductance [S/cm²]')
 legend([p1(1) p2(1)],'Type I BK','Type II BK')
 xlim([80 920])
 
-display(sprintf('Iberitoxin-sensitive current: %g +- %g nA (s.e.m.)',mean(abscurr_ibersens),std(abscurr_ibersens)/sqrt(numel(tree))));
-display(sprintf('Paxilline-sensitive current: %g +- %g nA (s.e.m.)',mean(abscurr_paxisens),std(abscurr_paxisens)/sqrt(numel(tree))));
-display(sprintf('Part of typeI BK in total BK current: %g +- %g %% (s.e.m.)',mean(ratio_type1),std(ratio_type1)/sqrt(numel(tree))));
+fprintf('Iberitoxin-sensitive current: %g +- %g nA (s.e.m.)\n',mean(abscurr_ibersens),std(abscurr_ibersens)/sqrt(numel(tree)));
+fprintf('Paxilline-sensitive current: %g +- %g nA (s.e.m.)\n',mean(abscurr_paxisens),std(abscurr_paxisens)/sqrt(numel(tree)));
+fprintf('Part of typeI BK in total BK current: %g +- %g %% (s.e.m.)\n',mean(ratio_type1),std(ratio_type1)/sqrt(numel(tree)));
 
 
 

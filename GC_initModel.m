@@ -204,10 +204,10 @@ end
 
 if ~isempty(ostruct.channelblock)
     neuron = blockchannel(neuron,ostruct.channelblock,ostruct.blockamount,ostruct.specify);
-    display(sprintf('Channel(s) %s blocked!',cell2mat(ostruct.channelblock)))
+    fprintf('Channel(s) %s blocked!',cell2mat(ostruct.channelblock))
 end
 
 treename = fullfile(treepath,treename);
 cd(origfolder)
-display(sprintf('Model initialized...%s',neuron.experiment))
+fprintf('Model initialized...%s',neuron.experiment)
 

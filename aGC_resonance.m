@@ -4,16 +4,16 @@ if ~isfield(ostruct,'errorbar')
 end
 
 vholding = -95; % Stegen Hanuschkin Computer Sim 2012
-amp = 0.05; % 50 pA
+amp = 0.050; % 40 pA (less than +-50pA, Stegen 2012)
 params.tstop = 30000;
 params.celsius = 34.4;
-params.dt=1;
+params.dt=0.5;
 tvec=0:params.dt:params.tstop;
 freq = (0.5*(tvec+params.dt)/(1000));
 vec = sin(2*pi*tvec.*freq/1000) * amp;
-% figure;plot(t,vec)
-figure;plot(tvec,freq)
-
+figure;plot(tvec/1000,freq)
+xlabel('time [s]')
+ylabel('frequency [Hz]')
 
 
 figure;hold all;
@@ -39,10 +39,10 @@ for t = 1:numel(tree)
     neuron.play{t}.IClamp = struct('node',1,'play','amp','times',tvec,'value',hstep(t)+vec); %n,del,dur,amp
     neuron.record{t}.cell = struct('node',1,'record','v');
 end
-neuron_orig = neuron;
+% neuron_orig = neuron;
 out = t2n(tree,params,neuron,'-q-d-w');
-if any(out.record{t}.cell.v{1}>-30)
-    warndlg('Caution! Spike was elicited!')
+if any(cellfun(@(x) any(x.cell.v{1}>-30),out.record))
+    warning('Caution! Spike was elicited!')
 end
 
 
@@ -59,7 +59,7 @@ if ostruct.errorbar
     errorbar(freq(locs(2:2:end)-1),mean(imp{1}(2:2:end,:),2),std(imp{1}(2:2:end,:),[],2)/sqrt(numel(tree)),'color','k','linestyle','--');
     errorbar(freq(locs(1:2:end)-1),mean(imp{1}(1:2:end,:),2),std(imp{1}(1:2:end,:),[],2)/sqrt(numel(tree)),'color','k');
 else
-    plot(freq(locs(2:2:end)-1),mean(imp{1}(2:2:end,:),2),'color','k','linestyle','-');
+    plot(freq(locs(2:2:end)-1),mean(imp{1}(2:2:end,:),2),'color','k','linestyle','--');
 end
 % 
 % % increase HCN
@@ -142,16 +142,20 @@ for t = 1:numel(tree)
     neuron.play{t}.IClamp = struct('node',1,'play','amp','times',tvec,'value',hstep(t)+vec); %n,del,dur,amp
 end
 out = t2n(tree,params,neuron,'-q-d-w');
-if any(out.record{t}.cell.v{1}>-30)
-    warndlg('Caution! Spike was elicited!')
+if any(cellfun(@(x) any(x.cell.v{1}>-30),out.record))
+    warning('Caution! Spike was elicited!')
 end
 for t = 1:numel(tree)
-    [pks,locs] = findpeaks(out.record{t}.cell.v{1},'MinPeakHeight',vholding);
-    [pks2,locs2] = findpeaks(-out.record{t}.cell.v{1},'MinPeakHeight',vholding);
+    [pks,locs] = findpeaks(out.record{t}.cell.v{1},'MinPeakHeight',vholding,'NPeaks',450);
+    [pks2,locs2] = findpeaks(-out.record{t}.cell.v{1},'MinPeakHeight',vholding,'NPeaks',450);
     [locs,ia] = sort([locs;locs2]);
     pks = [pks;-pks2];
     pks = pks(ia)-vholding;
-    imp{4}(:,t) = abs(pks/amp);
+%     try
+        imp{4}(:,t) = abs(pks/amp);
+%     catch
+%         imp{4}(:,t) = abs(pks/amp);
+%     end
 %     plot(freq(locs-1),imp,'r')
 end
 if ostruct.errorbar
@@ -168,8 +172,8 @@ for t = 1:numel(tree)
     neuron.play{t}.IClamp = struct('node',1,'play','amp','times',tvec,'value',hstep(t)+vec); %n,del,dur,amp
 end
 out = t2n(tree,params,neuron,'-q-d-w');
-if any(out.record{t}.cell.v{1}>-30)
-    warndlg('Caution! Spike was elicited!')
+if any(cellfun(@(x) any(x.cell.v{1}>-30),out.record))
+    warning('Caution! Spike was elicited!')
 end
 for t = 1:numel(tree)
     [pks,locs] = findpeaks(out.record{t}.cell.v{1},'MinPeakHeight',vholding);

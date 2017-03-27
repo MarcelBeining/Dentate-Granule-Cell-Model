@@ -38,7 +38,7 @@ for t = 1:numel(tree)
     plen{t} = Pvec_tree(tree{t});
     CaNodes{t} = {find(abs(plen{t}-150)<0.5 & tree{t}.R == find(strcmp(tree{t}.rnames,'axon'))),find(plen{t} == 0,1,'first'),find(abs(plen{t}-70)<0.5 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon'))),find(abs(plen{t}-150)<0.5 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon')))};
     if any(cellfun(@isempty,CaNodes{t}))
-        display(sprintf('thresh distance of 0.5 for tree %d did not suffice. switched to thresh of 1',t))
+        fprintf('thresh distance of 0.5 for tree %d did not suffice. switched to thresh of 1\n',t)
         CaNodes{t} = {find(abs(plen{t}-150)<1 & tree{t}.R == find(strcmp(tree{t}.rnames,'axon'))),find(plen{t} == 0,1,'first'),find(abs(plen{t}-70)<1 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon'))),find(abs(plen{t}-150)<1 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon')))};
     end
     sprintf('Proximal tree %d: %s',t,strcat(tree{t}.rnames{unique(tree{t}.R(CaNodes{t}{3}))}))

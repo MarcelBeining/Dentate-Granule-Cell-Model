@@ -133,7 +133,7 @@ for t =1:size(newcurr_dend,2)
 end
 
 tmp = polyfit(vstepsModel(Restind_model)+LJP,newcurr_dend(Restind_model,t)',1);
-display(sprintf('g at rest: %.3g nS',tmp(1)))
+fprintf('g at rest: %.3g nS\n',tmp(1))
 
 if any(ostruct.show==1) && ostruct.dataset ~= 0
 
