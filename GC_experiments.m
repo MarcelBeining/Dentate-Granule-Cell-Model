@@ -5,9 +5,9 @@ params = [];
 
 %********* folders 
 targetfolder_results = 'C:/GCModel/results';  % the folder where the graphs and pictures are saved
-targetfolder_data = 'C:\GCModel\simdata';  % the folder where simulated data is saved (to avoid resimulating if not necessary)
+targetfolder_data = 'C:/GCModel/simdata';  % the folder where simulated data is saved (to avoid resimulating if not necessary)
 % these params are t2n specific
-params.neuronpath = 'C:\nrn73w64\bin64\nrniv.exe';%'C:\nrn7.4\bin\nrniv.exe';   % the path to your NEURON exe
+params.neuronpath = 'C:/nrn73w64/bin64/nrniv.exe';%'C:\nrn7.4\bin\nrniv.exe';   % the path to your NEURON exe, not needed for linux and Mac
 params.path = pwd;  % your main folder of the model (pwd if you are already in the main folder)
 params.morphfolder = 'morphos/NEURON2_hocs';   % folder relative to "path" containing the hoc morphology files
 params.exchfolder = 't2nexchange';  % folder name which will be created and is used to exchange data between Matlab and NEURON
@@ -45,7 +45,6 @@ else
     ostruct.ratadjust = 0;
     params.LJP = 12.1; % liquid junction potential with Mongiat solutions..needs to be substracted from voltage commands and measured voltages
 end
-ostruct.bablock = 0;  % used in some experiments to distinguish between control (0) and barium application (1) and the corresponding data that should be loaded or simulation that should be done
 
 %*****************************
 if ostruct.newborn
@@ -84,19 +83,21 @@ plotmytrees(tree,targetfolder_results,[],ostruct) % '-s'
 %% Mongiat IV + Ba, simulate the I-V curve with and without blocking Kir channels with Barium, Figure 2 & 6
 params = params_orig;
 neuron = neuron_orig;
-ostruct.bablock = 0;
-ostruct.holding_voltage = -80; % mV
-ostruct.subtract_hv = 1; % boolean subtract holding voltage current
-ostruct.show = 1:2; % 1 = only exp data, 2 = only model data, 3 = both
+
+holding_voltage = -80 - params.LJP; % mV
 params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
 params.dt = 0.25;  % this is ignored if cvode = 1
-ostruct.coarse = 0;  % 1 = only simulate some voltage steps to make it faster
-ostruct.extract_kir = 0; 
+vstepsModel =  (-130:5:-40) - params.LJP;
+dur = [105 100 105];
+
+ostruct.subtract_hv = 1; % boolean subtract holding voltage current
+ostruct.show = 1:2; % 1 = only exp data, 2 = only model data, 3 = both
 ostruct.single = 0;    % 1 = show I-V of each cell
 ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
+
 %
-t2n_VoltSteps(neuron,tree,params,targetfolder_data,ostruct);
+t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
 %
 if ostruct.newborn
     ostruct.dataset = 2.28;
@@ -127,14 +128,14 @@ if ~ostruct.newborn
 end
 
 neuron = t2n_blockchannel(neuron,{'Kir21','pas'},[99 30]);
-ostruct.bablock = 1;
-t2n_VoltSteps(neuron,tree,params,targetfolder_data,ostruct);
+t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
 
 if ostruct.newborn
     ostruct.dataset =0;
 else
     ostruct.dataset =5;
 end
+ostruct.show = 2;
 ostruct.savename = savename;
 t2n_IVplot(expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct)
 ostruct = rmfield(ostruct,'savename');
@@ -333,14 +334,16 @@ ostruct.passtest = 'Std'; % different protocols to measure Rin/tau/capacitance/V
 %% IV rat, generate I-V relationship curve and additinally plot Rin measurements from rat, Figure 3
 neuron = neuron_orig;
 params = params_orig;
-ostruct.holding_voltage = -80; % mV
+vstepsModel =  (-130:5:-40) - params.LJP;
+dur = [105 100 105];
+holding_voltage = -80; % mV
 ostruct.subtract_hv = 1; % boolean subtract holding voltage current
 ostruct.show = 2; % 0= nothing, 1 = only exp data, 2 = only model data
 params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.single = 0; % show single data curves instead of mean
 
-t2n_VoltSteps(neuron,tree,params,targetfolder_data,ostruct);
+t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
 
 ostruct.savename = sprintf('Fig3-IV_Mehranfard15-%s',neuron.experiment);
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))

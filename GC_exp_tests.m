@@ -39,7 +39,6 @@ else
     ostruct.ratadjust = 0;
     params.LJP = 12.1; % liquid junction potential with Mongiat solutions..needs to be substracted from voltage commands and measured voltages
 end
-ostruct.bablock = 0;  % used in some experiments to distinguish between control (0) and barium application (1) and the corresponding data that should be loaded or simulation that should be done
 
 %*****************************
 
@@ -96,7 +95,6 @@ ostruct.show = 1:2; % 0= nothing, 1 = only exp data, 2 = only model data
 ostruct.coarse = 1;
 params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
 params.dt = 0.25;  % this is ignored if cvode = 1
-ostruct.extract_kir = 0;
 ostruct.single = 0;
 %
 t2n_VoltSteps(neuron,tree,params,targetfolder_data,ostruct);
@@ -187,7 +185,6 @@ t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %% spiking adaptation, as in Mateos-Aparicio 2014 (SK,M-Current contribution) ACHTUNG RATTE !!!!!!!!!!
 holding_voltage = -77; % mV
-% ostruct.subtract_hv = 0; % boolean subtract holding voltage current
 % ostruct.show = 1:2; % 1 = only exp data, 2 = only model data
 
 aGC_spikingadaptation(neuron,tree,params,targetfolder_data,holding_voltage);

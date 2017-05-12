@@ -5,9 +5,6 @@ if nargin < 3
     options.dataset = 2;
 end
 
-if ~isfield(options,'subtract_hv')
-    options.subtract_hv = 0;
-end
 if ~isfield(options,'show')
     options.show = 3;
 end

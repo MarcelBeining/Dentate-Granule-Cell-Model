@@ -84,16 +84,4 @@ for s = numel(nsyns):-1:1
     
 end
 
-if ostruct.bablock
-    save(fullfile(targetfolder_data,'Exp_synEPSCP_Ba.mat'),'nneuron','params','tree','EPSP1','EPSC','dists','nsyns')
-else
-    save(fullfile(targetfolder_data,'Exp_synEPSCP_CTRL.mat'),'nneuron','params','tree','EPSP1','EPSC','dists','nsyns')
-end
-%%
-% t=0:0.01:50;
-% tau = 3;
-% onset = 0;
-% gmax=2;
-% g = gmax * (t - onset)./tau .* exp(-(t - onset - tau)/tau)
-% %  figure;
-% plot(t,g)
+save(fullfile(targetfolder_data,sprintf('Exp_synEPSCP_%s.mat',neuron.experiment)),'nneuron','params','tree','EPSP1','EPSC','dists','nsyns')
