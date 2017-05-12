@@ -175,7 +175,7 @@ end
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 
 ostruct.show = 1:3; % 1 = show experiment, 2 = show data and 3 = make extra figures only with the current steps defined by "steps"
-t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,ostruct,steps)
+t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct,steps)
 % % this part is only used if experimental data and convex hulls of data
 % % should be plotted (for publicatoin)
 % ostruct.show = 1;
@@ -196,7 +196,7 @@ t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,ostruct,steps)
 % ostruct.savename = ostruct.savename(1:end-8);
 
 ostruct.show = 2;   % 1 = show experimental data, 2 = show simulation data, 1:2 = show both
-[prop2,fig] =     t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct,tree);
+[prop2,fig] =     t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct,tree);
 
 ostruct.show = 1:2;  % 1 = show experimental data, 2 = show simulation data, 1:2 = show both
 ostruct.handles = [];
@@ -414,7 +414,7 @@ t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct,steps);
 
 ostruct.show = 0;
-props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
+props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 
 ISIadp{1} = NaN(numel(tree),1);
 for t = 1:numel(tree)
@@ -429,7 +429,7 @@ t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct,steps);
 
 ostruct.show = 0;
-props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
+props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 
 ISIadp{2} = NaN(numel(tree),1);
 for t = 1:numel(tree)
@@ -447,7 +447,7 @@ t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct,steps);
 
 ostruct.show = 0;
-props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
+props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 
 ISIadp{3} = NaN(numel(tree),1);
 for t = 1:numel(tree)
@@ -517,7 +517,7 @@ ostruct.show = 0;
 prop = cell(2,1);
 for a = 1:2
     ostruct.ampprop = ostruct.amp(a);
-    prop{a}(1) = t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
+    prop{a}(1) = t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 end
 
 
@@ -541,7 +541,7 @@ t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 ostruct.show = 0;
 for a = 1:2
     ostruct.ampprop = ostruct.amp(a);
-    prop{a}(2) = t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
+    prop{a}(2) = t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 end
 ostruct.show = 2;
 t2n_plotCurrSteps(targetfolder_data,targetfolder_results,params,neuron,ostruct);
@@ -564,7 +564,7 @@ t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 ostruct.show = 0;
 for a = 1:2
     ostruct.ampprop = ostruct.amp(a);
-    prop{a}(3) = t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
+    prop{a}(3) = t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 end
 ostruct.show = 2;
 t2n_plotCurrSteps(targetfolder_data,targetfolder_results,params,neuron,ostruct);
@@ -732,7 +732,7 @@ for v = 1:numel(changs) %
     rmatrix(5,v) = nanmean(find_curr(params,neuron,tree,'spike'));
     
     t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
-    props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
+    props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct);
     rmatrix(4,v) = nanmean(cellfun(@(y) nanmean(y),props.APiv(1,:)));
     rmatrix(6,v) = nanmean(cellfun(@(y) nanmean(y),props.APamp(1,:)));
     rmatrix(7,v) = nanmean(cellfun(@(y) nanmean(y),props.APwidth(1,:)));
@@ -742,7 +742,7 @@ for v = 1:numel(changs) %
     ostruct.amp = [100,200]; % pA
     ostruct.ampprop = 100;
     t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
-    props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
+    props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct);
     rmatrix(9,v) =  mean(cellfun(@(y) numel(y),props.APind(1,:))); %# APs@100
     rmatrix(11,v) =  nanmean(cellfun(@(y) mean(y),props.APISI(1,:))); % ISI mean
     isia = NaN(numel(tree),1);
@@ -758,7 +758,7 @@ for v = 1:numel(changs) %
     
     %d
     ostruct.ampprop = 200;
-    props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct);
+    props = t2n_APprop(targetfolder_data,targetfolder_results,neuron,params,ostruct);
     rmatrix(10,v) = mean(cellfun(@(y) numel(y),props.APind(1,:)));%# APs@200
     %e
     ostruct.simple = 0;
