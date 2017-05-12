@@ -82,8 +82,3 @@ xlim([80 920])
 fprintf('Iberitoxin-sensitive current: %g +- %g nA (s.e.m.)\n',mean(abscurr_ibersens),std(abscurr_ibersens)/sqrt(numel(tree)));
 fprintf('Paxilline-sensitive current: %g +- %g nA (s.e.m.)\n',mean(abscurr_paxisens),std(abscurr_paxisens)/sqrt(numel(tree)));
 fprintf('Part of typeI BK in total BK current: %g +- %g %% (s.e.m.)\n',mean(ratio_type1),std(ratio_type1)/sqrt(numel(tree)));
-
-
-
-% 
-% save(sprintf(fullfile(targetfolder,'/Exp_Shruti_current_%s.mat'),neuron.experiment),'neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')

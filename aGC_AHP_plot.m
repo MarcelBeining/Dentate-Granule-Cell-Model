@@ -3,8 +3,8 @@ function aGC_AHP_plot(targetfolder_data,targetfolder_results,neuron)
 load(expcat(targetfolder_data,'Exp_msAHP',neuron.experiment))
 
 figure
-thisvol = AHPvol_new_curr_dend;
-ttthisvol = AHPtvol_new_curr_dend;
+thisvol = AHPvoltVec;
+ttthisvol = AHPtimeVec;
 % vol_mature = squeeze(mean(mean(exp_vclamp_mature(180*rate+1:200*rate+1,:,:),1),2));
 tit = {'Control','XE991 (M Channel blocker)','Apamin (SK blocker)'};
 for f=1:size(thisvol,1)

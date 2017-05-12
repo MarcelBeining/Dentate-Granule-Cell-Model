@@ -16,7 +16,7 @@ if ~isfield(ostruct,'extract_kir')
     ostruct.extract_kir = 0;
 end
 
-load(loadingfile,'mholding_current','neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')
+load(loadingfile,'mholding_current','neuron','holding_voltage','steadyStateCurrVec','currVec','params','vstepsModel','tree','LJP')
 
 if any(ostruct.show == 1) && ostruct.dataset ~= 0
     [exp_vclamp,vsteps,rate] = load_ephys(ostruct.dataset,'VClamp',ostruct.extract_kir);
@@ -50,14 +50,14 @@ amp = [-10,10];
 for a = 1:2
     for t = 1:numel(tree)
         ind = find(vstepsModel+params.LJP == -80+amp(a));
-        I0 = mean(inewcurr_dend{t,ind}(2,inewcurr_dend{t,ind}(1,:)<104));
-        if ~any(inewcurr_dend{t,ind}(1,:)>190 & inewcurr_dend{t,ind}(1,:)<204)
-            is(t) = mean(inewcurr_dend{t,ind}(2,inewcurr_dend{t,ind}(1,:)>175 & inewcurr_dend{t,ind}(1,:)<204));
+        I0 = mean(currVec{t,ind}(2,currVec{t,ind}(1,:)<104));
+        if ~any(currVec{t,ind}(1,:)>190 & currVec{t,ind}(1,:)<204)
+            is(t) = mean(currVec{t,ind}(2,currVec{t,ind}(1,:)>175 & currVec{t,ind}(1,:)<204));
         else
-            is(t) = mean(inewcurr_dend{t,ind}(2,inewcurr_dend{t,ind}(1,:)>190 & inewcurr_dend{t,ind}(1,:)<204));
+            is(t) = mean(currVec{t,ind}(2,currVec{t,ind}(1,:)>190 & currVec{t,ind}(1,:)<204));
         end
-        y = inewcurr_dend{t,ind}(2,sign(amp(a))*inewcurr_dend{t,ind}(2,:) > sign(amp(a))*is(t))-is(t);
-        x = inewcurr_dend{t,ind}(1,sign(amp(a))*inewcurr_dend{t,ind}(2,:) > sign(amp(a))*is(t));
+        y = currVec{t,ind}(2,sign(amp(a))*currVec{t,ind}(2,:) > sign(amp(a))*is(t))-is(t);
+        x = currVec{t,ind}(1,sign(amp(a))*currVec{t,ind}(2,:) > sign(amp(a))*is(t));
         capm(a,t) = trapz(x,y)/amp(a);
     end
 end
@@ -65,13 +65,13 @@ if any(ostruct.show == 1) && ostruct.dataset ~= 0 && (ostruct.dataset ~= 2.28)  
     fprintf('Mean Rin in Exp(@-90mV-LJP) is %g +- %g MOhm (s.e.m., -10mV)\n',mean(Rin),std(Rin)/sqrt(numel(Rin)))
     fprintf('Mean Rin in Exp(@-70mV-LJP) is %g +- %g MOhm (s.e.m., +10mV)\n',mean(Rin2),std(Rin2)/sqrt(numel(Rin2)))
 end
-if  any(cellfun(@(x) ~any(x(1,:)>190&x(1,:)<204),inewcurr_dend(:,vstepsModel+params.LJP==-80-10)))
-    Rin = 1000*(-10)./cellfun(@(x) mean(x(2,(x(1,:)>175&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),inewcurr_dend(:,vstepsModel+params.LJP==-80-10));
+if  any(cellfun(@(x) ~any(x(1,:)>190&x(1,:)<204),currVec(:,vstepsModel+params.LJP==-80-10)))
+    Rin = 1000*(-10)./cellfun(@(x) mean(x(2,(x(1,:)>175&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),currVec(:,vstepsModel+params.LJP==-80-10));
 else
-    Rin = 1000*(-10)./cellfun(@(x) mean(x(2,(x(1,:)>190&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),inewcurr_dend(:,vstepsModel+params.LJP==-80-10));
+    Rin = 1000*(-10)./cellfun(@(x) mean(x(2,(x(1,:)>190&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),currVec(:,vstepsModel+params.LJP==-80-10));
 end
 fprintf('\nMean Rin in Model(@-90mV-LJP) is %g +- %g MOhm (s.e.m., -10mV)\n',mean(Rin),std(Rin)/sqrt(numel(Rin)))
-Rin = 1000*(+10)./cellfun(@(x) mean(x(2,(x(1,:)>190&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),inewcurr_dend(:,vstepsModel+params.LJP==-80+10));
+Rin = 1000*(+10)./cellfun(@(x) mean(x(2,(x(1,:)>190&x(1,:)<204)))-mean(x(2,(x(1,:)<104))),currVec(:,vstepsModel+params.LJP==-80+10));
 fprintf('Mean Rin in Model(@-70mV-LJP) is %g +- %g MOhm (s.e.m., +10mV)\n',mean(Rin),std(Rin)/sqrt(numel(Rin)))
 if any(ostruct.show == 1) && ostruct.dataset ~= 0 && ostruct.dataset ~= 2.28  % dont use that VClamp dataset, as it had been done after spiking experiment
     fprintf('\nMean capacitance in Exp(@-90mV-LJP) is %g +- %g pF (s.e.m. -10mV)',mean(cap),std(cap)/sqrt(numel(cap)))
@@ -107,7 +107,7 @@ if ostruct.subtract_hv
     if any(ostruct.show == 1) && ostruct.dataset ~= 0
         meas_curr = meas_curr - basl;
     end
-    newcurr_dend = newcurr_dend - repmat(mholding_current,size(newcurr_dend,1),1);
+    steadyStateCurrVec = steadyStateCurrVec - repmat(mholding_current,size(steadyStateCurrVec,1),1);
 end
 
 
@@ -117,7 +117,7 @@ otherind_model = vstepsModel+LJP >= -70 & vstepsModel+LJP <= -50;
 Restind_model = vstepsModel+LJP >= -100 & vstepsModel+LJP <= -70;
 
 
-gKirModel = zeros(size(newcurr_dend,2),1);
+gKirModel = zeros(size(steadyStateCurrVec,2),1);
 if any(ostruct.show == 1) && ostruct.dataset ~= 0
     gKirReal = zeros(size(meas_curr,1),1);
     Kirind_Mongiat = vsteps <= -110;
@@ -127,12 +127,12 @@ if any(ostruct.show == 1) && ostruct.dataset ~= 0
         gKirReal(t) = tmp(1);
     end
 end
-for t =1:size(newcurr_dend,2)
-    tmp = polyfit(vstepsModel(Kirind_model)+LJP,newcurr_dend(Kirind_model,t)',1) - polyfit(vstepsModel(otherind_model)+LJP,newcurr_dend(otherind_model,t)',1) ;
+for t =1:size(steadyStateCurrVec,2)
+    tmp = polyfit(vstepsModel(Kirind_model)+LJP,steadyStateCurrVec(Kirind_model,t)',1) - polyfit(vstepsModel(otherind_model)+LJP,steadyStateCurrVec(otherind_model,t)',1) ;
     gKirModel(t) = tmp(1);
 end
 
-tmp = polyfit(vstepsModel(Restind_model)+LJP,newcurr_dend(Restind_model,t)',1);
+tmp = polyfit(vstepsModel(Restind_model)+LJP,steadyStateCurrVec(Restind_model,t)',1);
 fprintf('g at rest: %.3g nS\n',tmp(1))
 
 if any(ostruct.show==1) && ostruct.dataset ~= 0
@@ -168,14 +168,14 @@ line(vstepsModel,zeros(1,numel(vstepsModel)),'LineStyle','--','Color',[0.5 0.5 0
 
 if any(ostruct.show == 2)
     if ostruct.single
-        p = plot(vstepsModel,newcurr_dend);
-        for t =1:size(newcurr_dend,2)
+        p = plot(vstepsModel,steadyStateCurrVec);
+        for t =1:size(steadyStateCurrVec,2)
             set(p(t),'color',tree{t}.col{1})
         end
     elseif  any(ostruct.usemorph == [2,3,5,6])  % artificial cells
-        errorbar(vstepsModel,mean(newcurr_dend,2),std(newcurr_dend,[],2)/sqrt(size(newcurr_dend,2)),'Color',[0 1 0],'LineWidth',1);
+        errorbar(vstepsModel,mean(steadyStateCurrVec,2),std(steadyStateCurrVec,[],2)/sqrt(size(steadyStateCurrVec,2)),'Color',[0 1 0],'LineWidth',1);
     else
-        errorbar(vstepsModel,mean(newcurr_dend,2),std(newcurr_dend,[],2)/sqrt(size(newcurr_dend,2)),'Color',[0 0 1],'LineWidth',1);
+        errorbar(vstepsModel,mean(steadyStateCurrVec,2),std(steadyStateCurrVec,[],2)/sqrt(size(steadyStateCurrVec,2)),'Color',[0 0 1],'LineWidth',1);
     end
     
     xlabel('Holding Voltage [mV] corrected')
@@ -204,7 +204,7 @@ ylabel('Measured Current [pA]')
 
 %% add paper data
 vstepsreal = vstepsModel;
-mIV = mean(newcurr_dend,2);
+mIV = mean(steadyStateCurrVec,2);
 
 Brenner05 = [-80,-20,600,10]; %HV, pA step, MOhm, stdevMOhm
 Mongiat09 = [-70-12.1,-10,224,7]; %HV, mV step, MOhm, stdevMOhm  LJP corrected

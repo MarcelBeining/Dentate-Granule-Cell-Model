@@ -15,7 +15,7 @@ if ~isfield(ostruct,'show')
     ostruct.show = 1:2;
 end
 
-load(loadingfile,'mholding_current','neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')
+load(loadingfile,'mholding_current','neuron','holding_voltage','steadyStateCurrVec','currVec','params','vstepsModel','tree','LJP')
 if any(ostruct.show==1)
     [exp_vclamp,vsteps,rate] = load_ephys(ostruct.dataset,'VClamp',ostruct.extract_kir);
     vsteps = vsteps - params.LJP;
@@ -26,7 +26,7 @@ end
 fig(1) = figure; hold all
 fig(2) = figure;hold all
 % exp_vclamp = exp_vclamp_mature;
-thiscurr = inewcurr_dend;
+thiscurr = currVec;
 % delind = delind_mature;
 if ostruct.subtract_hv
 %     basel = mean(exp_vclamp(94*rate+1:104*rate+1,setdiff(1:size(exp_vclamp,2),delind),:),1);

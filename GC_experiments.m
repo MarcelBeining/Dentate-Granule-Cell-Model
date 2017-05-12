@@ -77,9 +77,9 @@ neuron_orig = neuron;
 params_orig = params;
 
 %% plot trees, Figure 1
-% ostruct.show = 2;
-% ostruct.savename = 'Fig1_Trees';
-% plotmytrees(tree,targetfolder_results,[],ostruct) % '-s'
+ostruct.show = 2;
+ostruct.savename = 'Fig1_Trees';
+plotmytrees(tree,targetfolder_results,[],ostruct) % '-s'
 
 %% Mongiat IV + Ba, simulate the I-V curve with and without blocking Kir channels with Barium, Figure 2 & 6
 neuron = neuron_orig;

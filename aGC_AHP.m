@@ -9,9 +9,6 @@ params.tstop = 3000;
 params.dt=0.05;
 params.cvode = 1;
     
-clearvars vol_new_curr_dend
-
-
 %!!!
 meanhvol = -58 - params.LJP;   % corrected!!
 params.skiprun = 0; %!!!!!!!!!
@@ -63,13 +60,13 @@ end
 for s = 1:3
     for t = 1:numel(tree)
         if isfield(out{s},'error')
-            AHPvol_new_curr_dend{t,s} = [] ;
-            AHPtvol_new_curr_dend{t,s} = [];
+            AHPvoltVec{t,s} = [] ;
+            AHPtimeVec{t,s} = [];
         else
-            AHPvol_new_curr_dend{t,s} = out{s}.record{t}.cell.v{1} ;
-            AHPtvol_new_curr_dend{t,s} = out{s}.t;
+            AHPvoltVec{t,s} = out{s}.record{t}.cell.v{1} ;
+            AHPtimeVec{t,s} = out{s}.t;
         end
     end
 end
 
-save(fullfile(targetfolder_data,'EphysModel',sprintf('Exp_msAHP_%s.mat',neuron.experiment)),'AHPvol_new_curr_dend','AHPtvol_new_curr_dend','params','neuron','tree')
+save(fullfile(targetfolder_data,'EphysModel',sprintf('Exp_msAHP_%s.mat',neuron.experiment)),'AHPvoltVec','AHPtimeVec','params','neuron','tree')

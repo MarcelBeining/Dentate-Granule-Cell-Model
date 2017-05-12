@@ -25,66 +25,49 @@ for o = 1:6
         case 1
             load('Mongiat_Mature_VClamp.mat');
             exp_vclamp = data{1};
-%             col = colorme('dark blue');
+            %             col = colorme('dark blue');
         case 2
             load('Mongiat_Young_VClamp.mat');
             exp_vclamp = data{1};
-%             col = colorme('dark red');
+            %             col = colorme('dark red');
         case 3
             load('Mongiat_BaCl_VClamp.mat');
             exp_vclamp = data{2};
-%             col = colorme('blue');
+            %             col = colorme('blue');
         case 4
             load('Mongiat_BaCl_VClamp.mat');
             exp_vclamp = data{1};
-%             col = colorme('red');
+            %             col = colorme('red');
         case 5
             load('Mongiat_BaCl_VClamp.mat');
             exp_vclamp = data{4};
-%             col = colorme('turquois');
+            %             col = colorme('turquois');
         case 6
             load('Mongiat_BaCl_VClamp.mat');
             exp_vclamp = data{3};
-%             col = colorme('orange');
+            %             col = colorme('orange');
     end
     tvec = 1/rate:1/rate:size(exp_vclamp,1)/rate;
-
+    
     vstepsreal = vsteps - LJP;
     
-%     if exist('delind','var')
-%         curr_mature = squeeze(mean(exp_vclamp(194*rate+1:204*rate+1,setdiff(1:size(exp_vclamp,2),delind),:),1));
-%         % mean(curr_mature(:,1)-curr_mature(:,2))
-%         basl = squeeze(mean(exp_vclamp(94*rate+1:104*rate+1,setdiff(1:size(exp_vclamp,2),delind),:),1));
-%     else
-        curr_mature = squeeze(mean(exp_vclamp(194*rate+1:204*rate+1,:,:),1));
-        % mean(curr_mature(:,1)-curr_mature(:,2))
-        basl = squeeze(mean(exp_vclamp(94*rate+1:104*rate+1,:,:),1));
-%     end
-%     clearvars delind
+    curr_mature = squeeze(mean(exp_vclamp(194*rate+1:204*rate+1,:,:),1));
+    basl = squeeze(mean(exp_vclamp(94*rate+1:104*rate+1,:,:),1));
+    
     curr_mature = curr_mature-repmat(curr_mature(:,find(vsteps>= -65,1,'first')),1,numel(vsteps));  % -65 war ca das holding pot
     
     spik_ind =cat(2,false(size(curr_mature,1),sum(vsteps<-80)),squeeze(any(exp_vclamp(tvec>0&tvec<204,:,vsteps>=-80) < -300,1))); %index which cells spike
     curr_mature(spik_ind) = NaN;
-%     if options.subtract_hv
-%         %     curr_mature = curr_mature - repmat(curr_mature(:,vstepsMeasure_Mongiat==holding_voltage),1,size(curr_mature,2)); % subtract current at baseline holding voltage (as Mongiat did)
-%         curr_mature = curr_mature - basl;
-%         newcurr_dend = newcurr_dend - repmat(mholding_current,size(newcurr_dend,1),1);
-%     end
     
     if any(options.show == [1 3])
-        %     if options.subtract_hv
-        %         mIV = mean(curr_mature-repmat(curr_mature(:,indhvexp),1,size(curr_mature,2)),1);
-        %         stdIV = std (curr_mature-repmat(curr_mature(:,indhvexp),1,size(curr_mature,2)),1);
-        %     else
+        
         mIV = nanmean(curr_mature,1);
         stdIV = nanstd (curr_mature,1);
-        %     end
         hp = patch ([(mIV + stdIV) (fliplr (mIV - stdIV))],[vstepsreal (fliplr (vstepsreal))], colo{o});
         set (hp, 'facealpha', 0.4, 'edgecolor', 'none')
         plot (mIV,vstepsreal, 'Color',colo{o},'LineWidth',3,'LineStyle','.')
     end
     
-        % xlim([-400 100])
     xlabel('Measured Current [pA]')
 end
 
@@ -129,8 +112,8 @@ if any(options.show == [2 3])
         line(zeros(1,numel(vstepsModel)),vstepsModel,'LineStyle','--','Color',[0.5 0.5 0.5])
         ek = neuron.mech{1}.all.k_ion.ek;
         %         line([-400 100],[ek ek],'LineStyle','--','Color',[0.7 0 0])
-        p = plot(newcurr_dend-repmat(newcurr_dend(find(vstepsModel>=-65-LJP,1,'first'),:),size(newcurr_dend,1),1),vstepsModel);
-        for t =1:size(newcurr_dend,2)
+        p = plot(steadyStateCurrVec-repmat(steadyStateCurrVec(find(vstepsModel>=-65-LJP,1,'first'),:),size(steadyStateCurrVec,1),1),vstepsModel);
+        for t =1:size(steadyStateCurrVec,2)
             set(p(t),'color',tree{t}.col{1})
         end
         ylabel('Holding Voltage [mV] corrected')
@@ -141,8 +124,8 @@ if any(options.show == [2 3])
         
         vamp = NaN(numel(cstepsSpikingModel),3);
         for s = 1:numel(cstepsSpikingModel)
-            tvec = tvol_new_curr_dend{1,s};
-            exp_iclamp = cell2mat(vol_new_curr_dend(:,s)');
+            tvec = timeVec{1,s};
+            exp_iclamp = cell2mat(voltVec(:,s)');
             if ~any(exp_iclamp(tvec>55&tvec<255,:)>0,1)
                 vamp(s,:) = squeeze(mean(exp_iclamp(tvec>205&tvec<255,:),1)-0*mean(exp_iclamp(tvec<55,:),1));
             end

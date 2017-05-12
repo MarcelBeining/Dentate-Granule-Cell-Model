@@ -97,28 +97,28 @@ else
     shoulder = NaN;
 end
 
-p = zeros(size(vol_new_curr_dend,1),1);
+p = zeros(size(voltVec,1),1);
 figure(fig(1))
-for ss = 1:size(vol_new_curr_dend,2)
+for ss = 1:size(voltVec,2)
     s = find(cstepsSpiking == cstepsSpikingModel(ss));
-    for f=1:size(vol_new_curr_dend,1)
+    for f=1:size(voltVec,1)
         if ostruct.usemorph >=4  % rat
-            subplot(floor(sqrt(size(vol_new_curr_dend,2))),ceil(sqrt(size(vol_new_curr_dend,2))),ss)
+            subplot(floor(sqrt(size(voltVec,2))),ceil(sqrt(size(voltVec,2))),ss)
         else
             subplot(floor(sqrt(size(exp_iclamp,3))),ceil(sqrt(size(exp_iclamp,3))),s)
         end
         hold all
         %         if params.realv
-        thisv = squeeze(vol_new_curr_dend{f,ss});
+        thisv = squeeze(voltVec{f,ss});
         %         else
-        %             thisv = squeeze(vol_new_curr_dend{f,s}) + params.LJP;
+        %             thisv = squeeze(voltVec{f,s}) + params.LJP;
         %         end
         maxdv{2}(f,ss) = max(diff(thisv,1,1))/params.dt;
-        ind = find(vol_new_curr_dend{f,ss}>7,1,'first');  % find first
+        ind = find(voltVec{f,ss}>7,1,'first');  % find first
         % spike  %buggg?
         %         ind = find(diff(thisv,1,1)>7,1,'first');  % find first spike
         
-        thist = squeeze(tvol_new_curr_dend{f,ss});
+        thist = squeeze(timeVec{f,ss});
         if isempty(ind)
             ind =1;
             linstyl = '-';

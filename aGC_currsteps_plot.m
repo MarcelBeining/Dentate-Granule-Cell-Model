@@ -37,11 +37,6 @@ else
     fig(1) = figure;hold all,
 end
 
-
-
-thisvol = vol_new_curr_dend;
-ttthisvol = tvol_new_curr_dend;
-
 if any(ostruct.show == 1)
     for f = 1:size(exp_iclamp,2)
         if numel(ostruct.amp)==1
@@ -99,7 +94,7 @@ if any(ostruct.show == 1)
     end
 end
 
-Rin = (cellfun(@(x) max(x),thisvol(:,cstepsSpikingModel==0.01))-cellfun(@(x) x(1),thisvol(:,cstepsSpikingModel==0.01)))/0.01;
+Rin = (cellfun(@(x) max(x),voltVec(:,cstepsSpikingModel==0.01))-cellfun(@(x) x(1),voltVec(:,cstepsSpikingModel==0.01)))/0.01;
 fprintf('Mean Rin in Model(@+10pA) is %g +- %g MOhm (s.e.m., -10mV)\n',mean(Rin),std(Rin)/sqrt(numel(Rin)))
 
 if any(ostruct.show == 1)
@@ -111,34 +106,34 @@ if any(ostruct.show == 1)
     % end
     if ~isempty(ib)
         cstepsSpikingModel = cstepsSpikingModel(ib);
-        thisvol = thisvol(:,ib);
-        ttthisvol = ttthisvol(:,ib);
+        voltVec = voltVec(:,ib);
+        timeVec = timeVec(:,ib);
     end
 else
     nnan = ones(numel(cstepsSpikingModel),1);
 end
-% if size(thisvol,2) > 25
-%     thisvol = thisvol(:,1:25);
+% if size(voltVec,2) > 25
+%     voltVec = voltVec(:,1:25);
 % end
 if any(ostruct.show == 2)
-    for f=1:size(thisvol,1)
+    for f=1:size(voltVec,1)
         
-        for s = 1:size(thisvol,2)
+        for s = 1:size(voltVec,2)
             if numel(ostruct.amp)==1
                 hold all
-                if ~isempty(ttthisvol{f,s})
-                    plot(ttthisvol{f,s},squeeze(thisvol{f,s}),'LineWidth',1,'Color',tree{f}.col{1})
+                if ~isempty(timeVec{f,s})
+                    plot(timeVec{f,s},squeeze(voltVec{f,s}),'LineWidth',1,'Color',tree{f}.col{1})
                 end
             else
                 if nnan(s)
                     if any(ostruct.show == 1)
                         subplot(round(sqrt(size(exp_iclamp,3))),ceil(sqrt(size(exp_iclamp,3))),ia(s))
                     else
-                        subplot(round(sqrt(size(thisvol,2))),ceil(sqrt(size(thisvol,2))),s)
+                        subplot(round(sqrt(size(voltVec,2))),ceil(sqrt(size(voltVec,2))),s)
                     end
                     hold all
-                    if ~isempty(ttthisvol{f,s})
-                        plot(ttthisvol{f,s},squeeze(thisvol{f,s}),'LineWidth',1,'Color',tree{f}.col{1})
+                    if ~isempty(timeVec{f,s})
+                        plot(timeVec{f,s},squeeze(voltVec{f,s}),'LineWidth',1,'Color',tree{f}.col{1})
                     end
                 end
             end
@@ -168,7 +163,7 @@ if any(ostruct.show == 1) && ~isempty(intersect(cstepsSpiking,steps))
             else
                 ff = [4 1 8];
             end
-            for f=1:3%1:size(thisvol,1)
+            for f=1:3%1:size(voltVec,1)
                 %         if params.realv
                 this = exp_iclamp(:,ff(f),s) - params.LJP ;   % corrected!
                 p(f)= plot(1/rate:1/rate:size(exp_iclamp,1)/rate,squeeze(this),'LineWidth',1);%exp_iclamp_mature(:,f,s)))
@@ -205,7 +200,7 @@ if any(ostruct.show == 2) && ~isempty(intersect(cstepsSpikingModel,steps))
                     ff = 1:3;
             end
             for f = ff%numel(tree)
-                plot(ttthisvol{f,cstepsSpikingModel==steps(s)},squeeze(thisvol{f,cstepsSpikingModel==steps(s)}),'LineWidth',1,'Color',tree{f}.col{1})
+                plot(timeVec{f,cstepsSpikingModel==steps(s)},squeeze(voltVec{f,cstepsSpikingModel==steps(s)}),'LineWidth',1,'Color',tree{f}.col{1})
             end
 %             'g'
         end

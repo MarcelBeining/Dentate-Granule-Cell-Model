@@ -1,4 +1,12 @@
 function aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
+% This function performs one or multiple current steps in the cells given
+% by "tree" and "neuron" and saves the results in a mat file named
+% according to neuron.experiment
+% 
+% *****************************************************************************************************
+% * This function is part of the T2N software package.                                                *
+% * Copyright 2016, 2017 Marcel Beining <marcel.beining@gmail.com>                                    *
+% *****************************************************************************************************
 
 if nargin < 5
     ostruct = struct();
@@ -94,18 +102,18 @@ out = t2n(tree,params,nneuron,'-q-d-w');
 
 
 numspikes = zeros(numel(tree),numel(cstepsSpikingModel));
-vol_new_curr_dend = cell(numel(tree),numel(cstepsSpikingModel));
-tvol_new_curr_dend = vol_new_curr_dend;
+voltVec = cell(numel(tree),numel(cstepsSpikingModel));
+timeVec = voltVec;
 
 for s = 1:numel(cstepsSpikingModel)
     for t = 1:numel(tree)
         if isfield(out{s},'error') && out{s}.error > 0
-            vol_new_curr_dend{t,s} = [] ;
-            tvol_new_curr_dend{t,s} = [];
+            voltVec{t,s} = [] ;
+            timeVec{t,s} = [];
             numspikes(t,s) = NaN;
         else
-            vol_new_curr_dend{t,s} = out{s}.record{t}.cell.v{1} ;
-            tvol_new_curr_dend{t,s} = out{s}.t;
+            voltVec{t,s} = out{s}.record{t}.cell.v{1} ;
+            timeVec{t,s} = out{s}.t;
             numspikes(t,s) = numel(out{s}.APCtimes{t}{1});
         end
     end
@@ -118,4 +126,4 @@ end
 if ~params.cvode
    str = strcat(str,'_fixed-dt'); 
 end
-save(fullfile(targetfolder_data,sprintf('Exp_Spiking_%s%s.mat',neuron.experiment,str)),'vol_new_curr_dend','tvol_new_curr_dend','numspikes','params','cstepsSpikingModel','tree','nneuron')
+save(fullfile(targetfolder_data,sprintf('Exp_Spiking_%s%s.mat',neuron.experiment,str)),'voltVec','timeVec','numspikes','params','cstepsSpikingModel','tree','nneuron')

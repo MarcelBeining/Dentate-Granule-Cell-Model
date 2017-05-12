@@ -141,10 +141,10 @@ if numel(uu) == 1
     if uu == 1
         props.APt = cell(1,size(exp_iclamp,2));
     else
-        props.APt = cell(1,size(sim1.vol_new_curr_dend,1));
+        props.APt = cell(1,size(sim1.voltVec,1));
     end
 else
-    props.APt = cell(2,max([size(exp_iclamp,2),size(sim1.vol_new_curr_dend,1)]));
+    props.APt = cell(2,max([size(exp_iclamp,2),size(sim1.voltVec,1)]));
 end
 markerstyle = {'o','x','d'};
 props.APiv = props.APt; props.APit = props.APt; props.APwidth = props.APt; props.APind = props.APt; props.APamp = props.APt;props.APampabs = props.APt;props.APISI = props.APt;props.fAHP = props.APt;props.fAHPabs = props.APt;props.APdeact = props.APt;
@@ -166,14 +166,14 @@ for u = 1:numel(uu)
             if isempty(s2)
                 continue
             end
-            thisv = cell2mat(sim1.vol_new_curr_dend(:,s2)');
-            thist = cell2mat(sim1.tvol_new_curr_dend(:,s2)');
+            thisv = cell2mat(sim1.voltVec(:,s2)');
+            thist = cell2mat(sim1.timeVec(:,s2)');
             thisv = interp1(thist(:,1),thisv,thist(1,1):newrate:thist(end,1));
             if size(thisv,1) == 1
                 thisv = thisv';
             end
             thist = repmat((thist(1,1):newrate:thist(end,1))',1,size(thisv,2));
-            spikdetect = cellfun(@(x) any(x > -30),sim1.vol_new_curr_dend);
+            spikdetect = cellfun(@(x) any(x > -30),sim1.voltVec);
             csteps = sim1.cstepsSpikingModel;
             if ~isempty(tree)
                 for t = 1:numel(tree)
@@ -189,14 +189,14 @@ for u = 1:numel(uu)
                 end
             end
         case 3
-            thisv = cell2mat(sim2.vol_new_curr_dend(:,s2)');
-            thist = cell2mat(sim2.tvol_new_curr_dend(:,s2)');
+            thisv = cell2mat(sim2.voltVec(:,s2)');
+            thist = cell2mat(sim2.timeVec(:,s2)');
             thisv = interp1(thist(:,1),thisv,thist(1,1):newrate:thist(end,1));
             if size(thisv,1) == 1
                 thisv = thisv';
             end
             thist = repmat((thist(1,1):newrate:thist(end,1))',1,size(thisv,2));
-            spikdetect = cellfun(@(x) any(x > -30),sim2.vol_new_curr_dend);
+            spikdetect = cellfun(@(x) any(x > -30),sim2.voltVec);
             csteps = sim2.cstepsSpikingModel;
     end
     [~,props.APic{u}] = find(spikdetect == 1 & cumsum(spikdetect,2) == 1);

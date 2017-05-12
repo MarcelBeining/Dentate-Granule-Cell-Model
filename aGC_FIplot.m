@@ -13,9 +13,9 @@ else
     str = '';
 end
 if isfield(ostruct,'variabledt') && ostruct.variabledt == 0
-    load(expcat(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,str,'_fixed-dt')),'vol_new_curr_dend','tvol_new_curr_dend','numspikes','params','cstepsSpiking','cstepsSpikingModel','tree','nneuron')
+    load(expcat(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,str,'_fixed-dt')),'voltVec','timeVec','numspikes','params','cstepsSpikingModel','tree','nneuron')
 else
-    load(expcat(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,str)),'vol_new_curr_dend','tvol_new_curr_dend','numspikes','params','cstepsSpiking','cstepsSpikingModel','tree','nneuron')
+    load(expcat(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,str)),'voltVec','timeVec','numspikes','params','cstepsSpikingModel','tree','nneuron')
 end
 if any(ostruct.usemorph == [2,3,5,6])  % artificial cells
     modelcol = [0 1 0];
@@ -44,7 +44,7 @@ instFImodel = NaN(numel(tree),floor(ostruct.duration/100));
 if ~isempty(s2)
     for t = 1:numel(tree)
         for w = 1:floor(ostruct.duration/100)
-            instFImodel(t,w) = sum(diff(vol_new_curr_dend{t,s2} > 0,1,1) == -1 & tvol_new_curr_dend{t,s2}(2:end)>=55+(w-1)*100 & tvol_new_curr_dend{t,s2}(2:end)<55+(w)*100)/0.1;
+            instFImodel(t,w) = sum(diff(voltVec{t,s2} > 0,1,1) == -1 & timeVec{t,s2}(2:end)>=55+(w-1)*100 & timeVec{t,s2}(2:end)<55+(w)*100)/0.1;
         end
     end
     if ~isempty(s1)

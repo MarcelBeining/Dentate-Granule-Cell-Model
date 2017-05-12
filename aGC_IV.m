@@ -1,4 +1,14 @@
 function aGC_IV(neuron,tree,params,targetfolder_data,ostruct)
+% This function performs one or multiple voltage steps in the cells given
+% by "tree" and "neuron" and saves the results in a mat file named
+% according to neuron.experiment
+% 
+% *****************************************************************************************************
+% * This function is part of the T2N software package.                                                *
+% * Copyright 2016, 2017 Marcel Beining <marcel.beining@gmail.com>                                    *
+% *****************************************************************************************************
+
+
 if nargin < 5 || ~isfield(ostruct,'holding_voltage')
     ostruct.holding_voltage = -80;
 end
@@ -35,10 +45,9 @@ for f = 1:ostruct.extract_kir+1
         if s == 1
             nneuron{s} = neuron;
         end
-        amp = cat(2,holding_voltage, vstepsModel(s), holding_voltage);       % as in Mongiat2009 (VClamp at holding potential of -70mV)
+        amp = cat(2,holding_voltage, vstepsModel(s), holding_voltage);     
         for t = 1:numel(tree)
-            nneuron{s}.pp{t}.SEClamp = struct('node',elecnode,'rs',15,'dur', dur,'amp', amp);%,'rate',1); %n,del,dur,amp
-            %         nneuron{s}.record{t}.cell = struct('record','v','node',elecnode);
+            nneuron{s}.pp{t}.SEClamp = struct('node',elecnode,'rs',15,'dur', dur,'amp', amp);
             nneuron{s}.record{t}.SEClamp = struct('record','i','node',elecnode);
         end
         nneuron{s} = t2n_as(1,nneuron{s});
@@ -66,8 +75,8 @@ for t = 1:numel(tree)
 end
 for s = 1:numel(vstepsModel)
     for t = 1:numel(tree)
-        newcurr_dend(s,t) =  mean(out{s}.record{t}.SEClamp.i{1}(find(out{s}.t>=180,1,'first'):find(out{s}.t>=200,1,'first')) *1000);% - mholding_current(t); % + 6 * mean(outleaksub{s}.record{t}.i{1}(find(outleaksub{s}.t>=180,1,'first'):find(outleaksub{s}.t>=200,1,'first')) *1000);
-        inewcurr_dend{t,s} =  [out{s}.t';out{s}.record{t}.SEClamp.i{1}' *1000];% - mholding_current(t); % leak subtraction not done by Mongiat + 6 * [0*outleaksub{s}.t';mask.* outleaksub{s}.record{t}.i{1}' *1000];
+        steadyStateCurrVec(s,t) =  mean(out{s}.record{t}.SEClamp.i{1}(find(out{s}.t>=180,1,'first'):find(out{s}.t>=200,1,'first')) *1000);% - mholding_current(t); % + 6 * mean(outleaksub{s}.record{t}.i{1}(find(outleaksub{s}.t>=180,1,'first'):find(outleaksub{s}.t>=200,1,'first')) *1000);
+        currVec{t,s} =  [out{s}.t';out{s}.record{t}.SEClamp.i{1}' *1000];% - mholding_current(t); % leak subtraction not done by Mongiat + 6 * [0*outleaksub{s}.t';mask.* outleaksub{s}.record{t}.i{1}' *1000];
     end
 end
-save(fullfile(targetfolder_data,sprintf('Exp_Kir_%s.mat',neuron.experiment)),'mholding_current','neuron','holding_voltage','newcurr_dend','inewcurr_dend','params','vstepsModel','tree','LJP')
+save(fullfile(targetfolder_data,sprintf('Exp_Kir_%s.mat',neuron.experiment)),'mholding_current','neuron','holding_voltage','steadyStateCurrVec','currVec','params','vstepsModel','tree','LJP')

@@ -27,19 +27,19 @@ end
 if out{1}.error
     return
 end
-vol_new_curr_dend = cell(numel(tree),1);
-tvol_new_curr_dend = vol_new_curr_dend;
-timespikes = vol_new_curr_dend;
+voltVec = cell(numel(tree),1);
+timeVec = voltVec;
+timespikes = voltVec;
 for t = 1:numel(tree)
     if isfield(out{1},'error') && out{1}.error > 0
-        vol_new_curr_dend{t} = [] ;
-        tvol_new_curr_dend{t} = [];
+        voltVec{t} = [] ;
+        timeVec{t} = [];
         timespikes{t} = [];
     else
-        vol_new_curr_dend{t,1} = out{1}.record{t}.cell.v{1} ;
-        tvol_new_curr_dend{t,1} = out{1}.t;
+        voltVec{t,1} = out{1}.record{t}.cell.v{1} ;
+        timeVec{t,1} = out{1}.t;
         timespikes{t} = out{1}.APCtimes{t}{1};
     end
 end
-save(fullfile(targetfolder_data,sprintf('Exp_Adaptation_%s.mat',neuron.experiment)),'vol_new_curr_dend','tvol_new_curr_dend','timespikes','params','current','tree','neuron')
+save(fullfile(targetfolder_data,sprintf('Exp_Adaptation_%s.mat',neuron.experiment)),'voltVec','timeVec','timespikes','params','current','tree','neuron')
 end

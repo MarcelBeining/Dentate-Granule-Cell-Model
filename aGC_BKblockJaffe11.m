@@ -8,7 +8,6 @@ params.v_init = -80;%-params.LJP;
 params.dt=0.05;
 params.cvode = 1;
 params.tstop = 400;    
-clearvars vol_new_curr_dend
 params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep','var')
     hstep = [];
