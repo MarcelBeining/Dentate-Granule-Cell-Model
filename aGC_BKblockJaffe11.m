@@ -1,6 +1,5 @@
 function aGC_BKblockJaffe11(neuron,tree,params,targetfolder_results)
 
-neuron = setionconcentrations(neuron,'Mongiat');
 % cstep = 1.8; %nA !
 cstep = 0.3; % 300 pA
 params.accuracy = 1;  % for more nseg in axon and soma!
@@ -26,7 +25,7 @@ end
 nneuron = cell(1,2);
 for s = 1:2
     if s == 2
-        nneuron{s} = blockchannel(neuron,'BK');
+        nneuron{s} = t2n_blockchannel(neuron,'BK');
     else
         nneuron{s} = neuron;
     end

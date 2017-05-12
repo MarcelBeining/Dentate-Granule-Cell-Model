@@ -1,9 +1,5 @@
 function aGC_VIplot(targetfolder_data,experiment,options)
 
-%  the Kir conductances, we calculate the slope (conductance) at hiperpolarized
-% values (-140 to -110mV) and subtracted the slope (conductance) at slightly
-% depolarized values (-50 to -70mV). By doing this we calculate only the Kir
-% conductance, without the leak conductance at resting potential.
 LJP = 11;
 if nargin < 3
     options.dataset = 2;
@@ -93,25 +89,18 @@ for o = 1:6
             exp_iclamp = data{3};
     end
     
-    % if isfield(ostruct,'variabledt') && ostruct.variabledt == 0
-    %     load(expcat(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,'_fixed-dt')))
-    % else
-    %     load(expcat(targetfolder_data,'Exp_Spiking',neuron.experiment))
-    % end
     tvec = 1/rate:1/rate:size(exp_iclamp,1)/rate;
-    %     figure,plot(mean(squeeze(mean(exp_iclamp_mature(tvec<55,:,:),1))))
     vamp = squeeze(mean(exp_iclamp(tvec>205&tvec<255,:,:),1)-0*mean(exp_iclamp(tvec<55,:,:),1));
     vamp(squeeze(any(exp_iclamp(tvec>55&tvec<255,:,:)>0,1))) = NaN;  % delete spikers
     plot(csteps,vamp'-LJP,'color',colo{o})
 end
 
 if any(options.show == [2 3])
-    if exist(expcat(targetfolder_data,'Exp_Kir',experiment),'file')
-        load(expcat(targetfolder_data,'Exp_Kir',experiment))
+    if exist(expcat(targetfolder_data,'Exp_VoltSteps',experiment),'file')
+        load(expcat(targetfolder_data,'Exp_VoltSteps',experiment))
         
         line(zeros(1,numel(vstepsModel)),vstepsModel,'LineStyle','--','Color',[0.5 0.5 0.5])
         ek = neuron.mech{1}.all.k_ion.ek;
-        %         line([-400 100],[ek ek],'LineStyle','--','Color',[0.7 0 0])
         p = plot(steadyStateCurrVec-repmat(steadyStateCurrVec(find(vstepsModel>=-65-LJP,1,'first'),:),size(steadyStateCurrVec,1),1),vstepsModel);
         for t =1:size(steadyStateCurrVec,2)
             set(p(t),'color',tree{t}.col{1})

@@ -83,7 +83,7 @@ plotmytrees(tree,targetfolder_results,[],ostruct) % '-s'
 % passive parameter tests (SH 2007)
 neuron = neuron_orig;
 ostruct.passtest = 'Mehranfard'; %Mongiat Mongiat2 SH Brenner
-[Rin, tau, cap,Vrest] = aGC_passtests(neuron,tree,params,targetfolder_results,ostruct);
+[Rin, tau, cap,Vrest] = t2n_passTests(neuron,tree,params,targetfolder_results,ostruct);
 % caution, VoltageClamps add the series resistance of the electrode (10MOhm
 % by now). With passive, capacitance is higher..? But Rin is always same
 
@@ -94,15 +94,16 @@ ostruct.holding_voltage = -80; % mV
 ostruct.subtract_hv = 1; % boolean subtract holding voltage current
 ostruct.show = 1:2; % 0= nothing, 1 = only exp data, 2 = only model data
 ostruct.coarse = 1;
-ostruct.variabledt = 1;
+params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
+params.dt = 0.25;  % this is ignored if cvode = 1
 ostruct.extract_kir = 0;
 ostruct.single = 0;
 %
-aGC_IV(neuron,tree,params,targetfolder_data,ostruct);
+t2n_VoltSteps(neuron,tree,params,targetfolder_data,ostruct);
 %
-aGC_IVplot(expcat(targetfolder_data,'Exp_Kir',neuron.experiment),targetfolder_results,ostruct);
+t2n_IVplot(expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
 if ostruct.dataset ~= 2.28
-    aGC_IVplotdyn(expcat(targetfolder_data,'Exp_Kir',neuron.experiment),targetfolder_results,ostruct);
+    t2n_plotVoltSteps(expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
 end
 %% current clamp simulation (Mongiat 2009, Brenner 2005)
 neuron = neuron_orig;
@@ -113,7 +114,8 @@ ostruct.duration = 200;%200;
 ostruct.coarse = 0.5;
 
 ostruct.amp = [20,65,80,120];[20,65,80,120];0:10:120;[15,25,55,90];[5,15,25,35,45,55,65,90];[30,75,90,120];[250];[15:15:120];%[50,100,200,300];15:15:120;%[45 50 90 120];%[20,90];%40,80,120];0:10:115; %0:5:115;% pA % 55,95,115,155,175,195    [15,25,50,90];
-    ostruct.variabledt = 0;
+params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+params.dt = 0.25;  % this is ignored if cvode = 1
 
 ostruct.show = 1:2;
 ostruct.ampprop = 65;
@@ -122,19 +124,19 @@ ostruct.ampprop = 65;
 % params.celsius = 33
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct);
+t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct);
 
 % % VI plot
 % % aGC_VIplot(targetfolder_data,neuron.experiment,ostruct)
 % % Figure current clamp voltage traces
-aGC_currsteps_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
+t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,ostruct);
 % % FI curve
 % 
 % % if ostruct.maxamp >= 90
 % % AP properties during current clamp
-prop =     aGC_APprop(targetfolder_data,targetfolder_results,neuron,ostruct,tree);
+prop =     t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct,tree);
 % % end
-aGC_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
+t2n_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 
 %% Compare spike soma/axon with a axon bleb (simulation!) SH2010
 % aGC_APsomax(neuron,tree,params,fullfile(treepath,treename),targetfolder_results)
@@ -145,7 +147,8 @@ aGC_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_dV');
 ostruct.amp = [40,65,90,115]; % pA
-ostruct.variabledt = 0;
+params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+params.dt = 0.25;  % this is ignored if cvode = 1
 ostruct.coarse = 0;
 ostruct.show = 1:2;
 ostruct.ampprop = 90;
@@ -154,8 +157,8 @@ if ostruct.newborn
 else
     ostruct.dataset =3;
 end
-aGC_currsteps(neuron,tree,params,targetfolder_data,ostruct)
-shoulder = aGC_dVplot(targetfolder_data,targetfolder_results,neuron,ostruct);
+t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
+shoulder = t2n_plotdV(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %% bAP simulation (Krueppel 2011)
 % params.celsius = 33; %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -165,9 +168,9 @@ ostruct.reduce = 1;
 ostruct.dist = 'Eucl'; % PL, Eucl
 ostruct.relamp = 0;
 
-aGC_bAP(neuron,tree,params,targetfolder_data,ostruct)
+t2n_bAP(neuron,tree,params,targetfolder_data,ostruct)
 
-aGC_bAP_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
+t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %% mAHP/sAHP simulation ********************************************************************
 

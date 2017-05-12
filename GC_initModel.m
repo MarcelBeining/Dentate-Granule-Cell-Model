@@ -161,7 +161,7 @@ for t = 1:numel(tree)
         neuron.mech{t} =  cat_struct(GC_biophys(mechoptions));
     end
     if ~AHflag || ostruct.changeAHion
-        neuron = setionconcentrations(neuron,'Mongiat');
+        neuron = t2n_setionconcentration(neuron,'Mongiat');
     end
     if ~isfield(tree{t},'col')
         tree{t}.col{1} = rand(1,3);
@@ -203,7 +203,7 @@ if ostruct.ratadjust
 end
 
 if ~isempty(ostruct.channelblock)
-    neuron = blockchannel(neuron,ostruct.channelblock,ostruct.blockamount,ostruct.specify);
+    neuron = t2n_blockchannel(neuron,ostruct.channelblock,ostruct.blockamount,ostruct.specify);
     fprintf('Channel(s) %s blocked!',cell2mat(ostruct.channelblock))
 end
 

@@ -12,12 +12,12 @@ ostruct.capacitance = 0;
 % end
 %% get total Rin measured at soma
 % neuron = manipulate_Ra(neuron,1,'axon');  %macht kaum unterschied...
-g_totalsoma = 1./aGC_passtests(neuron,tree,params,'',ostruct); % unit in µS  ( 1/MOhm)
+g_totalsoma = 1./t2n_passTests(neuron,tree,params,'',ostruct); % unit in µS  ( 1/MOhm)
 
 %% get only soma Rin
 neuron = manipulate_Ra(neuron,1,'all');
 neuron = manipulate_Ra(neuron,0,'soma');
-g_soma = 1./aGC_passtests(neuron,tree,params,'',ostruct); % unit in µS  ( 1/MOhm)
+g_soma = 1./t2n_passTests(neuron,tree,params,'',ostruct); % unit in µS  ( 1/MOhm)
 neuron = manipulate_Ra(neuron,1,'soma');
 neuron = manipulate_Ra(neuron,0,'all');
 
@@ -29,12 +29,12 @@ for t = 1: numel(tree)
     ostruct.recordnode(t) = ind(ind2);%cellfun(@(x) find(x.R == find(strcmp(x.rnames,'axonh')),1,'last'),tree); % get last node of AIS
 end
 ostruct.stimnode = ostruct.recordnode;
-g_totalAIS = 1./aGC_passtests(neuron,tree,params,'',ostruct); % unit in µS  ( 1/MOhm)
+g_totalAIS = 1./t2n_passTests(neuron,tree,params,'',ostruct); % unit in µS  ( 1/MOhm)
 
 %% get only AIS Rin
 neuron = manipulate_Ra(neuron,1,'all');
 neuron = manipulate_Ra(neuron,0,'axonh');
-g_AIS = 1./aGC_passtests(neuron,tree,params,'',ostruct); % unit in µS  ( 1/MOhm)
+g_AIS = 1./t2n_passTests(neuron,tree,params,'',ostruct); % unit in µS  ( 1/MOhm)
 %%
 Rho_soma = g_totalsoma./g_soma -1;
 Rho_AIS = g_totalAIS./g_AIS -1;

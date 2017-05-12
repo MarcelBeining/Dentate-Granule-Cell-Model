@@ -4,10 +4,6 @@ display('echte current injection 2 oder weniger nA. und nur 0.5 ms duration\n')
 display('check das nochmal sobald passives modell steht. evt muss das axon weniger leaky sein?')
 display('check axon geschwindigkeit (teilweise von leakyness abh.) bzw axon AP broadness\n')
 
-
-
-neuron = setionconcentrations(neuron,'Mongiat2');
-
 cstep = 1.8; %nA !
 params.accuracy = 1;  % for more nseg in axon and soma!
 params.v_init = -80;%-params.LJP;

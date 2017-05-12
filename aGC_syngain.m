@@ -12,10 +12,10 @@ switch ostruct.mode
         tit = 'AMPAR (D-APV)';
     case 4
         tit = 'AMPAR+NMDAR (TTX)';
-        nneuron = blockchannel(nneuron,'na8st',100);
+        nneuron = t2n_blockchannel(nneuron,'na8st',100);
     case 5
         tit = 'AMPAR+NMDAR (Nickel)';
-        nneuron = blockchannel(nneuron,'Cav32',100);
+        nneuron = t2n_blockchannel(nneuron,'Cav32',100);
 end
 
 rs = 15;

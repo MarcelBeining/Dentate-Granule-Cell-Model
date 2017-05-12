@@ -20,9 +20,9 @@ for t = 1:numel(tree)
     neuron.record{t}.cell = struct('node',1,'record',{'gak_BK','gabk_BK','gakbar_BK','gabkbar_BK','cai','v'});
 end
 
-nneuron{1} = blockchannel(neuron,{'na8st'},100);
-nneuron{2} = blockchannel(neuron,{'na8st','BK'},100,{'gbar','gakbar'});   % block with iberitoxin
-nneuron{3} = blockchannel(neuron,{'na8st','BK'},100);         % block with paxilline
+nneuron{1} = t2n_blockchannel(neuron,{'na8st'},100);
+nneuron{2} = t2n_blockchannel(neuron,{'na8st','BK'},100,{'gbar','gakbar'});   % block with iberitoxin
+nneuron{3} = t2n_blockchannel(neuron,{'na8st','BK'},100);         % block with paxilline
 
 [out, ~] = t2n(tree,params,nneuron,'-q-d-w');
 if any(cellfun(@(x) x.error,out))

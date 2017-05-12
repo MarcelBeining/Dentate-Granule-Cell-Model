@@ -33,13 +33,13 @@ for s = 1:3
             end
         case 2
             nneuron{s} = nneuron{1};
-            nneuron{s} = blockchannel(nneuron{s},'Kv7');
+            nneuron{s} = t2n_blockchannel(nneuron{s},'Kv7');
 %             for t = 1:numel(tree)
 %                 nneuron{s}.mech{t}.axonh.Kv723.gbar = nneuron{s}.mech{t}.axonh.Kv723.gbar / 10000;
 %             end
         case 3
             nneuron{s} = nneuron{1};
-            nneuron{s} = blockchannel(nneuron{s},'SK');
+            nneuron{s} = t2n_blockchannel(nneuron{s},'SK');
 %             for t = 1:numel(tree)
 %                 nneuron{s}.mech{t}.soma.SK2.gkbar = nneuron{s}.mech{t}.soma.SK2.gkbar /10000;
 %                 nneuron{s}.mech{t}.GCL.SK2.gkbar = nneuron{s}.mech{t}.GCL.SK2.gkbar /10000;

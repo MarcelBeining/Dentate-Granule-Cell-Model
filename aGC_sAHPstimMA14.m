@@ -1,6 +1,5 @@
 function aGC_sAHPstimMA14(neuron,tree,params,targetfolder)
 
-neuron = setionconcentrations(neuron,'Mongiat');
 cstep = 0.2; %nA !
 params.accuracy = 1;  % for more nseg in axon and soma!
 params.v_init = -80;%-params.LJP;
@@ -21,7 +20,7 @@ end
 nneuron = cell(1,2);
 for s = 1:2
     if s == 2
-        nneuron{s} = blockchannel(neuron,'SK');
+        nneuron{s} = t2n_t2n_blockchannel(neuron,'SK');
     else
         nneuron{s} = neuron;
     end
