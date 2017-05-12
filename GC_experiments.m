@@ -48,20 +48,7 @@ end
 
 %*****************************
 if ostruct.newborn
-%     % this is the good FI,deep fAHP one...
-%     ostruct.channelblock = {'Kir21','Kv42','na8st','BK','Cav13','Kv21'};%,'Kv21','Kv42','Kv14','Kv34','na8st','Cav13'};%'Cav22'};     %{'Kv42','Kir21','Kv14','Kv34','pas','Kv21','na8st','Kv723'};%,'na8st','Kv723','na8st','Kv21'};%'except','Kir21'};%{'Kir','Kv42','HCN'};%'Kir','Kv42','Kv14','HCN'}; % Kir , SK etc
-%     ostruct.blockamount = [73,50,25,60,50,75];%68 kir %,100,80,80,50,55,100];%  Kv42 50 Kv21 70
-%      ostruct.specify = {'','','','','',''};
-
-     %      % this is the used version
-    ostruct.channelblock = {'Kir21','Kv42','na8st','BK','Cav13','Kv21','Kv723','BK'};%,'Cav22','Cav12','Cav32'};%,'Kv21','Kv42','Kv14','Kv34','na8st','Cav13'};%'Cav22'};     %{'Kv42','Kir21','Kv14','Kv34','pas','Kv21','na8st','Kv723'};%,'na8st','Kv723','na8st','Kv21'};%'except','Kir21'};%{'Kir','Kv42','HCN'};%'Kir','Kv42','Kv14','HCN'}; % Kir , SK etc
-    ostruct.blockamount = [73,50,25,40,50,50,50,100];%,100,100,100];%68 kir %,100,80,80,50,55,100];%  Kv42 50 Kv21 70
-     ostruct.specify = {'','','','gakbar','','','','gabkbar'};
-    
-    ostruct.scalespines = 0.3;  % means g_pas and cm are only scaled by 30% of the original spine densities due to reduced spine density in young abGCs
-else
-    ostruct.channelblock = {};
-    ostruct.blockamount = [];
+    ostruct.scalespines = 0.3 * ostruct.scalespines;  % means g_pas and cm are only scaled by 30% of the original spine densities due to reduced spine density in young abGCs
 end
 
 if ~exist(targetfolder_data,'file')
@@ -71,7 +58,15 @@ if ~exist(targetfolder_results,'file')
     mkdir(targetfolder_results)
 end
 [tree,params,neuron,treename] = GC_initModel(params,ostruct);  % initialize the model by loading the morphologies and setting the biophysical parameters
-
+if ostruct.newborn
+    %     % this is the good FI,deep fAHP one...
+    %     ostruct.channelblock = {'Kir21','Kv42','na8st','BK','Cav13','Kv21'};%,'Kv21','Kv42','Kv14','Kv34','na8st','Cav13'};%'Cav22'};     %{'Kv42','Kir21','Kv14','Kv34','pas','Kv21','na8st','Kv723'};%,'na8st','Kv723','na8st','Kv21'};%'except','Kir21'};%{'Kir','Kv42','HCN'};%'Kir','Kv42','Kv14','HCN'}; % Kir , SK etc
+    %     ostruct.blockamount = [73,50,25,60,50,75];%68 kir %,100,80,80,50,55,100];%  Kv42 50 Kv21 70
+    %      ostruct.specify = {'','','','','',''};
+    
+    %      % this is the used version
+    neuron = t2n_blockchannel(neuron,{'Kir21','Kv42','na8st','BK','Cav13','Kv21','Kv723','BK'},[73,50,25,40,50,50,50,100],[],{'','','','gakbar','','','','gabkbar'});
+end
 neuron_orig = neuron;
 params_orig = params;
 
@@ -673,9 +668,9 @@ for v = 1:numel(changs) %
     
     switch changs{v}
         case 'cm'
-            neuron = t2n_blockchannel(neuron,'pas',amount(1),changs{v}); % specify pas channel
+            neuron = t2n_blockchannel(neuron,'pas',amount(1),[],changs{v}); % specify pas channel
         case 'Ra'
-            neuron = t2n_blockchannel(neuron,'pas',amount(1),changs{v}); % specify pas channel
+            neuron = t2n_blockchannel(neuron,'pas',amount(1),[],changs{v}); % specify pas channel
         case 'E_K'
             for t = 1:numel(tree)
                 neuron.mech{t}.all.k_ion.ek = neuron.mech{t}.all.k_ion.ek + amount(2);
@@ -705,10 +700,9 @@ for v = 1:numel(changs) %
             params.celsius = params.celsius + amount(2);
             neuron.experiment = strcat(neuron.experiment,'_temp');
         case 'cAMP'
-                neuron = changecamp(neuron,1); % 1µM cAMP
+                neuron = t2n_changemech(neuron,struct('cAMP_HCN',1),'absolute'); % 1µM cAMP
         otherwise
             if ~isempty(changs{v})
-                
                 neuron = t2n_blockchannel(neuron,changs{v},amount(1));
             end
            

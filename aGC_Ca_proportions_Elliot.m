@@ -33,10 +33,9 @@ end
 
 % nneuron{1} = t2n_blockchannel(neuron,{'except','pas','Cav32','Ca2'},100);
 % nneuron{2} = t2n_blockchannel(neuron,'Cav32',100);
-% nneuron{3} = t2n_blockchannel(nneuron{1},'Ca2',100,{'gncabar'});
-% nneuron{4} = t2n_blockchannel(nneuron{1},'Ca2',100,{'glcabar'});
+% nneuron{3} = t2n_blockchannel(nneuron{1},'Ca2',100,[],{'gncabar'});
+% nneuron{4} = t2n_blockchannel(nneuron{1},'Ca2',100,[],{'glcabar'});
 
-% nneuron{1} = t2n_blockchannel(neuron,{'BK','SK','na8st'},100);%t2n_blockchannel(neuron,{'except','pas','Kir21','Cav32','Ca2'},100);
 nneuron{1} = t2n_blockchannel(neuron,{'except','pas','Cav22','Cav32','Cav12','Cav13'},100);
 nneuron{2} = t2n_blockchannel(nneuron{1},{'Cav32'},100);
 nneuron{3} = t2n_blockchannel(nneuron{1},'Cav22',100);

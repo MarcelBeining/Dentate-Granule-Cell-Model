@@ -3,9 +3,6 @@ function [tree,params,neuron,treename] = GC_initModel(params,ostruct)
 if ~isfield( ostruct,'reducecells')
     ostruct.reducecells = 0;
 end
-if ~isfield( ostruct,'channelblock')
-    ostruct.channelblock = {};
-end
 if ~isfield( ostruct,'newborn')
     ostruct.newborn = 0;
 end
@@ -200,11 +197,6 @@ if ostruct.reducecells
 end
 if ostruct.ratadjust
     neuron.experiment = strcat(neuron.experiment,'_ratadjust');
-end
-
-if ~isempty(ostruct.channelblock)
-    neuron = t2n_blockchannel(neuron,ostruct.channelblock,ostruct.blockamount,ostruct.specify);
-    fprintf('Channel(s) %s blocked!',cell2mat(ostruct.channelblock))
 end
 
 treename = fullfile(treepath,treename);

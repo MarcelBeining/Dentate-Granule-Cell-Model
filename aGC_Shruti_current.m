@@ -21,7 +21,7 @@ for t = 1:numel(tree)
 end
 
 nneuron{1} = t2n_blockchannel(neuron,{'na8st'},100);
-nneuron{2} = t2n_blockchannel(neuron,{'na8st','BK'},100,{'gbar','gakbar'});   % block with iberitoxin
+nneuron{2} = t2n_blockchannel(neuron,{'na8st','BK'},100,[],{'gbar','gakbar'});   % block with iberitoxin
 nneuron{3} = t2n_blockchannel(neuron,{'na8st','BK'},100);         % block with paxilline
 
 [out, ~] = t2n(tree,params,nneuron,'-q-d-w');
