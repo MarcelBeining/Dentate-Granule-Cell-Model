@@ -40,59 +40,59 @@ if ~isnan(ostruct.usemorph)
     
     switch ostruct.usemorph
         case 1    % SH07 cells
-            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'\morphos\SH_07_all_repairedandsomaAIS_MLyzed_loadadjusted.mtr'),'file')
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\SH_07_all_repairedandsomaAIS_MLyzed_loadadjusted.mtr'));
+            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'morphos','SH_07_all_repairedandsomaAIS_MLyzed_loadadjusted.mtr'),'file')
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','SH_07_all_repairedandsomaAIS_MLyzed_loadadjusted.mtr'));
             else
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\SH_07_all_repairedandsomaAIS_MLyzed.mtr'));
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','SH_07_all_repairedandsomaAIS_MLyzed.mtr'));
             end
             
             params.tname = 'SH07all2';
         case 2   % synth adult mouse cells
-            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'\morphos\mouse_AAVart_old_pruned_axon_loadadjusted.mtr'),'file')
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\mouse_AAVart_old_pruned_axon_loadadjusted.mtr'));
+            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'morphos','mouse_AAVart_old_pruned_axon_loadadjusted.mtr'),'file')
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','mouse_AAVart_old_pruned_axon_loadadjusted.mtr'));
             else
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\mouse_AAVart_old_pruned_axon.mtr'));
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','mouse_AAVart_old_pruned_axon.mtr'));
             end
             params.tname = 'mouse_matGC_art';
             params.exchfolder = 't2nexchange_aGCmorphsim';
             
         case 3  % synth young mouse cells
-            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'\morphos\mouse_RVart_pruned_axon_loadadjusted.mtr'),'file')
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\mouse_RVart_pruned_axon_loadadjusted.mtr'));
+            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'morphos','mouse_RVart_pruned_axon_loadadjusted.mtr'),'file')
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','mouse_RVart_pruned_axon_loadadjusted.mtr'));
             else
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\mouse_RVart_pruned_axon.mtr'));
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','mouse_RVart_pruned_axon.mtr'));
             end
             params.tname = 'mouse_abGC_art';
             params.exchfolder = 't2nexchange_aGCmorphsim2';
         case 4  %  adult rat cells
-            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,sprintf('\morphos\Beining_AAV_contra_MLyzed_axon_loadadjusted%s.mtr',str)),'file')
-                [tree,treename,treepath]=load_tree(fullfile(params.path,sprintf('\morphos\Beining_AAV_contra_MLyzed_axon_loadadjusted%s.mtr',str)));
+            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'morphos',sprintf('Beining_AAV_contra_MLyzed_axon_loadadjusted%s.mtr',str)),'file')
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos',sprintf('Beining_AAV_contra_MLyzed_axon_loadadjusted%s.mtr',str)));
             else
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\Beining_AAV_contra_MLyzed_axon.mtr'));
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','Beining_AAV_contra_MLyzed_axon.mtr'));
             end
             params.tname = 'rat_mGC_Beining';
             params.exchfolder = 't2nexchange_aGCmorphsim6';
         case 5 % synth adult rat cells
-            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,sprintf('\morphos\rat_AAVart_old_pruned_axon_loadadjusted%s.mtr',str)),'file')
-                [tree,treename,treepath]=load_tree(fullfile(params.path,sprintf('\morphos\rat_AAVart_old_pruned_axon_loadadjusted%s.mtr',str)));
+            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'morphos',sprintf('rat_AAVart_old_pruned_axon_loadadjusted%s.mtr',str)),'file')
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos',sprintf('rat_AAVart_old_pruned_axon_loadadjusted%s.mtr',str)));
             else
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\rat_AAVart_old_pruned_axon.mtr'));
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','rat_AAVart_old_pruned_axon.mtr'));
             end
             params.tname = 'rat_matGC_art';
             params.exchfolder = 't2nexchange_aGCmorphsim3';
         case 6  % synth young rat cells
-            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,sprintf('\morphos\rat_RVart_pruned_axon_loadadjusted%s.mtr',str)),'file')
-                [tree,treename,treepath]=load_tree(fullfile(params.path,sprintf('\morphos\rat_RVart_pruned_axon_loadadjusted%s.mtr',str)));
+            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'morphos',sprintf('rat_RVart_pruned_axon_loadadjusted%s.mtr',str)),'file')
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos',sprintf('rat_RVart_pruned_axon_loadadjusted%s.mtr',str)));
             else
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\rat_RVart_pruned_axon.mtr'));
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','rat_RVart_pruned_axon.mtr'));
             end
             params.tname = 'rat_abGC_art';
             params.exchfolder = 't2nexchange_aGCmorphsim4';
         case 7  % Claiborne rat cells
-            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,sprintf('\morphos\Claiborne_male_MLyzed_axon_loadadjusted%s.mtr',str)),'file')
-                [tree,treename,treepath]=load_tree(fullfile(params.path,sprintf('\morphos\Claiborne_male_MLyzed_axon_loadadjusted%s.mtr',str)));
+            if ostruct.adjustloads && ~ostruct.forcecalcload && exist(fullfile(params.path,'morphos',sprintf('Claiborne_male_MLyzed_axon_loadadjusted%s.mtr',str)),'file')
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos',sprintf('Claiborne_male_MLyzed_axon_loadadjusted%s.mtr',str)));
             else
-                [tree,treename,treepath]=load_tree(fullfile(params.path,'\morphos\Claiborne_male_MLyzed_axon.mtr'));
+                [tree,treename,treepath]=load_tree(fullfile(params.path,'morphos','Claiborne_male_MLyzed_axon.mtr'));
             end
             params.tname = 'rat_mGC_Claiborne';
             params.exchfolder = 't2nexchange_aGCmorphsim5';
