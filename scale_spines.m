@@ -22,7 +22,7 @@ for n = 1:numel(neuron)
             for f1 = 1:numel(fields)
                 if isfield(neuron{n}.mech{t}.(fields{f1}),'spines')
                     scale = neuron{n}.mech{t}.(fields{f1}).spines.scale;
-                    neuron{n}.mech{t}.(fields{f1}) = rmfield(neuron{n}.mech{t}.(fields{f1}),'spines');
+                    neuron{n}.mech{t}.(fields{f1}) = rmfield(neuron{n}.mech{t}.(fields{f1}),'spines');  %remove spine scale field from neuron structure
                     fields2 = fieldnames(neuron{n}.mech{t}.(fields{f1}));
                     if strcmp('range',fields{f1})  %thats complicated...go through all regions and find all gbars and make range variables out of it...
                         if isempty(tree)

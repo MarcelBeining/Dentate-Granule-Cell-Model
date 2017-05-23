@@ -275,11 +275,10 @@ if ~isempty(strfind(options,'-a'))
             gbdef = 0.002;
             strct.axon.Kv11 = struct('gkbar',gbdef*kfac,'vshift',vshift);%,'mk',-8.1,'md',-32);
             strct.axonh.Kv11 = struct('gkbar',gbdef*kfac,'vshift',vshift);%,'mk',-8.1,'md',-32);
-            %                 strct.soma.Kv11 = struct('gkbar',gbdef / 4*kfac,'vshift',vshift);
         end
         
         % Kv1.4
-        if on.Kv14 > 0
+        if on.Kv14 > 0 % Protein nearly only in axon!
             vshift = 0;
             strct.axon.Kv14 = struct('gkbar',0.008*on.Kv14,'vshift',vshift); %  scale_i von 3 möglich um inactivatin schneller zu machen wegen kvbeta1.1
             strct.axonh.Kv14 = struct('gkbar',0.008*on.Kv14,'vshift',vshift);
@@ -290,8 +289,7 @@ if ~isempty(strfind(options,'-a'))
             strct.soma.Kv21 = struct('gkbar',on.Kv21 * 0.01);
         end
         
-        % Kv3.3 und Kv3.4 Protein scheinbar fast nur im Axon!
-        % das selbe gilt für Kv1.4 ...
+        % Kv3.3 und Kv3.4 Protein nearly only in axon!
         if on.Kv33 > 0
             strct.axon.Kv33 = struct('gkbar',on.Kv33 * 0.002  );
             strct.axonh.Kv33 = struct('gkbar',on.Kv33 * 0.02 );
@@ -306,7 +304,6 @@ if ~isempty(strfind(options,'-a'))
         %Kv4.2
         if on.Kv42 > 0
             kafac = on.Kv42 * 1;
-            %                     gdist = [0.0005,0.001,0.001,0.001]; % GCL IML MML OML
             gdist = [0.0005,0.001,0.001,0.001]; % GCL IML MML OML
             %                 gdist = [0.0002,0.001,0.003,0.003]; % GCL IML MML OML
             switch Kv4model{Kv4usethismodel}
@@ -314,34 +311,26 @@ if ~isempty(strfind(options,'-a'))
                     switch Kv4composition
                         case 1
                             % Kv4.2 alone
-                            %                         strct.soma.Kv42b = struct('gkbar',kafac * 0.0002,'a0', 1.589,'za',0.64,'b0', 0.0184,'zb', -1.31,'c0',6.668,'zc', 0.15,'d0', 2.381,'zd', -1.21,'e0',0.503,'ze',0.07,'f0',0.174,'zf',-0.25,'kci', 0.047,'kic', 0.00003,'kappa1', 0.229,'lambda1', 0.151,'kappa2',0.0487,'lambda2',0.0065);
                             strct.GCL.Kv42b = struct('gkbar',kafac * gdist(1),'a0', 1.589,'za',0.64,'b0', 0.0184,'zb', -1.31,'c0',6.668,'zc', 0.15,'d0', 2.381,'zd', -1.21,'e0',0.503,'ze',0.07,'f0',0.174,'zf',-0.25,'kci', 0.047,'kic', 0.00003,'kappa1', 0.229,'lambda1', 0.151,'kappa2',0.0487,'lambda2',0.0065);
-                            %                         strct.SGCL.Kv42b = struct('gkbar',kafac * gdist(1),'a0', 1.589,'za',0.64,'b0', 0.0184,'zb', -1.31,'c0',6.668,'zc', 0.15,'d0', 2.381,'zd', -1.21,'e0',0.503,'ze',0.07,'f0',0.174,'zf',-0.25,'kci', 0.047,'kic', 0.00003,'kappa1', 0.229,'lambda1', 0.151,'kappa2',0.0487,'lambda2',0.0065);
                             strct.adendIML.Kv42b = struct('gkbar',kafac * gdist(2),'a0', 1.589,'za',0.64,'b0', 0.0184,'zb', -1.31,'c0',6.668,'zc', 0.15,'d0', 2.381,'zd', -1.21,'e0',0.503,'ze',0.07,'f0',0.174,'zf',-0.25,'kci', 0.047,'kic', 0.00003,'kappa1', 0.229,'lambda1', 0.151,'kappa2',0.0487,'lambda2',0.0065);
                             strct.adendMML.Kv42b = struct('gkbar',kafac * gdist(3),'a0', 1.589,'za',0.64,'b0', 0.0184,'zb', -1.31,'c0',6.668,'zc', 0.15,'d0', 2.381,'zd', -1.21,'e0',0.503,'ze',0.07,'f0',0.174,'zf',-0.25,'kci', 0.047,'kic', 0.00003,'kappa1', 0.229,'lambda1', 0.151,'kappa2',0.0487,'lambda2',0.0065);
                             strct.adendOML.Kv42b = struct('gkbar',kafac * gdist(4),'a0', 1.589,'za',0.64,'b0', 0.0184,'zb', -1.31,'c0',6.668,'zc', 0.15,'d0', 2.381,'zd', -1.21,'e0',0.503,'ze',0.07,'f0',0.174,'zf',-0.25,'kci', 0.047,'kic', 0.00003,'kappa1', 0.229,'lambda1', 0.151,'kappa2',0.0487,'lambda2',0.0065);
                         case 3
                             % + DPPX
-                            %                         strct.soma.Kv42b = struct('gkbar',kafac * 0.0002,'a0',3.282,'za',0.64,'b0', 0.01,'zb', -1.31,'c0',7.22,'zc', 0.15,'d0', 0.588,'zd', -1.21,'e0',1.101,'ze',0.07,'f0',0.673,'zf',-0.25,'kci', 0.072,'kic', 0.00046,'kappa1', 0.108,'lambda1', 0.034,'kappa2',0.0206,'lambda2',0.0086);
                             strct.GCL.Kv42b = struct('gkbar',kafac * gdist(1),'a0',3.282,'za',0.64,'b0', 0.01,'zb', -1.31,'c0',7.22,'zc', 0.15,'d0', 0.588,'zd', -1.21,'e0',1.101,'ze',0.07,'f0',0.673,'zf',-0.25,'kci', 0.072,'kic', 0.00046,'kappa1', 0.108,'lambda1', 0.034,'kappa2',0.0206,'lambda2',0.0086);
-                            %                         strct.SGCL.Kv42b = struct('gkbar',kafac * gdist(1),'a0',3.282,'za',0.64,'b0', 0.01,'zb', -1.31,'c0',7.22,'zc', 0.15,'d0', 0.588,'zd', -1.21,'e0',1.101,'ze',0.07,'f0',0.673,'zf',-0.25,'kci', 0.072,'kic', 0.00046,'kappa1', 0.108,'lambda1', 0.034,'kappa2',0.0206,'lambda2',0.0086);
                             strct.adendIML.Kv42b = struct('gkbar',kafac * gdist(2),'a0',3.282,'za',0.64,'b0', 0.01,'zb', -1.31,'c0',7.22,'zc', 0.15,'d0', 0.588,'zd', -1.21,'e0',1.101,'ze',0.07,'f0',0.673,'zf',-0.25,'kci', 0.072,'kic', 0.00046,'kappa1', 0.108,'lambda1', 0.034,'kappa2',0.0206,'lambda2',0.0086);
                             strct.adendMML.Kv42b = struct('gkbar',kafac * gdist(3),'a0',3.282,'za',0.64,'b0', 0.01,'zb', -1.31,'c0',7.22,'zc', 0.15,'d0', 0.588,'zd', -1.21,'e0',1.101,'ze',0.07,'f0',0.673,'zf',-0.25,'kci', 0.072,'kic', 0.00046,'kappa1', 0.108,'lambda1', 0.034,'kappa2',0.0206,'lambda2',0.0086);
                             strct.adendOML.Kv42b = struct('gkbar',kafac * gdist(4),'a0',3.282,'za',0.64,'b0', 0.01,'zb', -1.31,'c0',7.22,'zc', 0.15,'d0', 0.588,'zd', -1.21,'e0',1.101,'ze',0.07,'f0',0.673,'zf',-0.25,'kci', 0.072,'kic', 0.00046,'kappa1', 0.108,'lambda1', 0.034,'kappa2',0.0206,'lambda2',0.0086);
                         case 2
                             % + KChIP1
-                            %                         strct.soma.Kv42b = struct('gkbar',kafac * 0.0002,'a0',1.443,'za',0.64,'b0', 0.0019,'zb', -1.31,'c0',5.556,'zc', 0.15,'d0', 0.155,'zd', -1.21,'e0',0.559,'ze',0.07,'f0',0.621,'zf',-0.25,'kci', 0.029,'kic', 0.00014,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
                             strct.GCL.Kv42b = struct('gkbar',kafac * gdist(1),'a0',1.443,'za',0.64,'b0', 0.0019,'zb', -1.31,'c0',5.556,'zc', 0.15,'d0', 0.155,'zd', -1.21,'e0',0.559,'ze',0.07,'f0',0.621,'zf',-0.25,'kci', 0.029,'kic', 0.00014,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
-                            %                         strct.SGCL.Kv42b = struct('gkbar',kafac * gdist(1),'a0',1.443,'za',0.64,'b0', 0.0019,'zb', -1.31,'c0',5.556,'zc', 0.15,'d0', 0.155,'zd', -1.21,'e0',0.559,'ze',0.07,'f0',0.621,'zf',-0.25,'kci', 0.029,'kic', 0.00014,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
                             strct.adendIML.Kv42b = struct('gkbar',kafac * gdist(2),'a0',1.443,'za',0.64,'b0', 0.0019,'zb', -1.31,'c0',5.556,'zc', 0.15,'d0', 0.155,'zd', -1.21,'e0',0.559,'ze',0.07,'f0',0.621,'zf',-0.25,'kci', 0.029,'kic', 0.00014,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
                             strct.adendMML.Kv42b = struct('gkbar',kafac * gdist(3),'a0',1.443,'za',0.64,'b0', 0.0019,'zb', -1.31,'c0',5.556,'zc', 0.15,'d0', 0.155,'zd', -1.21,'e0',0.559,'ze',0.07,'f0',0.621,'zf',-0.25,'kci', 0.029,'kic', 0.00014,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
                             strct.adendOML.Kv42b = struct('gkbar',kafac * gdist(4),'a0',1.443,'za',0.64,'b0', 0.0019,'zb', -1.31,'c0',5.556,'zc', 0.15,'d0', 0.155,'zd', -1.21,'e0',0.559,'ze',0.07,'f0',0.621,'zf',-0.25,'kci', 0.029,'kic', 0.00014,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
                             
                         case 4
                             % + KChIP1 and DPPX (ternary)
-                            %                         strct.soma.Kv42b = struct('gkbar',kafac * 0.0002,'a0',2.577,'za',0.64,'b0', 0.0028,'zb', -1.31,'c0',4.318,'zc', 0.15,'d0', 0.38,'zd', -1.21,'e0',0.466,'ze',0.07,'f0',0.277,'zf',-0.25,'kci', 0.054,'kic', 0.00044,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
                             strct.GCL.Kv42b = struct('gkbar',kafac * gdist(1),'a0',2.577,'za',0.64,'b0', 0.0028,'zb', -1.31,'c0',4.318,'zc', 0.15,'d0', 0.38,'zd', -1.21,'e0',0.466,'ze',0.07,'f0',0.277,'zf',-0.25,'kci', 0.054,'kic', 0.00044,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
-                            %                         strct.SGCL.Kv42b = struct('gkbar',kafac * gdist(1),'a0',2.577,'za',0.64,'b0', 0.0028,'zb', -1.31,'c0',4.318,'zc', 0.15,'d0', 0.38,'zd', -1.21,'e0',0.466,'ze',0.07,'f0',0.277,'zf',-0.25,'kci', 0.054,'kic', 0.00044,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
                             strct.adendIML.Kv42b = struct('gkbar',kafac * gdist(2),'a0',2.577,'za',0.64,'b0', 0.0028,'zb', -1.31,'c0',4.318,'zc', 0.15,'d0', 0.38,'zd', -1.21,'e0',0.466,'ze',0.07,'f0',0.277,'zf',-0.25,'kci', 0.054,'kic', 0.00044,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
                             strct.adendMML.Kv42b = struct('gkbar',kafac * gdist(3),'a0',2.577,'za',0.64,'b0', 0.0028,'zb', -1.31,'c0',4.318,'zc', 0.15,'d0', 0.38,'zd', -1.21,'e0',0.466,'ze',0.07,'f0',0.277,'zf',-0.25,'kci', 0.054,'kic', 0.00044,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
                             strct.adendOML.Kv42b = struct('gkbar',kafac * gdist(4),'a0',2.577,'za',0.64,'b0', 0.0028,'zb', -1.31,'c0',4.318,'zc', 0.15,'d0', 0.38,'zd', -1.21,'e0',0.466,'ze',0.07,'f0',0.277,'zf',-0.25,'kci', 0.054,'kic', 0.00044,'kappa1', 0,'lambda1', 100,'kappa2',0,'lambda2',100);
@@ -351,21 +340,18 @@ if ~isempty(strfind(options,'-a'))
                     kafac = kafac * 10; %optional raise this..
                     switch Kv4composition
                         case 1
-                            %                         strct.soma.Kv42 = struct('gkbar',kafac * 0.0002,'a0', 0.175,'za', 2.7,'b0', 0.003598,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.267,'zoc', -0.047,'kci', 0.02392,'kic', 0.000037,'koi', 0.194,'kio', 0.03686);
                             strct.GCL.Kv42 = struct('gkbar',kafac * gdist(1),'a0', 0.175,'za', 2.7,'b0', 0.003598,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.267,'zoc', -0.047,'kci', 0.02392,'kic', 0.000037,'koi', 0.194,'kio', 0.03686,'vshift',vshift);
                             strct.SGCL.Kv42 = struct('gkbar',kafac * gdist(1),'a0', 0.175,'za', 2.7,'b0', 0.003598,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.267,'zoc', -0.047,'kci', 0.02392,'kic', 0.000037,'koi', 0.194,'kio', 0.03686,'vshift',vshift);
                             strct.adendIML.Kv42 = struct('gkbar',kafac * gdist(2),'a0', 0.175,'za', 2.7,'b0', 0.003598,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.267,'zoc', -0.047,'kci', 0.02392,'kic', 0.000037,'koi', 0.194,'kio', 0.03686,'vshift',vshift);
                             strct.adendMML.Kv42 = struct('gkbar',kafac * gdist(3),'a0', 0.175,'za', 2.7,'b0', 0.003598,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.267,'zoc', -0.047,'kci', 0.02392,'kic', 0.000037,'koi', 0.194,'kio', 0.03686,'vshift',vshift);
                             strct.adendOML.Kv42 = struct('gkbar',kafac * gdist(4),'a0', 0.175,'za', 2.7,'b0', 0.003598,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.267,'zoc', -0.047,'kci', 0.02392,'kic', 0.000037,'koi', 0.194,'kio', 0.03686,'vshift',vshift);
                         case 2
-                            %                         strct.soma.Kv42 = struct('gkbar',kafac * 0.0002,'a0', 0.175,'za', 2.7,'b0', 0.01947,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.670,'zoc', -0.047,'kci', 0.03061,'kic', 0.00018,'koi', 0.04308,'kio', 0.1099,'vshift',vshift);
                             strct.GCL.Kv42 = struct('gkbar',kafac * gdist(1),'a0', 0.175,'za', 2.7,'b0', 0.01947,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.670,'zoc', -0.047,'kci', 0.03061,'kic', 0.00018,'koi', 0.04308,'kio', 0.1099,'vshift',vshift);
                             strct.SGCL.Kv42 = struct('gkbar',kafac * gdist(1),'a0', 0.175,'za', 2.7,'b0', 0.01947,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.670,'zoc', -0.047,'kci', 0.03061,'kic', 0.00018,'koi', 0.04308,'kio', 0.1099,'vshift',vshift);
                             strct.adendIML.Kv42 = struct('gkbar',kafac * gdist(2),'a0', 0.175,'za', 2.7,'b0', 0.01947,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.670,'zoc', -0.047,'kci', 0.03061,'kic', 0.00018,'koi', 0.04308,'kio', 0.1099,'vshift',vshift);
                             strct.adendMML.Kv42 = struct('gkbar',kafac * gdist(3),'a0', 0.175,'za', 2.7,'b0', 0.01947,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.670,'zoc', -0.047,'kci', 0.03061,'kic', 0.00018,'koi', 0.04308,'kio', 0.1099,'vshift',vshift);
                             strct.adendOML.Kv42 = struct('gkbar',kafac * gdist(4),'a0', 0.175,'za', 2.7,'b0', 0.01947,'zb', -1.742,'kco0', 0.347,'zco', 0.185,'koc0', 1.670,'zoc', -0.047,'kci', 0.03061,'kic', 0.00018,'koi', 0.04308,'kio', 0.1099,'vshift',vshift);
                         case 3
-                            %                         strct.soma.Kv42 = struct('gkbar',kafac * 0.0002,'a0', 0.416,'za', 1.1,'b0', 0.009,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.267,'zoc', 0,'kci', 0.03807,'kic', 0.00011,'koi', 0.3,'kio', 0.01424,'vshift',vshift);
                             strct.GCL.Kv42 = struct('gkbar',kafac * gdist(1),'a0', 0.416,'za', 1.1,'b0', 0.009,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.267,'zoc', 0,'kci', 0.03807,'kic', 0.00011,'koi', 0.3,'kio', 0.01424,'vshift',vshift);
                             strct.SGCL.Kv42 = struct('gkbar',kafac * gdist(1),'a0', 0.416,'za', 1.1,'b0', 0.009,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.267,'zoc', 0,'kci', 0.03807,'kic', 0.00011,'koi', 0.3,'kio', 0.01424,'vshift',vshift);
                             strct.adendIML.Kv42 = struct('gkbar',kafac * gdist(2),'a0', 0.416,'za', 1.1,'b0', 0.009,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.267,'zoc', 0,'kci', 0.03807,'kic', 0.00011,'koi', 0.3,'kio', 0.01424,'vshift',vshift);
@@ -373,13 +359,10 @@ if ~isempty(strfind(options,'-a'))
                             strct.adendOML.Kv42 = struct('gkbar',kafac * gdist(4),'a0', 0.416,'za', 1.1,'b0', 0.009,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.267,'zoc', 0,'kci', 0.03807,'kic', 0.00011,'koi', 0.3,'kio', 0.01424,'vshift',vshift);
                             
                         case 4
-                            %                         strct.soma.Kv42 = struct('gkbar',kafac * 0.0002,'a0', 0.416,'za', 1.1,'b0', 0.0486,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.670,'zoc', 0,'kci', 0.04873,'kic', 0.000537,'koi', 0.0669,'kio', 0.04246,'vshift',vshift);
                             strct.GCL.Kv42 = struct('gkbar',kafac * gdist(1),'a0', 0.416,'za', 1.1,'b0', 0.0486,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.670,'zoc', 0,'kci', 0.04873,'kic', 0.000537,'koi', 0.0669,'kio', 0.04246,'vshift',vshift);
-                            %                         strct.SGCL.Kv42 = struct('gkbar',kafac * gdist(1),'a0', 0.416,'za', 1.1,'b0', 0.0486,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.670,'zoc', 0,'kci', 0.04873,'kic', 0.000537,'koi', 0.0669,'kio', 0.04246,'vshift',vshift);
                             strct.adendIML.Kv42 = struct('gkbar',kafac * gdist(2),'a0', 0.416,'za', 1.1,'b0', 0.0486,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.670,'zoc', 0,'kci', 0.04873,'kic', 0.000537,'koi', 0.0669,'kio', 0.04246,'vshift',vshift);
                             strct.adendMML.Kv42 = struct('gkbar',kafac * gdist(3),'a0', 0.416,'za', 1.1,'b0', 0.0486,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.670,'zoc', 0,'kci', 0.04873,'kic', 0.000537,'koi', 0.0669,'kio', 0.04246,'vshift',vshift);
                             strct.adendOML.Kv42 = struct('gkbar',kafac * gdist(4),'a0', 0.416,'za', 1.1,'b0', 0.0486,'zb', -1.556,'kco0', 0.347,'zco', 0,'koc0', 1.670,'zoc', 0,'kci', 0.04873,'kic', 0.000537,'koi', 0.0669,'kio', 0.04246,'vshift',vshift);
-                            
                     end
             end
         end
@@ -512,42 +495,4 @@ if ~isempty(strfind(options,'-a'))
         strct.all.na_ion = struct('ena',45);   %  % calculated from concentrations in Mongiat paper (SH07 very similar)
         strct.all.ca_ion = struct('cao0',2,'cai0',0.00007);    % calculated from concentrations in Mongiat paper (SH07 very similar)
     end
-    % L-type (Cav1)
-    % (a1C&D)
-    % a1C: in dendrites (iml&mml&oml) and soma, NOT in axon (Grunnet 2004)
-    % a1D: only in soma (Grunnet 2004)
-    % only (post) synaptic and extrasynaptic!
-    % transiently in growth cone of axon
-    % OK L-TYPE IS DEFINITELY SOMATODENDRITIC!!!
-    %
-    % N-type Cav2.2 strong in dentate granule cells
-    %(Cav2.2) only during low freq transmission (ricoy 2014)
-    % should be somatodendritic
-    %
-    % P/Q- and R-type (Cav2.1,2.3)
-    % can be modeled with N-type modeln, since they have similar kinetics.. are mainly in MFBs (Li 2007) 
-    %
-    % T-type (Cav3.2)
-    % seems to be mainly in dendrites and spines, little in soma and much
-    % less in axons (Martinello 2015)
-    % ratios:
-    % spines    1.35  = 35.5  %
-    % dendrites 2     = 53.6  %  bzw 81.6  %
-    % soma      0.3   =  7.9  %  bzw 12.25 %
-    % axon      0.15  =  3.95 %  bzw  6.13 %
-    
-    % BK
-    % alpha: strong in (soma and) axons, moderate in OML (caution, might be presynaptic fibers of EC??), NOT
-    % in IML!  (Grunnet 2004)..caution..strong soma staining is probably
-    % artifact!!! Misonou 2006 has a good antibody and shows only axon...
-    % und terminal staining of BK!
-    % beta4 (might not be assoc with BK): strong in soma, moderate in dendrites and axons (Brenner 2005)
-    % strong in soma, moderate in dendrites (Piwonska 2008)
-    % ASSOCIATED MAINLY WITH MITOCHONDRIA!!!! (Piwonska 2008)
-    %
-    % SK channels
-    % Ballesteros-Merino 2014
-    % membrane SK little at soma and much in IML/OML
-    
-    
 end
