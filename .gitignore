@@ -22,3 +22,6 @@ t2nexchange_aGCmorphsim3/
 *.dat
 *.mat
 t2nexchange_aGCmorphsim4/
+lib_mech/x86_64/
+x86_64/
+*.m~
