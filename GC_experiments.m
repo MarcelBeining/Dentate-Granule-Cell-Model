@@ -28,11 +28,11 @@ ostruct.vmodel = 1; % 0 = passive model, > 0 = active model, everything else (e.
 ostruct.changeAHion = 0;  % only important when using the AH99 model. Boolean to decide if standard AH99 ion reversal potentials are used (0) or if they are adjusted to the experiments (1)
 
 % change morphologies here
-ostruct.usemorph = 1;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
+ostruct.usemorph = 4;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
 ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
 
 % more parameters
-ostruct.reducecells = 0;  % reduce number of cells for faster simulation (e.g. for testing)
+ostruct.reducecells = 1;  % reduce number of cells for faster simulation (e.g. for testing)
 ostruct.scalespines = 1;  % scaling of g_pas and cm to implicitly model spines. is ignored in AH99 model, as this is already taken into account in the biophys model!
 ostruct.adjustloads = 0;  % the Hay et al 2013 implementation of adjust dendritic loads to reduce variability between cells (not used in publication)
 ostruct.noise = 0;       % add noise to the membrane voltage by injecting gaussian noise current to the soma (not working with variable dt / cvode)
@@ -92,13 +92,13 @@ ostruct.figurewidth = 6;
 t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
 %
 if ~ostruct.newborn
-    ostruct.show = 2;  % 1 = show experimental data, 2 = show simulation data, 1:2 = show both
     if ~all(ostruct.show==1)
         ostruct.savename = sprintf('Fig2-IV_dyn-%s',neuron.experiment);
     else
         ostruct.savename = sprintf('Fig2-IV_dyn-%s_onlyexp',neuron.experiment);
     end
-    t2n_plotVoltSteps(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
+    ostuct.handles = t2n_plotVoltSteps(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
+    aGC_plotVoltStepsExp(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
 end
 
 if ostruct.newborn
@@ -189,10 +189,8 @@ aGC_plotCurrStepsExp(targetfolder_data,targetfolder_results,neuron,ostruct,steps
 ostruct.handles = [];
 % % this part is only used if experimental data and convex hulls of data
 % % should be plotted (for publication)
-% ostruct.show = 1;
 % ostruct.savename = strcat(ostruct.savename,'_onlyexp');
 % [prop1,fig] =     t2n_APprop(targetfolder_data,neuron,ostruct);
-% if all(ostruct.show == 1)
 %     ostruct.blur = 1;
 %     ostruct.patch = 1;
 %     figure(fig(6))
@@ -203,7 +201,6 @@ ostruct.handles = [];
 %     [~,fig2] = plot2dens(gca,[20 0.2 1],ostruct);
 %     figure(fig2(4))
 %     tprint(fullfile(targetfolder_results,strcat(ostruct.savename,'-','APampVSfahp_densitypatch')),'-pdf');
-% end
 % ostruct.savename = ostruct.savename(1:end-8);
 
 [prop2,fig,figname] =     t2n_APprop(targetfolder_data,neuron,0.09,tree,ostruct.dataset); 
@@ -257,9 +254,6 @@ end
     
 ostruct.handles = [];
 ostruct.savename = ostruct.savename2;
-if all(ostruct.show == 1)
-    ostruct.savename = strcat(ostruct.savename,'_onlyexp');
-end
 if ~ostruct.newborn
     ostruct.figurewidth = 4;
 end
@@ -295,7 +289,6 @@ ostruct.holding_voltage = -80;
 ostruct.duration = 200;
 params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
-ostruct.show = 1:2;
 ostruct.figurewidth = 6;
 ostruct.figureheight = 4;
 ostruct.ampprop = 0.090;  % plot this current step [nA] in the single figure
@@ -307,7 +300,7 @@ else
     ostruct.savename = sprintf('Fig2_-%s',neuron.experiment);
 end
 if ostruct.usemorph >= 4  % = rat morphology
-    ostruct.show = 2;
+    ostruct.dataset = 0;
     ostruct.savename = sprintf('SupplFigX_-%s',neuron.experiment);
 end
 
@@ -337,6 +330,7 @@ ostruct.savename2 = sprintf('Fig5-FI-Kv11-%s',neuron.experiment);
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
 handles1 = figure;
 t2n_plotCurrSteps(targetfolder_data,neuron,steps);
+ostruct.color = [0 0 1];
 ostruct.handles2 = t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %increase Kv1.1 10fold
@@ -349,22 +343,18 @@ for t = 1:numel(neuron.mech)
     end
 end
 neuron.experiment = strcat(neuron.experiment,'_Kv11');
-tree_orig = tree;
-for t=1:numel(tree)
-    tree{t}.col = colorme('red');
-end
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
 
 ostruct.savename = ostruct.savename1;
 figure(handles1);
-t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct,steps);
+t2n_plotCurrSteps(targetfolder_data,neuron,steps);
 
 ostruct.savename = ostruct.savename2;
 ostruct.handles = ostruct.handles2;
+ostruct.color = [1 0 0];
 t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 ostruct.handles = [];
 ostruct.savename = [];
-tree = tree_orig;
 
 %% Synaptic stimulation, Figure 7
 params = params_orig;
@@ -389,7 +379,6 @@ vstepsModel =  -130:5:-40;
 dur = [105 100 105];
 holding_voltage = -80; % mV
 ostruct.subtract_hv = 1; % boolean subtract holding voltage current
-ostruct.show = 2; % 0= nothing, 1 = only exp data, 2 = only model data
 params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.single = 0; % show single data curves instead of mean
@@ -400,8 +389,8 @@ ostruct.savename = sprintf('Fig3-IV_Mehranfard15-%s',neuron.experiment);
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
-
-t2n_IVplot(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
+ostruct.dataset = 0;
+ostruct.handles = t2n_IVplot(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
 xlim([-125 -60])
 if ostruct.newborn
     ylim([-200 100])
@@ -409,6 +398,8 @@ else
     ylim([-400 200])
 end
 FontResizer
+aGC_IVplotExp(params,ostruct,t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment))
+
 tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
 
 %% Rat FI curve, Figure 3, similar to Mehranfard 2015 Plos One 
@@ -427,25 +418,26 @@ ostruct.holding_voltage = -80;  % unknown. but without LJP
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
 
 ostruct.dataset = 0;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
-ostruct.show = 1:2; % data (Meranfahrd) &  simulation
 ostruct.savename = sprintf('Fig3_FI_Mehranfahrd15-%s',neuron.experiment);
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
-t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
-ostruct.show = 2:3; %   simulation & explicit spikes
+ostruct.handles = t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
+aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,params,ostruct)
+
 ostruct.savename = sprintf('Fig3_Final-%s',neuron.experiment);
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
-t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct,0.1);
+figure; hold all
+t2n_plotCurrSteps(targetfolder_data,neuron,0.1);
 
 %% ISI spike adaptaption Figure 5, similar to MA14 Fig 8
 params = params_orig;
+neuron = neuron_orig;
 %!!!
 params.celsius = 33;
 %!!!
-neuron = neuron_orig;
 ostruct.holding_voltage = -62;
 ostruct.find_freq = 6; % 6 spikes per current step
 % ostruct.amp = 200/1000;%nA this value is ignored because of find_freq
@@ -457,7 +449,6 @@ end
 ostruct. handles = [];
 steps = 0.15;%,0.2];
 ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
-ostruct.show = 2; % only simulation
 ostruct.duration = 100;
 params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.ampprop = 200/1000; 
@@ -468,9 +459,9 @@ end
 ostruct.dataset = 0;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
 
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
-
-t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct,steps);
-
+fig = figure; hold all
+t2n_plotCurrSteps(targetfolder_data,neuron,steps);
+ax = gca; p1 = ax.Children; p1.Color = [0 0 0];
 props = t2n_APprop(targetfolder_data,neuron,ostruct.ampprop);
 
 ISIadp{1} = NaN(numel(tree),1);
@@ -479,12 +470,12 @@ for t = 1:numel(tree)
         ISIadp{1}(t) = 1-props.APISI{1,t}(1)/props.APISI{1,t}(end);
     end
 end
-ostruct.show = 2;
 
 neuron = t2n_blockchannel(neuron,{'SK2'},100);
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
-t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct,steps);
-
+figure(fig)
+t2n_plotCurrSteps(targetfolder_data,neuron,steps);
+p2 = setdiff(ax.Children,p1); p2.Color = [1 0 0];
 props = t2n_APprop(targetfolder_data,neuron,ostruct.ampprop);
 
 ISIadp{2} = NaN(numel(tree),1);
@@ -494,13 +485,14 @@ for t = 1:numel(tree)
     end
 end
 
-ostruct.show = 2;
-
 neuron = neuron_orig;
 neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
 neuron = t2n_blockchannel(neuron,{'Kv723'},100);
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
-t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct,steps);
+
+figure(fig)
+t2n_plotCurrSteps(targetfolder_data,neuron,steps);
+p3 = setdiff(ax.Children,[p1,p2]); p3.Color = [0 0 1];
 
 props = t2n_APprop(targetfolder_data,neuron,ostruct.ampprop);
 
@@ -510,7 +502,6 @@ for t = 1:numel(tree)
         ISIadp{3}(t) = 1-props.APISI{1,t}(1)/props.APISI{1,t}(end);
     end
 end
-ostruct.show = 2;
 
 dstruct = [];gstruct = [];
 dstruct.data.ISIadapt = [];
@@ -530,7 +521,7 @@ tprint(fullfile(targetfolder_results,t2n_expcat('Fig.5-ISIadapt',neuron.experime
 
 params.celsius = 24;
 ostruct = rmfield(ostruct,'find_freq');
-%% bAP simulation (Krueppel 2011) +  Calcium dynamics (Stocca 2008) Teil Ratte, Figure 4
+%% bAP simulation (Krueppel 2011) Teil Ratte, Figure 4
 params = params_orig;
 neuron = neuron_orig;
 ostruct.simple = 0;  % only recording along longest dendrite
@@ -541,12 +532,43 @@ celsius_orig = params.celsius;
 params.celsius = 33;  % temperature
 neuron = t2n_Q10pas(neuron,params.celsius);
 neuron.experiment = sprintf('%s_%d°',neuron.experiment,params.celsius);
-ostruct.show = 1;
-
+if ~(ostruct.vmodel>=0) 
+    neuron = manipulate_Ra(neuron,1,'axon'); % necessary because otherwise the axon spikes permanently after the buzz and Ca decay measurement is not possible
+    params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
+    params.accuracy = 1; % improve AIS segment number for more accurate simulation
+    ostruct.cstep = 1700*0.001; %nA %AH99 model, cstep has to be bigger otherwise not all cells fire
+else
+    ostruct.cstep = 1300*0.001; %nA
+end
 t2n_bAP(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
 
 params.celsius = celsius_orig; % back to normal temp
-t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
+[bAPdisthm,mveloc_dend,mveloc_farax,mveloc_nearax,fig] = t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
+%%  Calcium dynamics (Stocca 2008) Teil Ratte, Figure 4
+params = params_orig;
+neuron = neuron_orig;
+ostruct.simple = 0;  % only recording along longest dendrite
+ostruct.reduce = 0;  % only measure every third node
+ostruct.dist = 'Eucl.'; % PL., Eucl.
+ostruct.relamp = 0;  % relative amplitudes
+celsius_orig = params.celsius;
+params.celsius = 24;  % temperature
+neuron = t2n_Q10pas(neuron,params.celsius);
+neuron.experiment = sprintf('%s_%d°',neuron.experiment,params.celsius);
+if ~(ostruct.vmodel>=0) 
+    ostruct.cai = 'caim_Caold';  % AH99 model, does not have an own calcium buffer mechanism, thus variable has a different name
+    neuron = manipulate_Ra(neuron,1,'axon'); % necessary because otherwise the axon spikes permanently after the buzz and Ca decay measurement is not possible
+    params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
+    params.accuracy = 1; % improve AIS segment number for more accurate simulation
+    ostruct.cstep = 1700*0.001; %nA %AH99 model, cstep has to be bigger otherwise not all cells fire
+else
+    ostruct.cai = 'cai';
+    ostruct.cstep = 1300*0.001; %nA
+end
+aGC_CaDyn(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+
+params.celsius = celsius_orig; % back to normal temp
+aGC_plotCaDyn(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %% AP width BK/Kv34 + spike adaptation, Figure 5
 params = params_orig;
@@ -572,9 +594,6 @@ for a = 1:2
     prop{a}(1) = t2n_APprop(targetfolder_data,neuron,ostruct.amp(a));
 end
 
-
-ostruct.show = 2;
-
 ostruct.handles = t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 for t = numel(tree):-1:1
     if t == 1
@@ -593,7 +612,6 @@ t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
 for a = 1:2
     prop{a}(2) = t2n_APprop(targetfolder_data,neuron,ostruct.amp(a));
 end
-ostruct.show = 2;
 t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 for t = numel(tree):-1:1
     if t == 1
@@ -614,7 +632,6 @@ t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 for a = 1:2
     prop{a}(3) = t2n_APprop(targetfolder_data,neuron,ostruct.amp(a));
 end
-ostruct.show = 2;
 t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 for t = numel(tree):-1:1
     if t == 1

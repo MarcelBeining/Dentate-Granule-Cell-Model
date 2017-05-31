@@ -19,7 +19,6 @@ t2nexchange_aGCmorphsim6/
 *.asv
 t2nexchange_aGCmorphsim3/
 *.dll
-*.dat
 *.mat
 t2nexchange_aGCmorphsim4/
 lib_mech/x86_64/
