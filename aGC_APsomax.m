@@ -6,7 +6,6 @@ display('check axon geschwindigkeit (teilweise von leakyness abh.) bzw axon AP b
 
 cstep = 1.8; %nA !
 params.accuracy = 1;  % for more nseg in axon and soma!
-params.v_init = -80;%-params.LJP;
 params.dt=0.05;
 params.cvode = 1;
 params.tstop = 350;    
@@ -62,7 +61,7 @@ for t=1%:numel(tree)
 end
 FontResizer
 FigureResizer(5,8)
-tprint(fullfile(targetfolder_results,expcat('Fig.3-APinit',neuron.experiment)),'-HR-pdf')
+tprint(fullfile(targetfolder_results,t2n_expcat('Fig.3-APinit',neuron.experiment)),'-HR-pdf')
 
 
 figure;
@@ -100,4 +99,4 @@ title('Axon')
 
 FontResizer
 % FigureResizer(5,8)
-tprint(fullfile(targetfolder_results,expcat('Fig.3-APinitdata',neuron.experiment)),'-HR-pdf')
+tprint(fullfile(targetfolder_results,t2n_expcat('Fig.3-APinitdata',neuron.experiment)),'-HR-pdf')

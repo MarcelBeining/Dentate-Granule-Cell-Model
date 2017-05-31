@@ -3,7 +3,6 @@ function aGC_BKblockJaffe11(neuron,tree,params,targetfolder_results)
 % cstep = 1.8; %nA !
 cstep = 0.3; % 300 pA
 params.accuracy = 1;  % for more nseg in axon and soma!
-params.v_init = -80;%-params.LJP;
 params.dt=0.05;
 params.cvode = 1;
 params.tstop = 400;    
@@ -48,6 +47,6 @@ for t=1:numel(tree)
         end
     end
     legend('Control','BK block')
-    tprint(fullfile(targetfolder_results,expcat(sprintf('Fig5-blockBK%d',t),neuron.experiment)),'-HR-pdf')
+    tprint(fullfile(targetfolder_results,t2n_expcat(sprintf('Fig5-blockBK%d',t),neuron.experiment)),'-HR-pdf')
 end
 'g'

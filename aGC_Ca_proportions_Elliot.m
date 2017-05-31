@@ -3,7 +3,6 @@ function aGC_Ca_proportions_Elliot(neuron,tree,params,targetfolder)
 % end
 elecnode = 1;
 
-% LJP = params.LJP;  % use LJP only for current clamps now...
 params.prerun = 300;
 params.skiprun = 0;
 params.tstop = 100;

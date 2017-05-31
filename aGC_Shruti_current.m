@@ -4,8 +4,6 @@ ostruct.holding_voltage = -80;
 % end
 elecnode = 1;
 
-% LJP = params.LJP;  % use LJP only for current clamps now...
-holding_voltage = ostruct.holding_voltage;  %-LJP
 params.prerun = 300;
 params.skiprun = 0;
 params.tstop = 920;

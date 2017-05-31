@@ -2,7 +2,6 @@ function aGC_sAHPstimMA14(neuron,tree,params,targetfolder)
 
 cstep = 0.2; %nA !
 params.accuracy = 1;  % for more nseg in axon and soma!
-params.v_init = -80;%-params.LJP;
 params.dt=0.05;
 params.cvode = 1;
 params.tstop = 350;    

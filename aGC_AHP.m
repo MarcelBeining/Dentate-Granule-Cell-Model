@@ -1,16 +1,16 @@
 function aGC_AHP(neuron,tree,params,targetfolder_data)
 
-params.LJP = 7;  % from the paper
+LJP = 7;  % from the paper
 cd(path)
 params.accuracy = 1;  % for more nseg in axon and soma!
-params.v_init = -58-params.LJP;
+params.v_init = -58 - LJP;
 
 params.tstop = 3000;
 params.dt=0.05;
 params.cvode = 1;
     
 %!!!
-meanhvol = -58 - params.LJP;   % corrected!!
+meanhvol = -58 - LJP;   % corrected!!
 params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep2','var')
     hstep2 = find_curr(params,neuron,tree,meanhvol,[],'-q-d');

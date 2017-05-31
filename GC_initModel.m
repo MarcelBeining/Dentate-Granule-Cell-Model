@@ -10,7 +10,7 @@ if ~isfield( ostruct,'forcecalcload')
     ostruct.forcecalcload = 0;
 end
 
-
+params.v_init = -80;
 
 origfolder = pwd;
 

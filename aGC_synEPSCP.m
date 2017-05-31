@@ -12,7 +12,7 @@ params.cvode = 1;
 
 
 
-hstep = find_curr(params,nneuron,tree,-70-params.LJP); %assuming a HP of xxx mV
+hstep = find_curr(params,nneuron,tree,-82.1); %assuming a HP of xxx mV
 
 
 for t=1:numel(tree)
@@ -62,7 +62,7 @@ for s = numel(nsyns):-1:1
     
     for t = 1:numel(tree)
         neuron.pp{t} = rmfield(neuron.pp{t},'IClamp');
-        neuron.pp{t}.SEClamp = struct('node',1,'times',-200,'amp', -70-params.LJP,'rs',rs); %n,del,dur,amp
+        neuron.pp{t}.SEClamp = struct('node',1,'times',-200,'amp', -82.1,'rs',rs); %n,del,dur,amp
         neuron.record{t}.SEClamp = struct('node',1,'record','i');
     end
     [out2, ~] = t2n(tree,params,neuron,'-w-q-d');

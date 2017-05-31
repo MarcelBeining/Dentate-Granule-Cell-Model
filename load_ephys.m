@@ -8,44 +8,61 @@ folder = 'raw data';  % folder where raw data was placed
 
 switch datanum
     case 1
-        load(sprintf('%s%sMongiat_Mature_%s.mat',folder,filesep,str));
-        thisdata = data{1};
+        dat = load(sprintf('%s%sMongiat_Mature_%s.mat',folder,filesep,str));
+        thisdata = dat.data{1};
+        rate = dat.rate;
+%         steps = dat.csteps;
         if strcmp(str,'CClamp')
             thisdata = thisdata-5;  % don't know why but data is systematically shifted by +5 mV. You see it because it doesnt start at -70 mV
         end
     case 2.21
-        load(sprintf('%s%sMongiat_Young_21dpi_%s.mat',folder,filesep,str));
-        thisdata = data{1};
+        dat = load(sprintf('%s%sMongiat_Young_21dpi_%s.mat',folder,filesep,str));
+        thisdata = dat.data{1};
+        rate = dat.rate;
+%         steps = dat.csteps;
     case 2.25
-        load(sprintf('%s%sMongiat_Young_25dpi_%s.mat',folder,filesep,str));
-        thisdata = data{1};
+        dat = load(sprintf('%s%sMongiat_Young_25dpi_%s.mat',folder,filesep,str));
+        thisdata = dat.data{1};
+        rate = dat.rate;
+%         steps = dat.csteps;
     case 2.28
-        load(sprintf('%s%sMongiat_Young_28dpi_%s.mat',folder,filesep,str));
-        thisdata = data{1};
+        dat = load(sprintf('%s%sMongiat_Young_28dpi_%s.mat',folder,filesep,str));
+        thisdata = dat.data{1};
+        rate = dat.rate;
+%         steps = dat.csteps;
     case 2
-        load(sprintf('%s%sMongiat_Young_%s.mat',folder,filesep,str));
-        thisdata = data{1};
+        dat = load(sprintf('%s%sMongiat_Young_%s.mat',folder,filesep,str));
+        thisdata = dat.data{1};
+        rate = dat.rate;
+%         steps = dat.csteps;
     case 3
-        load(sprintf('%s%sMongiat_BaCl_%s.mat',folder,filesep,str));
+        dat = load(sprintf('%s%sMongiat_BaCl_%s.mat',folder,filesep,str));
         if extractkir && strcmp(str,'VClamp')
-            thisdata = data{2}-data{4};  % subtract the Ba insensitive current
+            thisdata = dat.data{2}-dat.data{4};  % subtract the Ba insensitive current
         else
-            thisdata = data{2};
+            thisdata = dat.data{2};
         end
-        
+        rate = dat.rate;
+%         steps = dat.csteps;
     case 4
-        load(sprintf('%s%sMongiat_BaCl_%s.mat',folder,filesep,str));
+        dat = load(sprintf('%s%sMongiat_BaCl_%s.mat',folder,filesep,str));
         if extractkir
-            thisdata = data{1}-data{3};  % subtract the Ba insensitive current
+            thisdata = dat.data{1}-dat.data{3};  % subtract the Ba insensitive current
         else
-            thisdata = data{1};
+            thisdata = dat.data{1};
         end
+        rate = dat.rate;
+%         steps = dat.csteps;
     case 5
-        load(sprintf('%s%sMongiat_BaCl_%s.mat',folder,filesep,str));
-        thisdata = data{4};
+        dat = load(sprintf('%s%sMongiat_BaCl_%s.mat',folder,filesep,str));
+        thisdata = dat.data{4};
+        rate = dat.rate;
+%         steps = dat.csteps;
     case 6
-        load(sprintf('%s%sMongiat_BaCl_%s.mat',folder,filesep,str));
-        thisdata = data{3};
+        dat = load(sprintf('%s%sMongiat_BaCl_%s.mat',folder,filesep,str));
+        thisdata = dat.data{3};
+        rate = dat.rate;
+%         steps = dat.csteps;
     case 7
         steps = (50:400)/1000;
         thisdata = NaN(1,1,8);
@@ -62,7 +79,7 @@ end
 switch str
     case 'VClamp'
         if datanum < 7
-            steps = -130:5:-40;
+            steps = (-130:5:-40) - 12.1; %LJP corrected
         else
            steps = [];
         end
@@ -70,5 +87,6 @@ switch str
     case 'CClamp'
         if datanum < 7
             steps = (0:5:120)/1000;
+            thisdata = thisdata - 12.1; %LJP corrected
         end
 end

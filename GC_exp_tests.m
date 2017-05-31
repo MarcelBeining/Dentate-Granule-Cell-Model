@@ -34,10 +34,8 @@ ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
 
 if ostruct.usemorph >= 4
     ostruct.ratadjust = 1;  % adjust Kir channel in rats
-    params.LJP = 0; % no LJP with rat
 else
     ostruct.ratadjust = 0;
-    params.LJP = 12.1; % liquid junction potential with Mongiat solutions..needs to be substracted from voltage commands and measured voltages
 end
 
 %*****************************
@@ -99,9 +97,9 @@ ostruct.single = 0;
 %
 t2n_VoltSteps(neuron,tree,params,targetfolder_data,ostruct);
 %
-t2n_IVplot(expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
+t2n_IVplot(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
 if ostruct.dataset ~= 2.28
-    t2n_plotVoltSteps(expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
+    t2n_plotVoltSteps(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
 end
 %% current clamp simulation (Mongiat 2009, Brenner 2005)
 neuron = neuron_orig;
@@ -111,12 +109,12 @@ ostruct.duration = 200;%200;
 
 ostruct.coarse = 0.5;
 
-ostruct.amp = [20,65,80,120];[20,65,80,120];0:10:120;[15,25,55,90];[5,15,25,35,45,55,65,90];[30,75,90,120];[250];[15:15:120];%[50,100,200,300];15:15:120;%[45 50 90 120];%[20,90];%40,80,120];0:10:115; %0:5:115;% pA % 55,95,115,155,175,195    [15,25,50,90];
+ostruct.amp = [20,65,80,120]/1000; %nA
 params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 params.dt = 0.25;  % this is ignored if cvode = 1
 
 ostruct.show = 1:2;
-ostruct.ampprop = 65;
+ostruct.ampprop = 65/1000;
 
 %%%%%%%%%%%%%%%%%%%%%
 % params.celsius = 33
@@ -144,12 +142,12 @@ t2n_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
 %% dV/V curves  ONLY WITH CONSTANT DT and with high time resolution!!!
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_dV');
-ostruct.amp = [40,65,90,115]; % pA
+ostruct.amp = [40,65,90,115]/1000; % nA
 params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 params.dt = 0.25;  % this is ignored if cvode = 1
 ostruct.coarse = 0;
 ostruct.show = 1:2;
-ostruct.ampprop = 90;
+ostruct.ampprop = 90/1000;
 if ostruct.newborn
     ostruct.dataset =2.28;%4;
 else
@@ -188,7 +186,7 @@ holding_voltage = -77; % mV
 % ostruct.show = 1:2; % 1 = only exp data, 2 = only model data
 
 aGC_spikingadaptation(neuron,tree,params,targetfolder_data,holding_voltage);
-aGC_plotSA(expcat(targetfolder_data,'Exp_Adaptation',neuron.experiment),targetfolder_results)
+aGC_plotSA(t2n_expcat(targetfolder_data,'Exp_Adaptation',neuron.experiment),targetfolder_results)
 %% block SK (Mateos-Aparicio 2014) ACHTUNG RATTE !!!!!!!!!!
 % aGC_sAHPstimMA14(neuron,tree,params,targetfolder_data)
 % aGC_plotsAHP(targetfolder_data,targetfolder_results,neuron)

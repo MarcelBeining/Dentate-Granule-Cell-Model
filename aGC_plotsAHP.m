@@ -1,6 +1,6 @@
 function aGC_plotsAHP(targetfolder_data,targetfolder_results,neuron)
 
-load(expcat(targetfolder_data,'Exp_MA14stimsAHP',neuron.experiment))
+load(t2n_expcat(targetfolder_data,'Exp_MA14stimsAHP',neuron.experiment))
 col = colorme({'Black','Red'});
 freq = zeros(2,numel(tree));
 for t=1:numel(tree)

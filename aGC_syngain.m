@@ -64,7 +64,7 @@ end
 % params.tname = strcat(params.tname,'_spined');
 % tree= t2n_writetrees(params,tree,fullfile(params.path,params.morphfolder));
 
-hstep = find_curr(params,nneuron,tree,-70-params.LJP); %assuming a HP of xxx mV
+hstep = find_curr(params,nneuron,tree,-82.1); %assuming a HP of xxx mV
 
 % fig(1) = figure;hold all,
 % fig(2) = figure;hold all,

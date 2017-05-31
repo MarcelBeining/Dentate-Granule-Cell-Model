@@ -5,7 +5,6 @@ current = 150*0.001;
 
 params.celsius = 33;
 params.accuracy = 1;  % for more nseg in axon and soma!
-params.v_init = -80;%-LJP;
 params.tstop = 1500;
 params.dt=0.05;
 params.cvode = 1;
