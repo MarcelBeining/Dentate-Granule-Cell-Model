@@ -130,9 +130,9 @@ t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,ostruct);
 % 
 % % if ostruct.maxamp >= 90
 % % AP properties during current clamp
-prop =     t2n_APprop(targetfolder_data,targetfolder_results,neuron,ostruct,tree);
+prop =     t2n_APprop(targetfolder_data,neuron,ostruct,tree);
 % % end
-t2n_FIplot(targetfolder_data,targetfolder_results,neuron,params,ostruct);
+t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %% Compare spike soma/axon with a axon bleb (simulation!) SH2010
 % aGC_APsomax(neuron,tree,params,fullfile(treepath,treename),targetfolder_results)
