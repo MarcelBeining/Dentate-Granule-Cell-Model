@@ -78,7 +78,7 @@ stdV = mCai;
 for t = 1:numel(tree)
     plotcaivals{t} = NaN(numel(tree{t}.X),1);
     for x = 1:numel(nodes{t})
-        plotcaivals{t}(nodes{t}(x)) = max(out.record{t}.cell.(cai){nodes{t}(x)});
+        plotcaivals{t}(nodes{t}(x)) = max(out.record{t}.cell.(ostruct.cai){nodes{t}(x)});
     end
     % as not all nodes were recorded, interpolate the value for the nodes
     % between the recorded ones (only affects plotting the tree, not the
@@ -88,7 +88,7 @@ for t = 1:numel(tree)
     end
     for f =1:numel(CaNodes{t})
         for ff = 1:numel(CaNodes{t}{f})
-            caivec = out.record{t}.cell.(cai){CaNodes{t}{f}(ff)};
+            caivec = out.record{t}.cell.(ostruct.cai){CaNodes{t}{f}(ff)};
             if ~isempty(caivec)  % cai was existent at that node 
                 opts = optimset('MaxFunEvals',50000,'MaxIter',10000);
 
@@ -114,8 +114,8 @@ for t = 1:numel(tree)
                 tw(t,f,ff) = NaN;
             end
         end
-        mCai{t,f} = mean(cat(2,out.record{t}.cell.(cai){CaNodes{t}{f}})*1e6,2)';
-        stdCai{t,f} = std (cat(2,out.record{t}.cell.(cai){CaNodes{t}{f}})*1e6,[],2)';
+        mCai{t,f} = mean(cat(2,out.record{t}.cell.(ostruct.cai){CaNodes{t}{f}})*1e6,2)';
+        stdCai{t,f} = std (cat(2,out.record{t}.cell.(ostruct.cai){CaNodes{t}{f}})*1e6,[],2)';
         mV{t,f} = mean(cat(2,out.record{t}.cell.v{CaNodes{t}{f}}),2)';
         stdV{t,f} = std (cat(2,out.record{t}.cell.v{CaNodes{t}{f}}),[],2)';
     end
