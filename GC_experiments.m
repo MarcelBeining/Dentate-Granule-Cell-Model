@@ -28,8 +28,8 @@ ostruct.vmodel = 1; % 0 = passive model, > 0 = active model, everything else (e.
 ostruct.changeAHion = 0;  % only important when using the AH99 model. Boolean to decide if standard AH99 ion reversal potentials are used (0) or if they are adjusted to the experiments (1)
 
 % change morphologies here
-ostruct.usemorph = 4;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
-ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
+ostruct.usemorph = 1;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
+ostruct.newborn = 1;  % 0 = adult GC model, 1 = young abGC model
 
 % more parameters
 ostruct.reducecells = 1;  % reduce number of cells for faster simulation (e.g. for testing)
@@ -92,29 +92,17 @@ ostruct.figurewidth = 6;
 t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
 %
 if ~ostruct.newborn
-    if ~all(ostruct.show==1)
-        ostruct.savename = sprintf('Fig2-IV_dyn-%s',neuron.experiment);
-    else
-        ostruct.savename = sprintf('Fig2-IV_dyn-%s_onlyexp',neuron.experiment);
-    end
+    ostruct.savename = sprintf('Fig2-IV_dyn-%s',neuron.experiment);
     ostuct.handles = t2n_plotVoltSteps(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
     aGC_plotVoltStepsExp(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
 end
 
 if ostruct.newborn
     ostruct.dataset = 2.28;
-    if ~all(ostruct.show==1)
-        savename = sprintf('Fig6-IV+Ba_young-%s',neuron.experiment);
-    else
-        savename = sprintf('Fig6-IV+Ba_young-%s_onlyexp',neuron.experiment);
-    end
+    savename = sprintf('Fig6-IV+Ba_young-%s',neuron.experiment);
 else
     ostruct.dataset =3;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
-    if ~all(ostruct.show==1)
-        savename = sprintf('Fig2-IV+Ba-%s',neuron.experiment);
-    else
-        savename = sprintf('Fig2-IV+Ba-%s_onlyexp',neuron.experiment);
-    end
+    savename = sprintf('Fig2-IV+Ba-%s',neuron.experiment);
 end
 ostruct.handles = t2n_IVplot(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment),ostruct);
 aGC_IVplotExp(params,ostruct,t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
@@ -831,7 +819,7 @@ for v = 1:numel(changs) %
     ostruct.reduce = 1;
     ostruct.relamp = 0;
     t2n_bAP(neuron,tree,params,targetfolder_data,ostruct)
-    [bAPdisthm,mveloc_dend,mveloc_farax,mveloc_nearax] = t2n_bAP_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
+    [bAPdisthm,mveloc_dend,mveloc_farax,mveloc_nearax] = t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
     rmatrix(13,v) = nanmean(mveloc_dend);
     rmatrix(14,v) = nanmean(mveloc_farax);
     

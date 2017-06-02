@@ -201,5 +201,5 @@ end
 
 treename = fullfile(treepath,treename);
 cd(origfolder)
-fprintf('Model initialized...%s',neuron.experiment)
+fprintf('Model initialized...%s\n',neuron.experiment)
 

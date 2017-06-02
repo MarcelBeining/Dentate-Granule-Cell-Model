@@ -20,10 +20,10 @@ else
     fig(1) = figure;clf;hold all,
 end
 
-if ostruct.dataset ~= 0
-    if (ostruct.dataset ~= 2.28)  % dont use that VClamp dataset, as it had been done after spiking experiment
-        [exp_vclamp,vsteps,rate] = load_ephys(ostruct.dataset,'VClamp');
-        tvec = 1/rate:1/rate:size(exp_vclamp,1)/rate;
+if ~all(ostruct.dataset == 0)
+    [exp_vclamp,vsteps,rate] = load_ephys(ostruct.dataset,'VClamp');
+    tvec = 1/rate:1/rate:size(exp_vclamp,1)/rate;
+    if ~all(ostruct.dataset == 2.28)  % dont use that VClamp dataset, as it had been done after spiking experiment
         Rin2 = zeros(size(exp_vclamp,2),1);
         cap2 = Rin2;
         Rin = Rin2;
