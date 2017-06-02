@@ -111,7 +111,7 @@ for t = 1:numel(tree)
     %         neuron{1}.record{t}.Exp2Syn = struct('node',thesesynids{t}(1),'record',{'i'});
     %     end
 end
-% ppweight = find_subthreshweight(params,neuron,tree,ppweight,ostruct);
+% ppweight = t2n_findSubthreshWeight(params,neuron,tree,ppweight,ostruct);
 
 if ostruct.synmode == 3
         switch params.tname
@@ -120,7 +120,7 @@ if ostruct.synmode == 3
                 switch type
                     case 'temporal'
                         if ostruct.newborn
-                            %                     ppweight = find_subthreshweight(params,neuron,tree,ppweight,10);
+                            %                     ppweight = t2n_findSubthreshWeight(params,neuron,tree,ppweight,10);
                             ppweight = [0.3000    0.4500    0.3125    0.3000    0.3625    0.3000    0.3125    0.2125]*1e-3;
                             ppweight = ppweight * 0.9;
                         else
@@ -129,7 +129,7 @@ if ostruct.synmode == 3
                         end
                     case 'spatial'
                         if ostruct.newborn
-                            %                     ppweight = find_subthreshweight(params,neuron,tree,ppweight,10);
+                            %                     ppweight = t2n_findSubthreshWeight(params,neuron,tree,ppweight,10);
                             ppweight = [0.3000    0.4500    0.3125    0.3000    0.3125    0.3000    0.3000    0.2125]*1e-3;
                             ppweight = ppweight * 0.9;
                         else
@@ -143,14 +143,14 @@ if ostruct.synmode == 3
                 switch type
                     case 'temporal'
                         if ostruct.newborn
-                            ppweight = find_subthreshweight(params,neuron,tree,ppweight,10);
+                            ppweight = t2n_findSubthreshWeight(params,neuron,tree,ppweight,10);
                             ppweight = []*1e-3;
                         else
-                            ppweight = find_subthreshweight(params,neuron,tree,ppweight,10);
+                            ppweight = t2n_findSubthreshWeight(params,neuron,tree,ppweight,10);
                             ppweight = []*1e-3;
                         end
                     case 'spatial'
-                        ppweight = find_subthreshweight(params,neuron,tree,ppweight,10);
+                        ppweight = t2n_findSubthreshWeight(params,neuron,tree,ppweight,10);
                         ppweight = []*1e-3;
                 end
         end
@@ -179,7 +179,7 @@ switch type
         params.tstop = 1000;
         indstim = numel(tree)+1:numel(tree)+nsyn;
         tree(indstim) = {struct('artificial','VecStim')};
-        [spikeMat,tvec] = poissonSpikeGen(freq,params,numel(indstim));
+        [spikeMat,tvec] = t2n_poissonSpikeGen(freq,params,numel(indstim));
         for in = 1:numel(indstim)
             
             

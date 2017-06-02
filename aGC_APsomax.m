@@ -22,7 +22,7 @@ for t = 1:numel(tree)
 end
 tree = t2n_writetrees(params,tree,strcat(treepath(1:end-4),'_bleb.mtr'));
     
-hstep = find_curr(params,neuron,tree,-80,[],'-q-d');
+hstep = t2n_findCurr(params,neuron,tree,-80,[],'-q-d');
 
 for t = 1:numel(tree)
 %     eucl{t} = eucl_tree(tree{t});
@@ -61,7 +61,7 @@ for t=1%:numel(tree)
 end
 FontResizer
 FigureResizer(5,8)
-tprint(fullfile(targetfolder_results,t2n_expcat('Fig.3-APinit',neuron.experiment)),'-HR-pdf')
+tprint(fullfile(targetfolder_results,t2n_catName('Fig.3-APinit',neuron.experiment)),'-HR-pdf')
 
 
 figure;
@@ -99,4 +99,4 @@ title('Axon')
 
 FontResizer
 % FigureResizer(5,8)
-tprint(fullfile(targetfolder_results,t2n_expcat('Fig.3-APinitdata',neuron.experiment)),'-HR-pdf')
+tprint(fullfile(targetfolder_results,t2n_catName('Fig.3-APinitdata',neuron.experiment)),'-HR-pdf')

@@ -71,7 +71,7 @@ params_orig = params;
 %% plot trees, Figure 1
 ostruct.show = 2;
 ostruct.savename = 'Fig1_Trees';
-plotmytrees(tree,targetfolder_results,[],ostruct) % '-s'
+t2n_plotTrees(tree,targetfolder_results,[],ostruct) % '-s'
 
 %% Mongiat IV + Ba, simulate the I-V curve with and without blocking Kir channels with Barium, Figure 2 & 6
 params = params_orig;
@@ -94,27 +94,27 @@ t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_da
 if ~ostruct.newborn
     ostruct.dataset =3;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
     ostruct.savename = sprintf('Fig2-IV_dyn-%s',neuron.experiment);
-    ostruct.handles = t2n_plotVoltSteps(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
-    aGC_plotVoltStepsExp(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
+    ostruct.handles = t2n_plotVoltSteps(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
+    aGC_plotVoltStepsExp(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
     savename = sprintf('Fig2-IV+Ba-%s',neuron.experiment);
 else
     ostruct.dataset = 2.28;
     savename = sprintf('Fig6-IV+Ba_young-%s',neuron.experiment);
 end
 
-ostruct.handles = t2n_IVplot(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment),ostruct);
-aGC_IVplotExp(params,ostruct,t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
+ostruct.handles = t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment),ostruct);
+aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
 
 neuron = t2n_blockchannel(neuron,{'Kir21','pas'},[99 30]);
 t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
 
-t2n_IVplot(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct)
+t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct)
 if ~ostruct.newborn % plot mongiat data
     ostruct.dataset =5;
-    aGC_IVplotExp(params,ostruct,t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
+    aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
 end
 ostruct.dataset =0; % plot literature data (arrows)
-aGC_IVplotExp(params,ostruct,t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
+aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
 
 ostruct.handles = [];
 xlim([-140 -60])
@@ -234,7 +234,7 @@ for f = 1:14
     if isfield(ostruct,'savename')
         tprint(fullfile(targetfolder_results,strcat(ostruct.savename,'-',figname{f})),'-pdf');
     else
-        tprint(fullfile(targetfolder_results,t2n_expcat(strcat(figname{f}),neuron.experiment)),'-pdf');
+        tprint(fullfile(targetfolder_results,t2n_catName(strcat(figname{f}),neuron.experiment)),'-pdf');
     end
 end
     
@@ -376,7 +376,7 @@ if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
 ostruct.dataset = 0;
-ostruct.handles = t2n_IVplot(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
+ostruct.handles = t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
 xlim([-125 -60])
 if ostruct.newborn
     ylim([-200 100])
@@ -384,7 +384,7 @@ else
     ylim([-400 200])
 end
 FontResizer
-aGC_IVplotExp(params,ostruct,t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment))
+aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment))
 
 tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
 
@@ -503,7 +503,7 @@ end
 Masterplotter(dstruct,gstruct,[],ostruct);
 neuron = neuron_orig;
 neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
-tprint(fullfile(targetfolder_results,t2n_expcat('Fig.5-ISIadapt',neuron.experiment)),'-pdf')
+tprint(fullfile(targetfolder_results,t2n_catName('Fig.5-ISIadapt',neuron.experiment)),'-pdf')
 
 params.celsius = 24;
 ostruct = rmfield(ostruct,'find_freq');
@@ -783,7 +783,7 @@ for v = 1:numel(changs) %
     params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     ostruct.data = 2;
-    rmatrix(5,v) = nanmean(find_curr(params,neuron,tree,'spike'));
+    rmatrix(5,v) = nanmean(t2n_findCurr(params,neuron,tree,'spike'));
     
     t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
     props = t2n_APprop(targetfolder_data,neuron,0.09);

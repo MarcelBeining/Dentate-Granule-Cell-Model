@@ -153,9 +153,9 @@ for t = 1:numel(tree)
     
     neuron.mech{t} = [];
     if ~AHflag && ostruct.scalespines  % spine scaling ignored in AH99 as already taken into account in the biophys
-        neuron.mech{t} =  cat_struct(GC_biophys(mechoptions),GC_spinedensity(ostruct.scalespines*0.9));
+        neuron.mech{t} =  t2n_catStruct(GC_biophys(mechoptions),GC_spinedensity(ostruct.scalespines*0.9));
     else
-        neuron.mech{t} =  cat_struct(GC_biophys(mechoptions));
+        neuron.mech{t} =  t2n_catStruct(GC_biophys(mechoptions));
     end
     if ~AHflag || ostruct.changeAHion
         neuron = t2n_setionconcentration(neuron,'Mongiat');

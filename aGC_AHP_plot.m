@@ -1,6 +1,6 @@
-function aGC_AHP_plot(targetfolder_data,targetfolder_results,neuron)
+function aGC_AHP_plot(targetfolder_data,neuron)
 
-load(t2n_expcat(targetfolder_data,'Exp_msAHP',neuron.experiment))
+load(t2n_catName(targetfolder_data,'Exp_msAHP',neuron.experiment))
 
 figure
 tit = {'Control','XE991 (M Channel blocker)','Apamin (SK blocker)'};

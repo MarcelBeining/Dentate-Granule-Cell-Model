@@ -101,7 +101,7 @@ switch type
         m_spikeMat = filtfilt(f,1,sum(spikeMat,1));
         plot(tvec,m_spikeMat)
         subplot(3,1,3)
-        plotRaster(spikeMat,tvec)
+        t2n_plotRaster(spikeMat,tvec)
         
     case 'regular'
         %         handles(end+1) = figure; hold all,

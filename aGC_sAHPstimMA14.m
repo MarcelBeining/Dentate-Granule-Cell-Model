@@ -9,7 +9,7 @@ params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep','var')
     hstep = [];
 end
-hstep = find_curr(params,neuron,tree,-62,hstep,'-q-d');
+hstep = t2n_findCurr(params,neuron,tree,-62,hstep,'-q-d');
 
 for t = 1:numel(tree)
     nodes{t} = 1;

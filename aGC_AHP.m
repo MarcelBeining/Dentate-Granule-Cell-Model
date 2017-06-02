@@ -13,7 +13,7 @@ params.cvode = 1;
 meanhvol = -58 - LJP;   % corrected!!
 params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep2','var')
-    hstep2 = find_curr(params,neuron,tree,meanhvol,[],'-q-d');
+    hstep2 = t2n_findCurr(params,neuron,tree,meanhvol,[],'-q-d');
 end
 for t=1:numel(tree)
     neuron.APCount{t} = [1,-30];

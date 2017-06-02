@@ -73,7 +73,7 @@ cd(origfolder)
 %% plot trees
 ostruct.show = 2;
 ostruct.savename = 'Fig3_RatSynTrees';
-plotmytrees(tree,targetfolder_results,[],ostruct) % '-s'
+t2n_plotTrees(tree,targetfolder_results,[],ostruct) % '-s'
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%% experiments start here %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -97,9 +97,9 @@ ostruct.single = 0;
 %
 t2n_VoltSteps(neuron,tree,params,targetfolder_data,ostruct);
 %
-t2n_IVplot(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
+t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
 if ostruct.dataset ~= 2.28
-    t2n_plotVoltSteps(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
+    t2n_plotVoltSteps(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
 end
 %% current clamp simulation (Mongiat 2009, Brenner 2005)
 neuron = neuron_orig;
@@ -172,7 +172,7 @@ t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 % aGC_AHP(neuron,tree,params,targetfolder_data)
 %
-% aGC_AHP_plot(targetfolder_data,targetfolder_results,neuron)
+% aGC_AHP_plot(targetfolder_data,neuron)
 
 %% block BK (Brenner 2005, Jaffe 2011) -> broader AP
 % aGC_BKblockJaffe11(neuron,tree,params,targetfolder_results)
@@ -186,7 +186,7 @@ holding_voltage = -77; % mV
 % ostruct.show = 1:2; % 1 = only exp data, 2 = only model data
 
 aGC_spikingadaptation(neuron,tree,params,targetfolder_data,holding_voltage);
-aGC_plotSA(t2n_expcat(targetfolder_data,'Exp_Adaptation',neuron.experiment),targetfolder_results)
+aGC_plotSA(t2n_catName(targetfolder_data,'Exp_Adaptation',neuron.experiment),targetfolder_results)
 %% block SK (Mateos-Aparicio 2014) ACHTUNG RATTE !!!!!!!!!!
 % aGC_sAHPstimMA14(neuron,tree,params,targetfolder_data)
 % aGC_plotsAHP(targetfolder_data,targetfolder_results,neuron)

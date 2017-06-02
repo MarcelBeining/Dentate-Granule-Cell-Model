@@ -19,7 +19,7 @@ xlabel('Time [ms]')
 ylabel('Membrane potential [mV]')
 FontResizer
 FigureResizer(5,8)
-tprint(fullfile(targetfolder_results,t2n_expcat('Fig.4-SA',neuron.experiment)),'-pdf')
+tprint(fullfile(targetfolder_results,t2n_catName('Fig.4-SA',neuron.experiment)),'-pdf')
 
 fig(2) = figure;
 hold on
@@ -30,4 +30,4 @@ xlabel('Intervals [ms]')
 ylabel('Frequency [Hz]')
 FontResizer
 FigureResizer(5,8)
-tprint(fullfile(targetfolder_results,t2n_expcat('Fig.4-SAfreq',neuron.experiment)),'-pdf')
+tprint(fullfile(targetfolder_results,t2n_catName('Fig.4-SAfreq',neuron.experiment)),'-pdf')
