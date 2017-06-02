@@ -594,7 +594,10 @@ for a = 1:2
     prop{a}(1) = t2n_APprop(targetfolder_data,neuron,ostruct.amp(a));
 end
 
-ostruct.handles = t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct);
+ostruct.handles = figure; hold all
+t2n_plotCurrSteps(targetfolder_data,neuron)
+
+
 for t = numel(tree):-1:1
     if t == 1
         ostruct.handles(1).Children(end-1).Children(t).Color = [0 0 0];
@@ -612,7 +615,9 @@ t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
 for a = 1:2
     prop{a}(2) = t2n_APprop(targetfolder_data,neuron,ostruct.amp(a));
 end
-t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct);
+figure(ostruct.handles)
+t2n_plotCurrSteps(targetfolder_data,neuron)
+
 for t = numel(tree):-1:1
     if t == 1
         ostruct.handles(1).Children(end-1).Children(t).Color = [1 0 0];
@@ -632,7 +637,9 @@ t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
 for a = 1:2
     prop{a}(3) = t2n_APprop(targetfolder_data,neuron,ostruct.amp(a));
 end
-t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,params,ostruct);
+figure(ostruct.handles)
+t2n_plotCurrSteps(targetfolder_data,neuron)
+
 for t = numel(tree):-1:1
     if t == 1
         ostruct.handles(1).Children(end-1).Children(t).Color = [0 0 1];
@@ -705,8 +712,7 @@ params.tstop = 30000;
 params.celsius = 34.4;
 params.dt=0.5;
 
-t2n_resonance(params,neuron,tree,ostruct,targetfolder_results)
-
+t2n_resonance(amp,params,neuron,tree,ostruct,targetfolder_results)
 data{1} = importdata(fullfile(params.path,'raw data','StegenHanuschkin_Resonance_CTRL.csv'));
 data{2} = importdata(fullfile(params.path,'raw data','StegenHanuschkin_Resonance_Ba.csv'));
 data{3} = importdata(fullfile(params.path,'raw data','StegenHanuschkin_Resonance_Ba+ZD.csv'));
@@ -777,6 +783,7 @@ for v = 1:numel(changs) %
     end
     %a
     ostruct.passtest = 'Std'; 
+    ostruct.show = 0;
     [Rin, tau, ~, Vrest] = t2n_passTests(neuron,tree,params,targetfolder_results,ostruct);
     % caution, VoltageClamps add the series resistance of the electrode (10MOhm
     % by now). With passive, capacitance is higher..? But Rin is always same
