@@ -102,7 +102,7 @@ if ~all(ostruct.dataset == 0)
     end
     fprintf('Kir Slope Conductance real cells %s\n',sprintf(' %.3g+-%.3g nS, ',mean(gKirReal),std(gKirReal)))
 end
-ylabel('Measured Current [pA]')
+ylabel('Current [pA]')
 
 
 
@@ -135,9 +135,7 @@ if ostruct.dataset==0
     Brunner14yRAT28 = [-80,-10,358,13]; %HV, pA step, MOhm, stdevMOhm   % 26 dpi
     
     col = colorme({'red','yellow','dim green','violett','cyan','pink'});
-    if isfield(ostruct,'savename')
-        FigureResizer(ostruct.figureheight,ostruct.figurewidth)   % has to come before arrows to avoid distortions
-    end
+    FigureResizer(ostruct.figureheight,ostruct.figurewidth)   % has to come before arrows to avoid distortions
     if ~ostruct.newborn
         if ostruct.usemorph <= 3  % mouse morphologies
             a=arrow([Brenner05(1),0+interp1(vstepsModel,mIV,Brenner05(1))],[Brenner05(1) + Brenner05(3) * Brenner05(2)/1000,Brenner05(2)+interp1(vstepsModel,mIV,Brenner05(1))]);

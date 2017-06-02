@@ -29,7 +29,7 @@ ostruct.changeAHion = 0;  % only important when using the AH99 model. Boolean to
 
 % change morphologies here
 ostruct.usemorph = 1;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
-ostruct.newborn = 1;  % 0 = adult GC model, 1 = young abGC model
+ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
 
 % more parameters
 ostruct.reducecells = 1;  % reduce number of cells for faster simulation (e.g. for testing)
@@ -92,18 +92,16 @@ ostruct.figurewidth = 6;
 t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
 %
 if ~ostruct.newborn
+    ostruct.dataset =3;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
     ostruct.savename = sprintf('Fig2-IV_dyn-%s',neuron.experiment);
-    ostuct.handles = t2n_plotVoltSteps(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
+    ostruct.handles = t2n_plotVoltSteps(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
     aGC_plotVoltStepsExp(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
-end
-
-if ostruct.newborn
+    savename = sprintf('Fig2-IV+Ba-%s',neuron.experiment);
+else
     ostruct.dataset = 2.28;
     savename = sprintf('Fig6-IV+Ba_young-%s',neuron.experiment);
-else
-    ostruct.dataset =3;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
-    savename = sprintf('Fig2-IV+Ba-%s',neuron.experiment);
 end
+
 ostruct.handles = t2n_IVplot(t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment),ostruct);
 aGC_IVplotExp(params,ostruct,t2n_expcat(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
 

@@ -236,7 +236,7 @@ switch type
             hold all,
             title(sprintf('Frequency %g Hz',freq(f)))
 %             errorbar(dt0,mean(freqmodel(f,:,:),3)/freq(f),std(freqmodel(f,:,:),[],3)/freq(f),'color',col{f})
-            plot(dt0,mean(squeeze(freqmodel(f,:,:)),2)/freq(f),'color',col{ostruct.newborn+1})
+            plot(dt0,squeeze(mean(freqmodel(f,:,:),3))/freq(f),'color',col{ostruct.newborn+1})
             ylim([0 1])
             xlim([dt0(1) dt0(numel(dt0))])
             xlabel('\Deltat0 [ms]')

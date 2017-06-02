@@ -16,14 +16,17 @@ if isfield(ostruct,'handles') && ishandle(ostruct.handles(1))
     fig(1) = ostruct.handles(1);
     figure(fig(1))
 else
-    fig(1) = figure; hold all
+    fig(1) = figure; 
 end
+hold all
 if isfield(ostruct,'handles') && numel(ostruct.handles)>1 && ishandle(ostruct.handles(2))
     fig(2) = ostruct.handles(2);
     figure(fig(2))
+    ax=gca;
 else
-    fig(2) = figure;hold all,ax=axes;
+    fig(2) = figure;ax=axes;
 end
+hold all
 if ostruct.subtract_hv
     basel = mean(exp_vclamp(0*rate+1:104*rate+1,:,:),1);
     exp_vclamp = exp_vclamp(:,:,:) - repmat(basel,size(exp_vclamp,1),1,1); % subtract current at baseline holding voltage (as Mongiat did)
