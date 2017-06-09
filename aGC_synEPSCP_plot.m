@@ -21,4 +21,4 @@ xlim([0 300]),ylim([0 35])
 ylabel('peak EPSP [mV]')
 xlabel('peak EPSC [pA]')
 
-tprint(fullfile(targetfolder_results,t2n_catName('Fig.X-EPSPC',nneuron.experiment)),'-HR-pdf');
+tprint(t2n_catName(targetfolder_results,'Fig.X-EPSPC',nneuron.experiment),'-HR-pdf');

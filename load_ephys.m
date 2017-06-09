@@ -15,16 +15,16 @@ switch datanum
         if strcmp(str,'CClamp')
             thisdata = thisdata-5;  % don't know why but data is systematically shifted by +5 mV. You see it because it doesnt start at -70 mV
         end
-    case 2.21
-        dat = load(sprintf('%s%sMongiat_Young_21dpi_%s.mat',folder,filesep,str));
-        thisdata = dat.data{1};
-        rate = dat.rate;
-%         steps = dat.csteps;
-    case 2.25
-        dat = load(sprintf('%s%sMongiat_Young_25dpi_%s.mat',folder,filesep,str));
-        thisdata = dat.data{1};
-        rate = dat.rate;
-%         steps = dat.csteps;
+%     case 2.21
+%         dat = load(sprintf('%s%sMongiat_Young_21dpi_%s.mat',folder,filesep,str));
+%         thisdata = dat.data{1};
+%         rate = dat.rate;
+% %         steps = dat.csteps;
+%     case 2.25
+%         dat = load(sprintf('%s%sMongiat_Young_25dpi_%s.mat',folder,filesep,str));
+%         thisdata = dat.data{1};
+%         rate = dat.rate;
+% %         steps = dat.csteps;
     case 2.28
         dat = load(sprintf('%s%sMongiat_Young_28dpi_%s.mat',folder,filesep,str));
         thisdata = dat.data{1};

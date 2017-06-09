@@ -9,7 +9,7 @@ params.tstop = 1500;
 params.dt=0.05;
 params.cvode = 1;
 
-hstep = t2n_findCurr(params,neuron,tree,holding_voltage,[],'-q-d');
+hstep = t2n_findCurr(tree,params,neuron,holding_voltage,[],'-q-d');
 
 for t=1:numel(tree)
     neuron.APCount{t} = [1,-30];

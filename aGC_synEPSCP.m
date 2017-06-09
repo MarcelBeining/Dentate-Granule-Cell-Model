@@ -12,7 +12,7 @@ params.cvode = 1;
 
 
 
-hstep = t2n_findCurr(params,nneuron,tree,-82.1); %assuming a HP of xxx mV
+hstep = t2n_findCurr(tree,params,nneuron,-82.1); %assuming a HP of xxx mV
 
 
 for t=1:numel(tree)

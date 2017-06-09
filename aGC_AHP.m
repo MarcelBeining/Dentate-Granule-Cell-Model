@@ -13,7 +13,7 @@ params.cvode = 1;
 meanhvol = -58 - LJP;   % corrected!!
 params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep2','var')
-    hstep2 = t2n_findCurr(params,neuron,tree,meanhvol,[],'-q-d');
+    hstep2 = t2n_findCurr(tree,params,neuron,meanhvol,[],'-q-d');
 end
 for t=1:numel(tree)
     neuron.APCount{t} = [1,-30];
@@ -48,11 +48,12 @@ for s = 1:3
 %                 nneuron{s}.mech{t}.adendMML.SK2.gkbar = nneuron{s}.mech{t}.adendMML.SK2.gkbar /10000;
 %             end
     end
-    nneuron{s} = t2n_as(1,nneuron{s});
+    
 end
+nneuron = t2n_as(1,nneuron);
 
 % params.skiprun = 1 %!!!!!!!!!
-    [out, minterf] = t2n(tree,params,nneuron,'-q-d-w');
+    [out, ~] = t2n(tree,params,nneuron,'-q-d-w');
     if isfield(out,'error')
         return
     end

@@ -7,7 +7,7 @@ if ~isfield(ostruct,'show')
     ostruct.show = 1:2;
 end
 
-load(t2n_catName(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment)),'voltVec','timeVec','numspikes','params','cstepsSpikingModel','tree','nneuron')
+load(t2n_catName(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,'.mat')),'voltVec','timeVec','numspikes','params','cstepsSpikingModel','tree','nneuron')
 
 if any(ostruct.usemorph == [2,3,5,6])  % artificial cells
     modelcol = [0 1 0];

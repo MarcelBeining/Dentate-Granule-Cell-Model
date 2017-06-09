@@ -19,7 +19,7 @@ plotcaivals = nodes;
 CaNodes = nodes;
 ipar = nodes;
 
-hstep = t2n_findCurr(params,neuron,tree,params.v_init); %assuming a HP of xxx mV
+hstep = t2n_findCurr(tree,params,neuron,params.v_init); %assuming a HP of xxx mV
 
 
 for t = 1:numel(tree)

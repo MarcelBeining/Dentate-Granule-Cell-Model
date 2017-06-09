@@ -134,7 +134,7 @@ end
 if ~all(cellfun(@(x) isfield(x,'NID'),tree)) || ~all(cellfun(@(x) exist(fullfile(params.morphfolder,[x.NID,'.hoc']),'file'),tree))
     answer = questdlg('Caution! Not all of your trees have been transformed for NEURON yet! Transforming now..','Transform trees','OK','Cancel','OK');
     if strcmp(answer,'OK')
-        tree = t2n_writetrees(params,tree,fullfile(treepath,treename));
+        tree = t2n_writeTrees(tree,params,fullfile(treepath,treename));
     end
 end
 if isempty(tree)

@@ -13,7 +13,7 @@ end
 
 
 for n = 1:numel(nneuron)
-    load(t2n_catName(targetfolder_data,'Exp_CaDyn',nneuron{n}.experiment),'plotcaivals','params','nodes','neuron','tree','CaNodes','mCai','stdCai','mV','stdV','tim','tw','maxcai')
+    load(t2n_catName(targetfolder_data,'Exp_CaDyn',nneuron{n}.experiment,'.mat'),'plotcaivals','params','nodes','neuron','tree','CaNodes','mCai','stdCai','mV','stdV','tim','tw','maxcai')
     
     spiked = cellfun(@(x) any(x>0),mV(:,1));
     
@@ -71,7 +71,7 @@ for n = 1:numel(nneuron)
     %         yl = get(c,'YLim');
 %     set(c,'YTick',[-80,0,80])
     %         set(c,'YTick',[ceil(yl(1)),0,floor(yl(2))])
-    tprint(fullfile(targetfolder_results,t2n_catName('CaMax-trees',nneuron{n}.experiment)),'-SHR-tif')
+    tprint(t2n_catName(targetfolder_results,'CaMax-trees',nneuron{n}.experiment),'-SHR-tif')
     
     
     figure(fig(2))
@@ -119,7 +119,7 @@ for n = 1:numel(nneuron)
     ylim([0 300])
     FontResizer
     FigureResizer(5,8,[barwidth,0.4])
-    tprint(fullfile(targetfolder_results,t2n_catName('CaDecay',nneuron{n}.experiment)),'-pdf');
+    tprint(t2n_catName(targetfolder_results,'CaDecay',nneuron{n}.experiment),'-pdf');
     
     data_stocca= [194,mean(nanmean(maxcai,3),1)*1e6,mean([0.91,1.16]*1000)];
     sem = [23,std(nanmean(maxcai,3),[],1)/sqrt(numel(tree))*1e6,std([0.91,1.16]*1000)/sqrt(2)];
@@ -143,7 +143,7 @@ for n = 1:numel(nneuron)
         ylim([0 1200])
     end
     FigureResizer(5,8,[barwidth,0.4])
-    tprint(fullfile(targetfolder_results,t2n_catName('CaAmp',nneuron{n}.experiment)),'-pdf');
+    tprint(t2n_catName(targetfolder_results,'CaAmp',nneuron{n}.experiment),'-pdf');
     
     
     if ~all(spiked)

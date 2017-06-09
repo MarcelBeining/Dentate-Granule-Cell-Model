@@ -10,7 +10,7 @@ params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep','var')
     hstep = [];
 end
-hstep = t2n_findCurr(params,neuron,tree,-80,hstep,'-q-d');
+hstep = t2n_findCurr(tree,params,neuron,-80,hstep,'-q-d');
 
 for t = 1:numel(tree)
 %     plen = Pvec_tree(tree{t});
@@ -47,5 +47,5 @@ for t=1:numel(tree)
         end
     end
     legend('Control','BK block')
-    tprint(fullfile(targetfolder_results,t2n_catName(sprintf('Fig5-blockBK%d',t),neuron.experiment)),'-HR-pdf')
+    tprint(t2n_catName(targetfolder_results,sprintf('Fig5-blockBK%d',t),neuron.experiment),'-HR-pdf')
 end

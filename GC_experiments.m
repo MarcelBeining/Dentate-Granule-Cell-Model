@@ -29,10 +29,10 @@ ostruct.changeAHion = 0;  % only important when using the AH99 model. Boolean to
 
 % change morphologies here
 ostruct.usemorph = 1;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
-ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
+ostruct.newborn = 1;  % 0 = adult GC model, 1 = young abGC model
 
 % more parameters
-ostruct.reducecells = 1;  % reduce number of cells for faster simulation (e.g. for testing)
+ostruct.reducecells = 0;  % reduce number of cells for faster simulation (e.g. for testing)
 ostruct.scalespines = 1;  % scaling of g_pas and cm to implicitly model spines. is ignored in AH99 model, as this is already taken into account in the biophys model!
 ostruct.adjustloads = 0;  % the Hay et al 2013 implementation of adjust dendritic loads to reduce variability between cells (not used in publication)
 ostruct.noise = 0;       % add noise to the membrane voltage by injecting gaussian noise current to the soma (not working with variable dt / cvode)
@@ -94,27 +94,28 @@ t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_da
 if ~ostruct.newborn
     ostruct.dataset =3;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
     ostruct.savename = sprintf('Fig2-IV_dyn-%s',neuron.experiment);
-    ostruct.handles = t2n_plotVoltSteps(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
-    aGC_plotVoltStepsExp(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),targetfolder_results,ostruct);
+    ostruct.handles = t2n_plotVoltSteps(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct);
+    aGC_plotVoltStepsExp(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),targetfolder_results,ostruct);
+    ostruct.handles = [];
     savename = sprintf('Fig2-IV+Ba-%s',neuron.experiment);
 else
     ostruct.dataset = 2.28;
     savename = sprintf('Fig6-IV+Ba_young-%s',neuron.experiment);
 end
 
-ostruct.handles = t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment),ostruct);
-aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
+ostruct.handles = t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'),ostruct);
+aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
 
 neuron = t2n_blockchannel(neuron,{'Kir21','pas'},[99 30]);
 t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
 
-t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct)
+t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct)
 if ~ostruct.newborn % plot mongiat data
     ostruct.dataset =5;
-    aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
+    aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
 end
 ostruct.dataset =0; % plot literature data (arrows)
-aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment))
+aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
 
 ostruct.handles = [];
 xlim([-140 -60])
@@ -125,8 +126,6 @@ else
 end
 FontResizer
 tprint(fullfile(targetfolder_results,savename),'-pdf');
-
-
 
 %% Mongiat FI + Ba, simulate the F-I relationship with and without blocking Kir by application of Barium, Figure 2 & 6
 params = params_orig;
@@ -234,7 +233,7 @@ for f = 1:14
     if isfield(ostruct,'savename')
         tprint(fullfile(targetfolder_results,strcat(ostruct.savename,'-',figname{f})),'-pdf');
     else
-        tprint(fullfile(targetfolder_results,t2n_catName(strcat(figname{f}),neuron.experiment)),'-pdf');
+        tprint(fullfile(targetfolder_results,strcat(figname{f}),neuron.experiment),'-pdf');
     end
 end
     
@@ -376,7 +375,7 @@ if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
 ostruct.dataset = 0;
-ostruct.handles = t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment),ostruct);
+ostruct.handles = t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct);
 xlim([-125 -60])
 if ostruct.newborn
     ylim([-200 100])
@@ -384,7 +383,7 @@ else
     ylim([-400 200])
 end
 FontResizer
-aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment))
+aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'))
 
 tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
 
@@ -503,7 +502,7 @@ end
 Masterplotter(dstruct,gstruct,[],ostruct);
 neuron = neuron_orig;
 neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
-tprint(fullfile(targetfolder_results,t2n_catName('Fig.5-ISIadapt',neuron.experiment)),'-pdf')
+tprint(t2n_catName(targetfolder_results,'Fig.5-ISIadapt',neuron.experiment),'-pdf')
 
 params.celsius = 24;
 ostruct = rmfield(ostruct,'find_freq');
@@ -783,7 +782,7 @@ for v = 1:numel(changs) %
     params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     ostruct.data = 2;
-    rmatrix(5,v) = nanmean(t2n_findCurr(params,neuron,tree,'spike'));
+    rmatrix(5,v) = nanmean(t2n_findCurr(tree,params,neuron,'spike'));
     
     t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
     props = t2n_APprop(targetfolder_data,neuron,0.09);

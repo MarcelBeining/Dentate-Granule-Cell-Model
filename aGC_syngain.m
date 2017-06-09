@@ -62,9 +62,9 @@ for t=1:ntree
     nneuron.record{t}.cell = struct('node',[1,thesesynids{t}],'record',{'v','cai'});
 end
 % params.tname = strcat(params.tname,'_spined');
-% tree= t2n_writetrees(params,tree,fullfile(params.path,params.morphfolder));
+% tree= t2n_writeTrees(tree,params,fullfile(params.path,params.morphfolder));
 
-hstep = t2n_findCurr(params,nneuron,tree,-82.1); %assuming a HP of xxx mV
+hstep = t2n_findCurr(tree,params,nneuron,-82.1); %assuming a HP of xxx mV
 
 % fig(1) = figure;hold all,
 % fig(2) = figure;hold all,

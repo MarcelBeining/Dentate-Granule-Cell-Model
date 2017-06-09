@@ -157,7 +157,6 @@ if ostruct.synmode == 3
 end
 
 %      neuron.syn{1}(2*n,:) = {'KrueppelNMDAnew',thesesynids(n),struct('gbar',1.63e-5,'tau1',0.33,'tau2b',254,'wtau2b',0,'mg',1.3)};
-%  end
 
 
 %% Test pulse protocol
@@ -211,21 +210,12 @@ switch type
         end
         for f = 1:numel(freq)
             neuron{f}.play{indstim}.cell = struct('node',1,'play','spike','times',1000/freq(f):1000/freq(f):params.tstop);
-            if f > 1
-                neuron{f} = t2n_as(1,neuron{f});
-            end
         end
+        neuron = t2n_as(1,neuron);
     case 'temporal'
         freq = [10,20,40,75]; % Hz later -> MHz
-%         dt0 = -50:5:50; % ms
-%         if ostruct.newborn
-%             ppweight = 0.00025
-%         else
-%             ppweight = 0.00065
-%         end
 %             dt0 = -25:5:25 % ms
             dt0 = -50:5:50;
-%         end
         params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
         params.tstop = 500;
         indstim = numel(tree)+1:numel(tree)+2;
@@ -243,24 +233,17 @@ switch type
             for n = 1:numel(dt0)
                 ind = (f-1)*numel(dt0) + n;
                 neuron{ind}.play{indstim(1)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop));
-                neuron{ind}.play{indstim(2)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop)+dt0(n));
-%                 neuron{ind}.play{indstim(2)}.cell.times(neuron{ind}.play{indstim(2)}.cell.times < 0) = [];   % delete negative times, VecStim doesn't like it
-                if ind > 1
-                    neuron{ind} = t2n_as(1,neuron{ind});
-                end
+                neuron{ind}.play{indstim(2)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop)+dt0(n));                    
             end
         end
+        neuron = t2n_as(1,neuron);
     case 'spatial'
 
         freq = [10,20,40,75]; % Hz later -> MHz
-%         if ostruct.newborn
-%             ppweight = 0.00015
-%         end
         params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
         params.tstop = 500;
         indstim = numel(tree)+1:numel(tree)+2;
         tree(indstim(1)) = {struct('artificial','VecStim')};
-        %         tree(indstim(2)) = {struct('artificial','VecStim')};
         for t = 1:numel(tree)-1
             for n = 1:numel(dd0)
                 if ~isfield(neuron{n},'con') || ~isstruct(neuron{n}.con)
@@ -268,14 +251,12 @@ switch type
                 else
                     neuron{n}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim1 to MML syns
                 end
-                %                 neuron{n}.con(end+1) = struct('source',struct('cell',indstim(2),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{n,t}(ceil(nsyn/2)+1:end)),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim2 to OML syns
             end
         end
         for f = 1:numel(freq)
             for n = 1:numel(dd0)
                 ind = (f-1)*numel(dd0) + n;
                 neuron{ind}.play{indstim(1)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop));
-                %                 neuron{ind}.play{indstim(2)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop)+dt0(n));
                 if f > 1
                     neuron{ind} = t2n_as(n,neuron{ind});
                 else
@@ -283,18 +264,14 @@ switch type
                 end
             end
         end
-        'g'
     case 'spatial2'
 
         freq = [10];%,20,40,75]; % Hz later -> MHz
-%         if ostruct.newborn
             ppweight = ones(1,numel(tree))*0.0065;
-%         end
         params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
         params.tstop = 500;
         indstim = numel(tree)+1:numel(tree)+2;
         tree(indstim(1)) = {struct('artificial','VecStim')};
-        %         tree(indstim(2)) = {struct('artificial','VecStim')};
         for t = 1:numel(tree)-1
             for n = 1:numel(dd0)
                 if ~isfield(neuron{n},'con') || ~isstruct(neuron{n}.con)
@@ -302,14 +279,12 @@ switch type
                 else
                     neuron{n}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim1 to MML syns
                 end
-                %                 neuron{n}.con(end+1) = struct('source',struct('cell',indstim(2),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{n,t}(ceil(nsyn/2)+1:end)),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim2 to OML syns
             end
         end
         for f = 1:numel(freq)
             for n = 1:numel(dd0)
                 ind = (f-1)*numel(dd0) + n;
                 neuron{ind}.play{indstim(1)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop));
-                %                 neuron{ind}.play{indstim(2)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop)+dt0(n));
                 if f > 1
                     neuron{ind} = t2n_as(n,neuron{ind});
                 else
@@ -317,7 +292,6 @@ switch type
                 end
             end
         end
-        'g'
     case 'TBS' % TBS-protocol Ge 2007
         delay=200;
         interval1 = 10000;
@@ -342,7 +316,7 @@ switch type
         
         
         if isfield(neuron{1},'con')
-            neuron{1} =  rmfield(neuron{1},'con');%struct('source',[],'target',[]);
+            neuron{1} =  rmfield(neuron{1},'con');
         end
         
         for t = 1:numel(tree)-numel(indstim)
@@ -353,18 +327,10 @@ switch type
         
         neuron{1}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',indstim(2)),'weight',1,'delay',0,'threshold',0.5);%,0.5,0,1});
         neuron{1}.con(end+1) = struct('source',struct('cell',indstim(2),'watch','on'),'target',struct('cell',indstim(3)),'weight',1,'delay',0,'threshold',0.5);%,0.5,0,1});
-        
-        
-        
+
         params.tstop = times(end)+400;
         params.tstop = 2500;
 end
-
-
-
-
-
-
 
 [out, ~] = t2n(tree,params,neuron,'-w-q-d');
 str = '';

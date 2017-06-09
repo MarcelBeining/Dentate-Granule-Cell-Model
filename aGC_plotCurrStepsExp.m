@@ -6,7 +6,7 @@ end
 if nargin < 5
     ostruct.dataset = 2;
 end
-load(t2n_catName(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment)))
+load(t2n_catName(targetfolder_data,'Exp_Spiking',strcat(neuron.experiment,'.mat')))
 
 [exp_iclamp,cstepsSpiking,rate] = load_ephys(ostruct.dataset,'CClamp');
 

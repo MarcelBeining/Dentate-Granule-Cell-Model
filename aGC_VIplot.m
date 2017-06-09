@@ -45,8 +45,8 @@ for o = 1:6
 end
 
 if any(options.show == [2 3])
-    if exist(t2n_catName(targetfolder_data,'Exp_VoltSteps',experiment),'file')
-        load(t2n_catName(targetfolder_data,'Exp_VoltSteps',experiment))
+    if exist(t2n_catName(targetfolder_data,'Exp_VoltSteps',experiment,'.mat'),'file')
+        load(t2n_catName(targetfolder_data,'Exp_VoltSteps',experiment,'.mat'))
         
         line(zeros(1,numel(vstepsModel)),vstepsModel,'LineStyle','--','Color',[0.5 0.5 0.5])
         p = plot(steadyStateCurrVec-repmat(steadyStateCurrVec(find(vstepsModel>=-76,1,'first'),:),size(steadyStateCurrVec,1),1),vstepsModel);
@@ -55,9 +55,8 @@ if any(options.show == [2 3])
         end
         ylabel('Holding Voltage [mV] corrected')
     end
-    if exist([t2n_catName(targetfolder_data,'Exp_Spiking',experiment),'.mat'],'file')
-        
-        load([t2n_catName(targetfolder_data,'Exp_Spiking',experiment),'.mat'])
+    if exist(t2n_catName(targetfolder_data,'Exp_Spiking',experiment,'.mat'),'file')
+        load(t2n_catName(targetfolder_data,'Exp_Spiking',experiment,'.mat'))
         
         vamp = NaN(numel(cstepsSpikingModel),3);
         for s = 1:numel(cstepsSpikingModel)
@@ -75,7 +74,5 @@ end
 title('dim blue: mat1, light blue mat2, turqois matBaCl, dark red: young1, light red young2, orange youngBaCl')
 FontResizer
 % FigureResizer(5,8)
-% tprint(fullfile(targetfolder_results,t2n_catName('Fig.2-IV',neuron.experiment)),'-svg');
-% tprint(fullfile(targetfolder_results,t2n_catName('Fig.2-IV',neuron.experiment)),'-pdf');
 % tprint(fullfile(targetfolder_results,strcat('Fig2-IV',neuron.experiment)),'-png')
 % close(fig)
