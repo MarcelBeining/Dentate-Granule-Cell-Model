@@ -161,7 +161,13 @@ end
 
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
 
+ostruct.handles = figure;
 t2n_plotCurrSteps(targetfolder_data,neuron,steps);
+if ostruct.newborn
+    delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,0,1,1,0,0,1,1],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
+else
+    delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,1,1,1,1,0,0,0],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
+end
 FontResizer
 FigureResizer(ostruct.figureheight,ostruct.figurewidth)
 xlim([0 350])
