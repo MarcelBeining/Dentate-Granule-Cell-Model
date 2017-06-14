@@ -57,7 +57,7 @@ if exist('steps','var') && ~isempty(intersect(cstepsSpiking,steps))
             if ostruct.newborn && ostruct.dataset == 2.28;
                 ff = [2,7,12];
             else
-                ff = [4 2 8];% 1 
+                ff = [4 1 8]; 
             end
             for f=1:3%1:size(voltVec,1)
                 p(f)= plot(1/rate:1/rate:size(exp_iclamp,1)/rate,squeeze(exp_iclamp(:,ff(f),s)),'LineWidth',1);%exp_iclamp_mature(:,f,s)))

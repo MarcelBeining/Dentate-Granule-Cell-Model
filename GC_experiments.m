@@ -29,7 +29,7 @@ ostruct.changeAHion = 0;  % only important when using the AH99 model. Boolean to
 
 % change morphologies here
 ostruct.usemorph = 1;  % 1 = all SH07, 2= synth mouseMat, 3= synth mouseYoung 4= Beining (2016) AAV rat, 5 = synth ratOld 6= synth ratYoung 7 = Claiborne,
-ostruct.newborn = 1;  % 0 = adult GC model, 1 = young abGC model
+ostruct.newborn = 0;  % 0 = adult GC model, 1 = young abGC model
 
 % more parameters
 ostruct.reducecells = 0;  % reduce number of cells for faster simulation (e.g. for testing)
@@ -166,7 +166,7 @@ t2n_plotCurrSteps(targetfolder_data,neuron,steps);
 if ostruct.newborn
     delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,0,1,1,0,0,1,1],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
 else
-    delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,1,1,1,1,0,0,0],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
+    delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,1,1,1,0,0,1,0],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
 end
 FontResizer
 FigureResizer(ostruct.figureheight,ostruct.figurewidth)
@@ -250,7 +250,7 @@ if ~ostruct.newborn
 end
 ostruct.handles = t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,params,ostruct)
-
+return
 if ~ostruct.newborn
     neuron = t2n_blockchannel(neuron,{'Kir21','pas'},[99 30]);
     if ostruct.newborn

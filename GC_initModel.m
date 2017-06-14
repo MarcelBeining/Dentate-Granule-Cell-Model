@@ -15,7 +15,7 @@ params.v_init = -80;
 origfolder = pwd;
 
 AHflag = false;
-if ostruct.vmodel == 0  % passive model
+if ostruct.vmodel == 0  % only channels active at subthreshold
     mechoptions = '-p';
 elseif ostruct.vmodel > 0
     mechoptions = '-a-p-n';  % active model as published in Beining et al 2017

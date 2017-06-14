@@ -18,6 +18,8 @@ Ca_tau = 240;  %calcium decay! orig 9 ms
 
 if ~isempty(strfind(options,'-n'))
     on = struct('HCN',1,'Kir',1.07,'Kv11',0.5/4,'Kv14',0.5/4,'Kv21',0.6*1.3/1.1 ,'Kv33',0,'Kv34',5 /4/2*2.5,'Kv42',0.145 *3 *2/2/2 *2,'Kv72u3',6.7,'Na',1.728,'Nav19',0,'NCa',0.5,'LCa',6,'TCa',0.33,'BK',1*1.5*2*2/1.5,'SK',0.2/2);%*3
+elseif ~isempty(strfind(options,'-k'))
+    on = struct('HCN',1,'Kir',1.07*0.95,'Kv11',0.5/4,'Kv14',0.5/4,'Kv21',0.6*1.3 ,'Kv33',0,'Kv34',5 /4/2,'Kv42',0.145 *3 *2/2/2,'Kv72u3',6.7,'Na',1.728,'Nav19',0,'NCa',0.5,'LCa',6,'TCa',0.33,'BK',1*1.5*2*2,'SK',0.2/2);%*3
 else
     on = struct('HCN',1,'Kir',1.07,'Kv11',0,'Kv14',0.5/4,'Kv21',0.6*1.3/1.1 ,'Kv33',0,'Kv34',5 /4/2,'Kv42',0.145 *3 *2/2/2,'Kv72u3',6.7,'Na',1.728,'Nav19',0,'NCa',0.5,'LCa',6,'TCa',0.33,'BK',1*1.5*2*2,'SK',0.2/2);
 end
@@ -295,8 +297,13 @@ if ~isempty(strfind(options,'-a'))
             strct.axonh.Kv33 = struct('gkbar',on.Kv33 * 0.02 );
         end
         if on.Kv34 > 0
-            scale_a = 4;%2.5;
-            ksl= 0.5;%0.75;
+            if ~isempty(strfind(options,'-k'))
+                scale_a = 2.5;
+                ksl= 0.75;
+            else
+                scale_a = 4;%2.5;
+                ksl= 0.5;%0.75;
+            end
             strct.axon.Kv34 = struct('gkbar',on.Kv34 * 0.0049 ,'scale_a',scale_a,'ksl',ksl);  % 0.00325
             strct.axonh.Kv34 = struct('gkbar',on.Kv34 * 0.0197 ,'scale_a',scale_a,'ksl',ksl); % 0.0325
         end
