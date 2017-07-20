@@ -73,7 +73,7 @@ INITIAL {
 
 PROCEDURE rates(){
 		LOCAL mA,mB
-		mA = ((39800*( v + 67.24))/( exp ( (v + 67.24)/15.005) - 1.0))
+		mA = (39800*( v + 67.24))/( exp ( (v + 67.24)/15.005) - 1.0)
 		mB = 3500* exp(v/31.4) 
 		mTau = (1/(mA + mB))
 		

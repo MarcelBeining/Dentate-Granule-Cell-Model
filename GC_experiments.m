@@ -9,7 +9,6 @@ targetfolder_data = 'C:/GCModel/simdata';  % the folder where simulated data is 
 % these params are t2n specific
 params.neuronpath = 'C:/nrn73w64/bin64/nrniv.exe';%'C:\nrn7.4\bin\nrniv.exe';   % the path to your NEURON exe, not needed for linux and Mac
 params.path = pwd;  % your main folder of the model (pwd if you are already in the main folder)
-params.morphfolder = 'morphos/NEURON2_hocs';   % folder relative to "path" containing the hoc morphology files
 params.exchfolder = 't2nexchange';  % folder name which will be created and is used to exchange data between Matlab and NEURON
 % ***********
 
@@ -69,9 +68,9 @@ neuron_orig = neuron;
 params_orig = params;
 
 %% plot trees, Figure 1
-ostruct.show = 2;
-ostruct.savename = 'Fig1_Trees';
-t2n_plotTrees(tree,targetfolder_results,[],ostruct) % '-s'
+% ostruct.show = 2;
+% ostruct.savename = 'Fig1_Trees';
+% t2n_plotTrees(tree,targetfolder_results,[],ostruct) % '-s'
 
 %% Mongiat IV + Ba, simulate the I-V curve with and without blocking Kir channels with Barium, Figure 2 & 6
 params = params_orig;
@@ -130,7 +129,7 @@ tprint(fullfile(targetfolder_results,savename),'-pdf');
 %% Mongiat FI + Ba, simulate the F-I relationship with and without blocking Kir by application of Barium, Figure 2 & 6
 params = params_orig;
 neuron = neuron_orig;
-neuron.experiment = strcat(neuron.experiment,'_Final');
+neuron.experiment = strcat(neuron.experiment,'_Fig26');
 ostruct.holding_voltage = -80; % mV % -80
 % exp_iclamp = load_ephys(ostruct.dataset,'CClamp');  % alternatively get holding voltage from experiment
 % ostruct.holding_voltage = mean(mean(exp_iclamp(:,:,1)));
@@ -250,7 +249,7 @@ if ~ostruct.newborn
 end
 ostruct.handles = t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,params,ostruct)
-return
+
 if ~ostruct.newborn
     neuron = t2n_blockchannel(neuron,{'Kir21','pas'},[99 30]);
     if ostruct.newborn
@@ -306,7 +305,7 @@ steps = 70/1000;
 neuron = neuron_orig;
 ostruct.handles = [];
 ostruct.holding_voltage = -80; %mV
-neuron.experiment = strcat(neuron.experiment,'_Final');
+neuron.experiment = strcat(neuron.experiment,'_Fig5');
 ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
 ostruct.duration = 200;
@@ -333,7 +332,7 @@ for t = 1:numel(neuron.mech)
         end
     end
 end
-neuron.experiment = strcat(neuron.experiment,'_Kv11');
+neuron.experiment = strcat(neuron.experiment,'_Kv11oe');
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
 
 ostruct.savename = ostruct.savename1;
@@ -357,6 +356,7 @@ aGC_synstim(params,neuron,tree,type,ostruct,targetfolder_data)  % do the simulat
 
 ostruct.handles = aGC_synstim_plot(params,tree,type,ostruct,targetfolder_data,targetfolder_results,0);
 
+return
 %% *********************************  RAT EXPERIMENTS **********************************
 
 %% passive parameter assessment rat
@@ -693,7 +693,7 @@ tprint(fullfile(targetfolder_results,sprintf('Fig.5_APhalfwidth_%s',neuron.exper
 figure(handle{2})
 tprint(fullfile(targetfolder_results,sprintf('Fig.5_APwidth_%s',neuron.experiment)),'-pdf');
 
-%% resonance test with Ba and ZD application, Suppl. Fig.
+%% resonance test with Ba and ZD application, Figure_6-figure supplement2
 params = params_orig;
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_resonance');

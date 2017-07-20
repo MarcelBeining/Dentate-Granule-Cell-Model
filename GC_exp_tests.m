@@ -9,7 +9,6 @@ targetfolder_data = 'D:\GCModel\simdata';  % the folder where simulated data is 
 % these params are t2n specific
 params.neuronpath = 'C:/nrn73w64/bin64/nrniv.exe';   % the path to your NEURON exe
 params.path = pwd;  % your main folder of the model
-params.morphfolder = 'morphos/NEURON2_hocs';   % folder relative to "path" containing the hoc morphology files
 params.exchfolder = 't2nexchange';  % folder which is used to exchange data between Matlab and NEURON
 % ***********
 
