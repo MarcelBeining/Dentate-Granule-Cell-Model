@@ -9,9 +9,9 @@ if ~isfield(ostruct,'cstep')
     ostruct.cstep = 1.3; % nA
 end
 
-params.tstop = 1000;
-params.dt=0.025;
-params.cvode = 1;
+neuron.time.tstop = 1000;
+neuron.time.dt=0.025;
+neuron.time.cvode = 1;
 nodes = cell(numel(tree),1);
 plen = nodes;
 eucl = nodes;

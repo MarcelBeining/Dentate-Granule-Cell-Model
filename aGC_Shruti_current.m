@@ -1,4 +1,4 @@
-function aGC_Shruti_current(neuron,tree,params,targetfolder,ostruct)
+function aGC_Shruti_current(neuron,tree,params,ostruct)
 % if nargin < 5 || ~isfield(ostruct,'holding_voltage')
 ostruct.holding_voltage = -80;
 % end
@@ -6,9 +6,9 @@ elecnode = 1;
 
 params.prerun = 300;
 params.skiprun = 0;
-params.tstop = 920;
-params.dt= 1;  % 1 ms time step ist vollkommen ausreichend
-params.cvode = 0;
+neuron.time.tstop = 920;
+neuron.time.dt= 1;  % 1 ms time step ist vollkommen ausreichend
+neuron.time.cvode = 0;
 
 
 for t = 1:numel(tree)

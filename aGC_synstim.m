@@ -34,7 +34,7 @@ dt0 = NaN;
 
 % -floor(100/freq(f))*5 : 5 : floor(100/freq(f))*5
 
-params.dt = 0.05;
+neuron{1}.time.dt = 0.05;
 params.cvode = 0;
 
 recnode = cell(numel(tree),1);
@@ -171,14 +171,14 @@ switch type
             neuron{1}.con(t) = struct('source',struct('cell',indstim,'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
         end
         
-        params.tstop = 50;
+        neuron{1}.time.tstop = 50;
     case 'white'
         freq = 50; % Hz later -> MHz
-        params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
-        params.tstop = 1000;
+        neuron{1}.time.cvode = 0;  % with white noise, no cvode recommended for high nsyn
+        neuron{1}.time.tstop = 1000;
         indstim = numel(tree)+1:numel(tree)+nsyn;
         tree(indstim) = {struct('artificial','VecStim')};
-        [spikeMat,tvec] = t2n_poissonSpikeGen(freq,params,numel(indstim));
+        [spikeMat,tvec] = t2n_poissonSpikeGen(freq,neuron{1},numel(indstim));
         for in = 1:numel(indstim)
             
             
@@ -194,8 +194,8 @@ switch type
     case 'regular'
         freq = [5,10,20,40,75,100]; % Hz later -> MHz
 
-        params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
-        params.tstop = 1000;
+        neuron{1}.time.cvode = 0;  % with white noise, no cvode recommended for high nsyn
+        neuron{1}.time.tstop = 1000;
         indstim = numel(tree)+1;
         tree(indstim) = {struct('artificial','VecStim')};
 %         tree(indstim) =
@@ -209,15 +209,15 @@ switch type
             end
         end
         for f = 1:numel(freq)
-            neuron{f}.play{indstim}.cell = struct('node',1,'play','spike','times',1000/freq(f):1000/freq(f):params.tstop);
+            neuron{f}.play{indstim}.cell = struct('node',1,'play','spike','times',1000/freq(f):1000/freq(f):neuron{1}.time.tstop);
         end
         neuron = t2n_as(1,neuron);
     case 'temporal'
         freq = [10,20,40,75]; % Hz later -> MHz
 %             dt0 = -25:5:25 % ms
             dt0 = -50:5:50;
-        params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
-        params.tstop = 500;
+        neuron{1}.time.cvode = 0;  % with white noise, no cvode recommended for high nsyn
+        neuron{1}.time.tstop = 500;
         indstim = numel(tree)+1:numel(tree)+2;
         tree(indstim(1)) = {struct('artificial','VecStim')};
         tree(indstim(2)) = {struct('artificial','VecStim')};
@@ -232,16 +232,16 @@ switch type
         for f = 1:numel(freq)
             for n = 1:numel(dt0)
                 ind = (f-1)*numel(dt0) + n;
-                neuron{ind}.play{indstim(1)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop));
-                neuron{ind}.play{indstim(2)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop)+dt0(n));                    
+                neuron{ind}.play{indstim(1)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):neuron{1}.time.tstop));
+                neuron{ind}.play{indstim(2)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):neuron{1}.time.tstop)+dt0(n));                    
             end
         end
         neuron = t2n_as(1,neuron);
     case 'spatial'
 
         freq = [10,20,40,75]; % Hz later -> MHz
-        params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
-        params.tstop = 500;
+        neuron{1}.time.cvode = 0;  % with white noise, no cvode recommended for high nsyn
+        neuron{1}.time.tstop = 500;
         indstim = numel(tree)+1:numel(tree)+2;
         tree(indstim(1)) = {struct('artificial','VecStim')};
         for t = 1:numel(tree)-1
@@ -256,7 +256,7 @@ switch type
         for f = 1:numel(freq)
             for n = 1:numel(dd0)
                 ind = (f-1)*numel(dd0) + n;
-                neuron{ind}.play{indstim(1)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop));
+                neuron{ind}.play{indstim(1)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):neuron{1}.time.tstop));
                 if f > 1
                     neuron{ind} = t2n_as(n,neuron{ind});
                 else
@@ -268,8 +268,8 @@ switch type
 
         freq = [10];%,20,40,75]; % Hz later -> MHz
             ppweight = ones(1,numel(tree))*0.0065;
-        params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
-        params.tstop = 500;
+        neuron{1}.time.cvode = 0;  % with white noise, no cvode recommended for high nsyn
+        neuron{1}.time.tstop = 500;
         indstim = numel(tree)+1:numel(tree)+2;
         tree(indstim(1)) = {struct('artificial','VecStim')};
         for t = 1:numel(tree)-1
@@ -284,7 +284,7 @@ switch type
         for f = 1:numel(freq)
             for n = 1:numel(dd0)
                 ind = (f-1)*numel(dd0) + n;
-                neuron{ind}.play{indstim(1)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):params.tstop));
+                neuron{ind}.play{indstim(1)}.cell = struct('node',1,'play','spike','times',(1000/freq(f):1000/freq(f):neuron{1}.time.tstop));
                 if f > 1
                     neuron{ind} = t2n_as(n,neuron{ind});
                 else
@@ -328,8 +328,8 @@ switch type
         neuron{1}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',indstim(2)),'weight',1,'delay',0,'threshold',0.5);%,0.5,0,1});
         neuron{1}.con(end+1) = struct('source',struct('cell',indstim(2),'watch','on'),'target',struct('cell',indstim(3)),'weight',1,'delay',0,'threshold',0.5);%,0.5,0,1});
 
-        params.tstop = times(end)+400;
-        params.tstop = 2500;
+        neuron{1}.time.tstop = times(end)+400;
+        neuron{1}.time.tstop = 2500;
 end
 
 [out, ~] = t2n(tree,params,neuron,'-w-q-d');

@@ -77,8 +77,8 @@ params = params_orig;
 neuron = neuron_orig;
 
 holding_voltage = -80 - 12.1; % mV, LJP corrected
-params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
-params.dt = 0.25;  % this is ignored if cvode = 1
+neuron.time.cvode = 1;  % boolean if dt is constant (0) or variable (1)
+neuron.time.dt = 0.25;  % this is ignored if cvode = 1
 vstepsModel =  (-130:5:-40) - 12.1; % LJP corrected
 dur = [105 100 105];
 
@@ -137,7 +137,7 @@ ostruct.holding_voltage = -80; % mV % -80
 ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
 ostruct.amp = (0:5:120)/1000;% current steps in nA which are to be simulated
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.time.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0.5;  % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 
 if ostruct.newborn
@@ -277,7 +277,7 @@ neuron.experiment = strcat(neuron.experiment,'_dV');
 ostruct.amp = [40,65,90,115]/1000; % steps that are simulated plotted [nA]
 ostruct.holding_voltage = -80;
 ostruct.duration = 200;
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.time.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.figurewidth = 6;
 ostruct.figureheight = 4;
@@ -296,7 +296,7 @@ end
 
 t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
 
-[maxdv,ostruct.handles] = t2n_plotdV(targetfolder_data,targetfolder_results,neuron,params,ostruct);  % plot the dV plot
+[maxdv,ostruct.handles] = t2n_plotdV(targetfolder_data,targetfolder_results,neuron,ostruct);  % plot the dV plot
 aGC_plotdVExp(targetfolder_results,ostruct)
 
 %% Kv1.1 overexpression, Figure 5, reproduce Kirchheim et al 2013, Kv1.1 overexpression after status epilepticus reduced FI and increases spiking delay
@@ -310,7 +310,7 @@ ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
 ostruct.duration = 200;
 ostruct.amp = (10:10:120)/1000; % nA
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.time.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 
 ostruct.dataset =3;
@@ -370,7 +370,7 @@ vstepsModel =  -130:5:-40;
 dur = [105 100 105];
 holding_voltage = -80; % mV
 ostruct.subtract_hv = 1; % boolean subtract holding voltage current
-params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
+neuron.time.cvode = 1;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.single = 0; % show single data curves instead of mean
 
@@ -402,7 +402,7 @@ end
 ostruct. handles = [];
 ostruct.amp = (50:50:300)/1000; % nA
 ostruct.duration = 1000;
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.time.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.holding_voltage = -80;  % unknown. but without LJP
 
@@ -441,7 +441,7 @@ ostruct. handles = [];
 steps = 0.15;%,0.2];
 ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.duration = 100;
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.time.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.ampprop = 200/1000; 
 ostruct.savename = 'Fig5-ISIadapt100ms_MA14';
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
@@ -567,7 +567,7 @@ neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_APwidth');
 ostruct.amp = [90,250]/1000; % nA  < 10 HZ and höher
 ostruct.duration = 1000;
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.time.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.holding_voltage = -80;
 ostruct.ampprop = 90/1000;
@@ -699,9 +699,9 @@ neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_resonance');
 ostruct.holding_voltage = -95; % Stegen Hanuschkin Computer Sim 2012
 amp = 0.050; % 40 pA (less than +-50pA, Stegen 2012)
-params.tstop = 30000;
+neuron.time.tstop = 30000;
 params.celsius = 34.4;
-params.dt=0.5;
+neuron.time.dt=0.5;
 
 t2n_resonance(amp,params,neuron,tree,ostruct,targetfolder_results)
 data{1} = importdata(fullfile(params.path,'raw data','StegenHanuschkin_Resonance_CTRL.csv'));
@@ -785,7 +785,7 @@ for v = 1:numel(changs) %
     ostruct.holding_voltage = -80;
     ostruct.duration = 200;
     ostruct.amp = 90/1000;
-    params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+    neuron.time.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     ostruct.data = 2;
     rmatrix(5,v) = nanmean(t2n_findCurr(tree,params,neuron,'spike'));

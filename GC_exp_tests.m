@@ -15,7 +15,6 @@ params.exchfolder = 't2nexchange';  % folder which is used to exchange data betw
 params.celsius = 24;   % temperature
 params.prerun = 400;   % large-dt prerun to let the system equilibrate
 params.v_init = -90;  % initial membrane voltage
-params.dt = 1;       % standard time step (is automatically changed to a smaller dt in most simulations below)
 params.nseg = 'd_lambda';  % number of segments, can be constant or 'd_lambda' to adjust it according to the d-lambda rule
 params.openNeuron = 1;   % make it 1 to open each NEURON instance (is suppressed if t2n is run with the -q argument)
 
@@ -90,8 +89,8 @@ ostruct.holding_voltage = -80; % mV
 ostruct.subtract_hv = 1; % boolean subtract holding voltage current
 ostruct.show = 1:2; % 0= nothing, 1 = only exp data, 2 = only model data
 ostruct.coarse = 1;
-params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
-params.dt = 0.25;  % this is ignored if cvode = 1
+neuron.time.cvode = 1;  % boolean if dt is constant (0) or variable (1)
+neuron.time.dt = 0.25;  % this is ignored if cvode = 1
 ostruct.single = 0;
 %
 t2n_VoltSteps(neuron,tree,params,targetfolder_data,ostruct);
@@ -109,8 +108,8 @@ ostruct.duration = 200;%200;
 ostruct.coarse = 0.5;
 
 ostruct.amp = [20,65,80,120]/1000; %nA
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
-params.dt = 0.25;  % this is ignored if cvode = 1
+neuron.time.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.time.dt = 0.25;  % this is ignored if cvode = 1
 
 ostruct.show = 1:2;
 ostruct.ampprop = 65/1000;
@@ -142,8 +141,8 @@ t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_dV');
 ostruct.amp = [40,65,90,115]/1000; % nA
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
-params.dt = 0.25;  % this is ignored if cvode = 1
+neuron.time.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.time.dt = 0.25;  % this is ignored if cvode = 1
 ostruct.coarse = 0;
 ostruct.show = 1:2;
 ostruct.ampprop = 90/1000;
@@ -177,7 +176,7 @@ t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
 % aGC_BKblockJaffe11(neuron,tree,params,targetfolder_results)
 
 %% get ratio of aBK to aBK+abBK (Shruti 2012)
-% aGC_Shruti_current(neuron,tree,params,targetfolder_results,ostruct)
+% aGC_Shruti_current(neuron,tree,params,ostruct)
 %!!!!!!!!!!!!!!!!!!!!!!
 
 %% spiking adaptation, as in Mateos-Aparicio 2014 (SK,M-Current contribution) ACHTUNG RATTE !!!!!!!!!!

@@ -1,4 +1,4 @@
-function [EPSC,EPSP1] = aGC_synEPSCP(nneuron,tree,params,targetfolder_data,ostruct)
+function [EPSC,EPSP1] = aGC_synEPSCP(nneuron,tree,params,targetfolder_data)
 dists = 0:50:300;
 rs = 15;
 onset = 10;
@@ -6,9 +6,9 @@ nsyns = 5:5:25;
 params.v_init = -80;
 params.skiprun = 0;
 % cstep = 1300*0.001; %nA
-params.tstop = 50;
-% params.dt=0.025;
-params.cvode = 1;
+neuron.time.tstop = 50;
+% neuron.time.dt=0.025;
+neuron.time.cvode = 1;
 
 
 

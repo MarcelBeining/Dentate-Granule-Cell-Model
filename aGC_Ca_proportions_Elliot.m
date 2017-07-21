@@ -1,13 +1,13 @@
-function aGC_Ca_proportions_Elliot(neuron,tree,params,targetfolder)
+function aGC_Ca_proportions_Elliot(neuron,tree,params)
 % if nargin < 5 || ~isfield(ostruct,'holding_voltage')
 % end
 elecnode = 1;
 
 params.prerun = 300;
 params.skiprun = 0;
-params.tstop = 100;
-params.dt= 1;  % 1 ms time step ist vollkommen ausreichend
-params.cvode = 0;
+neuron.time.tstop = 100;
+neuron.time.dt= 1;  % 1 ms time step ist vollkommen ausreichend
+neuron.time.cvode = 0;
 
 
 for t = 1:numel(tree)

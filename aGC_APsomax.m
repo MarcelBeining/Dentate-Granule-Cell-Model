@@ -1,14 +1,14 @@
 function aGC_APsomax(neuron,tree,params,treepath,targetfolder_results)
 
-display('echte current injection 2 oder weniger nA. und nur 0.5 ms duration\n')
-display('check das nochmal sobald passives modell steht. evt muss das axon weniger leaky sein?')
-display('check axon geschwindigkeit (teilweise von leakyness abh.) bzw axon AP broadness\n')
+disp('echte current injection 2 oder weniger nA. und nur 0.5 ms duration\n')
+disp('check das nochmal sobald passives modell steht. evt muss das axon weniger leaky sein?')
+disp('check axon geschwindigkeit (teilweise von leakyness abh.) bzw axon AP broadness\n')
 
 cstep = 1.8; %nA !
 params.accuracy = 1;  % for more nseg in axon and soma!
-params.dt=0.05;
-params.cvode = 1;
-params.tstop = 350;    
+neuron.time.dt=0.05;
+neuron.time.cvode = 1;
+neuron.time.tstop = 350;    
 params.skiprun = 0; %!!!!!!!!!
 params.tname = strcat(params.tname,'_bleb');
 
