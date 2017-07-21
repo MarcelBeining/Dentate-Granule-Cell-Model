@@ -1,22 +1,11 @@
 %% comments
 
 %% initialize trees and mechanisms
-params = [];
 
 %********* folders 
 targetfolder_results = 'C:/GCModel/results';  % the folder where the graphs and pictures are saved
 targetfolder_data = 'C:/GCModel/simdata';  % the folder where simulated data is saved (to avoid resimulating if not necessary)
-% these params are t2n specific
-params.neuronpath = 'C:/nrn73w64/bin64/nrniv.exe';%'C:\nrn7.4\bin\nrniv.exe';   % the path to your NEURON exe, not needed for linux and Mac
-params.path = pwd;  % your main folder of the model (pwd if you are already in the main folder)
-params.exchfolder = 't2nexchange';  % folder name which will be created and is used to exchange data between Matlab and NEURON
 % ***********
-
-params.celsius = 24;   % temperature
-params.prerun = 400;   % large-dt prerun to let the system equilibrate
-params.v_init = -90;  % initial membrane voltage
-params.nseg = 'dlambda';  % number of segments, can be constant or 'd_lambda' to adjust it according to the d-lambda rule
-params.openNeuron = 0;   % make it 1 to open each NEURON instance (is suppressed if t2n is run with the -q argument)
 
 ostruct = struct('plot','auto','show',3,'legend',0,'marker','o','sem',1,'FontSize',10,'FontType','Arial','barwidth',0.3,'figurewidth',8,'figureheight',5,'LineWidth',1,'grid',0,'priority','plot','ticklength',0.015);  % some options that are used when something is plotted
 ostruct.usecol = 1;  % 0 = pseudorandom colors for each simulated cell in graph, 1 = green or blue grading
@@ -54,7 +43,7 @@ end
 if ~exist(targetfolder_results,'file')
     mkdir(targetfolder_results)
 end
-[tree,params,neuron,treename] = GC_initModel(params,ostruct);  % initialize the model by loading the morphologies and setting the biophysical parameters
+[tree,neuron,treename] = GC_initModel(ostruct);  % initialize the model by loading the morphologies and setting the biophysical parameters
 if ostruct.newborn
     %     % this is the good FI,deep fAHP one...
     %     ostruct.channelblock = {'Kir21','Kv42','na8st','BK','Cav13','Kv21'};%,'Kv21','Kv42','Kv14','Kv34','na8st','Cav13'};%'Cav22'};     %{'Kv42','Kir21','Kv14','Kv34','pas','Kv21','na8st','Kv723'};%,'na8st','Kv723','na8st','Kv21'};%'except','Kir21'};%{'Kir','Kv42','HCN'};%'Kir','Kv42','Kv14','HCN'}; % Kir , SK etc
@@ -65,7 +54,6 @@ if ostruct.newborn
     neuron = t2n_blockchannel(neuron,{'Kir21','Kv42','na8st','BK','Cav13','Kv21','Kv723','BK'},[73,50,25,40,50,50,50,100],[],{'','','','gakbar','','','','gabkbar'});
 end
 neuron_orig = neuron;
-params_orig = params;
 
 %% plot trees, Figure 1
 % ostruct.show = 2;
@@ -73,12 +61,11 @@ params_orig = params;
 % t2n_plotTrees(tree,targetfolder_results,[],ostruct) % '-s'
 
 %% Mongiat IV + Ba, simulate the I-V curve with and without blocking Kir channels with Barium, Figure 2 & 6
-params = params_orig;
 neuron = neuron_orig;
 
 holding_voltage = -80 - 12.1; % mV, LJP corrected
-params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
-params.dt = 0.25;  % this is ignored if cvode = 1
+neuron.params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
+neuron.params.dt = 0.25;  % this is ignored if cvode = 1
 vstepsModel =  (-130:5:-40) - 12.1; % LJP corrected
 dur = [105 100 105];
 
@@ -88,7 +75,7 @@ ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
 
 %
-t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
+t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,targetfolder_data);
 %
 if ~ostruct.newborn
     ostruct.dataset =3;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
@@ -103,18 +90,18 @@ else
 end
 
 ostruct.handles = t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'),ostruct);
-aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
+aGC_IVplotExp(ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
 
 neuron = t2n_blockchannel(neuron,{'Kir21','pas'},[99 30]);
-t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);
+t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,targetfolder_data);
 
 t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct)
 if ~ostruct.newborn % plot mongiat data
     ostruct.dataset =5;
-    aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
+    aGC_IVplotExp(ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
 end
 ostruct.dataset =0; % plot literature data (arrows)
-aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
+aGC_IVplotExp(ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
 
 ostruct.handles = [];
 xlim([-140 -60])
@@ -127,7 +114,6 @@ FontResizer
 tprint(fullfile(targetfolder_results,savename),'-pdf');
 
 %% Mongiat FI + Ba, simulate the F-I relationship with and without blocking Kir by application of Barium, Figure 2 & 6
-params = params_orig;
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_Fig26');
 ostruct.holding_voltage = -80; % mV % -80
@@ -137,7 +123,7 @@ ostruct.holding_voltage = -80; % mV % -80
 ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
 ostruct.amp = (0:5:120)/1000;% current steps in nA which are to be simulated
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0.5;  % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 
 if ostruct.newborn
@@ -158,7 +144,7 @@ else
     end
 end
 
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 
 ostruct.handles = figure;
 t2n_plotCurrSteps(targetfolder_data,neuron,steps);
@@ -248,7 +234,7 @@ if ~ostruct.newborn
     ostruct.figurewidth = 4;
 end
 ostruct.handles = t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
-aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,params,ostruct)
+aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,ostruct)
 
 if ~ostruct.newborn
     neuron = t2n_blockchannel(neuron,{'Kir21','pas'},[99 30]);
@@ -258,11 +244,11 @@ if ~ostruct.newborn
         ostruct.dataset =5;
     end
     
-    t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+    t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
     
     ostruct.savename = ostruct.savename3;
     ostruct.handles = t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
-    aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,params,ostruct)
+    aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,ostruct)
 
     ostruct.handles = [];
     ostruct.savename = [];
@@ -270,14 +256,13 @@ end
 
 
 %% Mongiat dV / dt curve,Figure 2 & 6, phase plots, extra simulation needed because a small dt is necessary to correctly assess maximal dV/dt's
-params = params_orig;
 neuron = neuron_orig;
 
 neuron.experiment = strcat(neuron.experiment,'_dV');
 ostruct.amp = [40,65,90,115]/1000; % steps that are simulated plotted [nA]
 ostruct.holding_voltage = -80;
 ostruct.duration = 200;
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.figurewidth = 6;
 ostruct.figureheight = 4;
@@ -294,13 +279,12 @@ if ostruct.usemorph >= 4  % = rat morphology
     ostruct.savename = sprintf('SupplFigX_-%s',neuron.experiment);
 end
 
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 
-[maxdv,ostruct.handles] = t2n_plotdV(targetfolder_data,targetfolder_results,neuron,params,ostruct);  % plot the dV plot
+[maxdv,ostruct.handles] = t2n_plotdV(targetfolder_data,targetfolder_results,neuron,ostruct);  % plot the dV plot
 aGC_plotdVExp(targetfolder_results,ostruct)
 
 %% Kv1.1 overexpression, Figure 5, reproduce Kirchheim et al 2013, Kv1.1 overexpression after status epilepticus reduced FI and increases spiking delay
-params = params_orig;
 steps = 70/1000;
 neuron = neuron_orig;
 ostruct.handles = [];
@@ -310,14 +294,14 @@ ostruct.figureheight = 4;
 ostruct.figurewidth = 6;
 ostruct.duration = 200;
 ostruct.amp = (10:10:120)/1000; % nA
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 
 ostruct.dataset =3;
 ostruct.savename1 = sprintf('Fig5_Kv11-%s',neuron.experiment);
 ostruct.savename2 = sprintf('Fig5-FI-Kv11-%s',neuron.experiment);
 
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 handles1 = figure;
 t2n_plotCurrSteps(targetfolder_data,neuron,steps);
 ostruct.color = [0 0 1];
@@ -333,7 +317,7 @@ for t = 1:numel(neuron.mech)
     end
 end
 neuron.experiment = strcat(neuron.experiment,'_Kv11oe');
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 
 ostruct.savename = ostruct.savename1;
 figure(handles1);
@@ -347,34 +331,31 @@ ostruct.handles = [];
 ostruct.savename = [];
 
 %% Synaptic stimulation, Figure 7
-params = params_orig;
 ostruct.handles = [];
 type = 'temporal'; % test, theta-burst stimulation, regular input, temporal shift in input, spatial shift in input
 ostruct.synmode = 1; % 1 = no adjustment of synapse number, 2 = newborns have only half of synapse number, 3 = adjust the number of synapses to get subthreshold response
 % ostruct.figureheight = 3;
-aGC_synstim(params,neuron,tree,type,ostruct,targetfolder_data)  % do the simulation
+aGC_synstim(neuron,tree,type,ostruct,targetfolder_data)  % do the simulation
 
-ostruct.handles = aGC_synstim_plot(params,tree,type,ostruct,targetfolder_data,targetfolder_results,0);
+ostruct.handles = aGC_synstim_plot(tree,type,ostruct,targetfolder_data,targetfolder_results,0);
 
 return
 %% *********************************  RAT EXPERIMENTS **********************************
 
 %% passive parameter assessment rat
-params = params_orig;
 ostruct.passtest = 'Std'; % different protocols to measure Rin/tau/capacitance/Vrest (not all can do everything): Mongiat Mongiat2 SH Brenner Std
-[Rin, tau, cap, Vrest] = t2n_passTests(neuron,tree,params,targetfolder_results,ostruct);
+[Rin, tau, cap, Vrest] = t2n_passTests(neuron,tree,targetfolder_results,ostruct);
 %% IV rat, generate I-V relationship curve and additinally plot Rin measurements from rat, Figure 3
 neuron = neuron_orig;
-params = params_orig;
 vstepsModel =  -130:5:-40;
 dur = [105 100 105];
 holding_voltage = -80; % mV
 ostruct.subtract_hv = 1; % boolean subtract holding voltage current
-params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
+neuron.params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.single = 0; % show single data curves instead of mean
 
-t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,params,targetfolder_data);  % do the simulation
+t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,targetfolder_data);  % do the simulation
 
 ostruct.savename = sprintf('Fig3-IV_Mehranfard15-%s',neuron.experiment);
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
@@ -389,12 +370,11 @@ else
     ylim([-400 200])
 end
 FontResizer
-aGC_IVplotExp(params,ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'))
+aGC_IVplotExp(ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'))
 
 tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
 
 %% Rat FI curve, Figure 3, similar to Mehranfard 2015 Plos One 
-params = params_orig;
 neuron = neuron_orig;
 if isfield(ostruct,'handles')
     ostruct = rmfield(ostruct,'handles');
@@ -402,11 +382,11 @@ end
 ostruct. handles = [];
 ostruct.amp = (50:50:300)/1000; % nA
 ostruct.duration = 1000;
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.holding_voltage = -80;  % unknown. but without LJP
 
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 
 ostruct.dataset = 0;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
 ostruct.savename = sprintf('Fig3_FI_Mehranfahrd15-%s',neuron.experiment);
@@ -414,7 +394,7 @@ if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
 ostruct.handles = t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
-aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,params,ostruct)
+aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,ostruct)
 
 ostruct.savename = sprintf('Fig3_Final-%s',neuron.experiment);
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
@@ -424,15 +404,14 @@ figure; hold all
 t2n_plotCurrSteps(targetfolder_data,neuron,0.1);
 
 %% ISI spike adaptaption Figure 5, similar to MA14 Fig 8
-params = params_orig;
 neuron = neuron_orig;
 %!!!
-params.celsius = 33;
+neuron.params.celsius = 33;
 %!!!
 ostruct.holding_voltage = -62;
 ostruct.find_freq = 6; % 6 spikes per current step
 % ostruct.amp = 200/1000;%nA this value is ignored because of find_freq
-neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
+neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,neuron.params.celsius),neuron.experiment);
 
 if isfield(ostruct,'handles')
     ostruct = rmfield(ostruct,'handles');
@@ -441,7 +420,7 @@ ostruct. handles = [];
 steps = 0.15;%,0.2];
 ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.duration = 100;
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.ampprop = 200/1000; 
 ostruct.savename = 'Fig5-ISIadapt100ms_MA14';
 if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
@@ -449,7 +428,7 @@ if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
 end
 ostruct.dataset = 0;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
 
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 fig = figure; hold all
 t2n_plotCurrSteps(targetfolder_data,neuron,steps);
 ax = gca; p1 = ax.Children; p1.Color = [0 0 0];
@@ -463,7 +442,7 @@ for t = 1:numel(tree)
 end
 
 neuron = t2n_blockchannel(neuron,{'SK2'},100);
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 figure(fig)
 t2n_plotCurrSteps(targetfolder_data,neuron,steps);
 p2 = setdiff(ax.Children,p1); p2.Color = [1 0 0];
@@ -477,9 +456,9 @@ for t = 1:numel(tree)
 end
 
 neuron = neuron_orig;
-neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
+neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,neuron.params.celsius),neuron.experiment);
 neuron = t2n_blockchannel(neuron,{'Kv723'},100);
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 
 figure(fig)
 t2n_plotCurrSteps(targetfolder_data,neuron,steps);
@@ -507,67 +486,64 @@ end
 
 Masterplotter(dstruct,gstruct,[],ostruct);
 neuron = neuron_orig;
-neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,params.celsius),neuron.experiment);
+neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.find_freq,neuron.params.celsius),neuron.experiment);
 tprint(t2n_catName(targetfolder_results,'Fig.5-ISIadapt',neuron.experiment),'-pdf')
 
-params.celsius = 24;
+neuron.params.celsius = 24;
 ostruct = rmfield(ostruct,'find_freq');
 %% bAP simulation (Krueppel 2011) Teil Ratte, Figure 4
-params = params_orig;
 neuron = neuron_orig;
 ostruct.simple = 0;  % only recording along longest dendrite
 ostruct.reduce = 0;  % only measure every third node
 ostruct.dist = 'Eucl.'; % PL., Eucl.
 ostruct.relamp = 0;  % relative amplitudes
-celsius_orig = params.celsius;
-params.celsius = 33;  % temperature
-neuron = t2n_Q10pas(neuron,params.celsius);
-neuron.experiment = sprintf('%s_%d°',neuron.experiment,params.celsius);
+celsius_orig = neuron.params.celsius;
+neuron.params.celsius = 33;  % temperature
+neuron = t2n_Q10pas(neuron.celsius);
+neuron.experiment = sprintf('%s_%d°',neuron.experiment,neuron.params.celsius);
 if ~(ostruct.vmodel>=0) 
     neuron = manipulate_Ra(neuron,1,'axon'); % necessary because otherwise the axon spikes permanently after the buzz and Ca decay measurement is not possible
-    params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
-    params.accuracy = 1; % improve AIS segment number for more accurate simulation
+    neuron.params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
+    neuron.params.accuracy = 1; % improve AIS segment number for more accurate simulation
     ostruct.cstep = 1700*0.001; %nA %AH99 model, cstep has to be bigger otherwise not all cells fire
 else
     ostruct.cstep = 1300*0.001; %nA
 end
-t2n_bAP(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_bAP(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 
-params.celsius = celsius_orig; % back to normal temp
+neuron.params.celsius = celsius_orig; % back to normal temp
 [bAPdisthm,mveloc_dend,mveloc_farax,mveloc_nearax,fig] = t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
 %%  Calcium dynamics (Stocca 2008) Teil Ratte, Figure 4
-params = params_orig;
 neuron = neuron_orig;
 ostruct.simple = 0;  % only recording along longest dendrite
 ostruct.reduce = 0;  % only measure every third node
 ostruct.dist = 'Eucl.'; % PL., Eucl.
 ostruct.relamp = 0;  % relative amplitudes
-celsius_orig = params.celsius;
-params.celsius = 24;  % temperature
-neuron = t2n_Q10pas(neuron,params.celsius);
-neuron.experiment = sprintf('%s_%d°',neuron.experiment,params.celsius);
+celsius_orig = neuron.params.celsius;
+neuron.params.celsius = 24;  % temperature
+neuron = t2n_Q10pas(neuron,neuron.params.celsius);
+neuron.experiment = sprintf('%s_%d°',neuron.experiment,neuron.params.celsius);
 if ~(ostruct.vmodel>=0) 
     ostruct.cai = 'caim_Caold';  % AH99 model, does not have an own calcium buffer mechanism, thus variable has a different name
     neuron = manipulate_Ra(neuron,1,'axon'); % necessary because otherwise the axon spikes permanently after the buzz and Ca decay measurement is not possible
-    params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
-    params.accuracy = 1; % improve AIS segment number for more accurate simulation
+    neuron.params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
+    neuron.params.accuracy = 1; % improve AIS segment number for more accurate simulation
     ostruct.cstep = 1700*0.001; %nA %AH99 model, cstep has to be bigger otherwise not all cells fire
 else
     ostruct.cai = 'cai';
     ostruct.cstep = 1300*0.001; %nA
 end
-aGC_CaDyn(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+aGC_CaDyn(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 
-params.celsius = celsius_orig; % back to normal temp
+neuron.params.celsius = celsius_orig; % back to normal temp
 aGC_plotCaDyn(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %% AP width BK/Kv34 + spike adaptation, Figure 5
-params = params_orig;
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_APwidth');
 ostruct.amp = [90,250]/1000; % nA  < 10 HZ and höher
 ostruct.duration = 1000;
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
 ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
 ostruct.holding_voltage = -80;
 ostruct.ampprop = 90/1000;
@@ -577,7 +553,7 @@ else
     ostruct.savename = 'Fig5-APprop';
 end
 
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 
 ostruct.handles = [];
 prop = cell(2,1);
@@ -601,7 +577,7 @@ end
 
 neuron = t2n_blockchannel(neuron,{'Kv34'},100);
 %
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)  % do the simulation
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 %
 for a = 1:2
     prop{a}(2) = t2n_APprop(targetfolder_data,neuron,ostruct.amp(a));
@@ -623,7 +599,7 @@ neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_APwidth');
 neuron = t2n_blockchannel(neuron,{'BK'},100);
 %
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)
 %
 for a = 1:2
     prop{a}(3) = t2n_APprop(targetfolder_data,neuron,ostruct.amp(a));
@@ -694,19 +670,18 @@ figure(handle{2})
 tprint(fullfile(targetfolder_results,sprintf('Fig.5_APwidth_%s',neuron.experiment)),'-pdf');
 
 %% resonance test with Ba and ZD application, Figure_6-figure supplement2
-params = params_orig;
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_resonance');
 ostruct.holding_voltage = -95; % Stegen Hanuschkin Computer Sim 2012
 amp = 0.050; % 40 pA (less than +-50pA, Stegen 2012)
-params.tstop = 30000;
-params.celsius = 34.4;
-params.dt=0.5;
+neuron.params.tstop = 30000;
+neuron.params.celsius = 34.4;
+neuron.params.dt=0.5;
 
-t2n_resonance(amp,params,neuron,tree,ostruct,targetfolder_results)
-data{1} = importdata(fullfile(params.path,'raw data','StegenHanuschkin_Resonance_CTRL.csv'));
-data{2} = importdata(fullfile(params.path,'raw data','StegenHanuschkin_Resonance_Ba.csv'));
-data{3} = importdata(fullfile(params.path,'raw data','StegenHanuschkin_Resonance_Ba+ZD.csv'));
+t2n_resonance(amp,neuron,tree,ostruct,targetfolder_results)
+data{1} = importdata(fullfile(pwd,'raw data','StegenHanuschkin_Resonance_CTRL.csv'));
+data{2} = importdata(fullfile(pwd,'raw data','StegenHanuschkin_Resonance_Ba.csv'));
+data{3} = importdata(fullfile(pwd,'raw data','StegenHanuschkin_Resonance_Ba+ZD.csv'));
 plot(data{1}(:,1),data{1}(:,2),'k')
 plot(data{2}(:,1),data{2}(:,2),'b')
 plot(data{3}(:,1),data{3}(:,2),'r')   
@@ -718,8 +693,7 @@ rmatrix = -Inf(14,numel(changs));
 
 type = 'up'; % possible values: up down   ... regulate channels up or down
 neuron = neuron_orig;
-params = params_orig;
-params.exchfolder = 't2nexchange_aGCmorphsim4';
+neuron.params.exchfolder = 't2nexchange_aGCmorphsim4';
 neuron.experiment = strcat('robust_',neuron.experiment);
 
 if strcmp(type,'up')
@@ -762,7 +736,7 @@ for v = 1:numel(changs) %
             end
             neuron.experiment = strcat(neuron.experiment,'_eca');
         case 'temp'
-            params.celsius = params.celsius + amount(2);
+            neuron.params.celsius = neuron.params.celsius + amount(2);
             neuron.experiment = strcat(neuron.experiment,'_temp');
         case 'cAMP'
                 neuron = t2n_changemech(neuron,struct('cAMP_HCN',1),'absolute'); % 1µM cAMP
@@ -775,7 +749,7 @@ for v = 1:numel(changs) %
     %a
     ostruct.passtest = 'Std'; 
     ostruct.show = 0;
-    [Rin, tau, ~, Vrest] = t2n_passTests(neuron,tree,params,targetfolder_results,ostruct);
+    [Rin, tau, ~, Vrest] = t2n_passTests(neuron,tree,targetfolder_results,ostruct);
     % caution, VoltageClamps add the series resistance of the electrode (10MOhm
     % by now). With passive, capacitance is higher..? But Rin is always same
     rmatrix(1,v) = mean(Vrest);
@@ -785,12 +759,12 @@ for v = 1:numel(changs) %
     ostruct.holding_voltage = -80;
     ostruct.duration = 200;
     ostruct.amp = 90/1000;
-    params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+    neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     ostruct.data = 2;
-    rmatrix(5,v) = nanmean(t2n_findCurr(tree,params,neuron,'spike'));
+    rmatrix(5,v) = nanmean(t2n_findCurr(tree,neuron,'spike'));
     
-    t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
+    t2n_currsteps(neuron,tree,targetfolder_data,ostruct)
     props = t2n_APprop(targetfolder_data,neuron,0.09);
     rmatrix(4,v) = nanmean(cellfun(@(y) nanmean(y),props.APiv(1,:)));
     rmatrix(6,v) = nanmean(cellfun(@(y) nanmean(y),props.APamp(1,:)));
@@ -799,7 +773,7 @@ for v = 1:numel(changs) %
     % c
     ostruct.duration = 1000;%200;%200;
     ostruct.amp = [100,200]/1000; % nA
-    t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
+    t2n_currsteps(neuron,tree,targetfolder_data,ostruct)
     props = t2n_APprop(targetfolder_data,neuron,0.1);
     rmatrix(9,v) =  mean(cellfun(@(y) numel(y),props.APind(1,:))); %# APs@100
     rmatrix(11,v) =  nanmean(cellfun(@(y) mean(y),props.APISI(1,:))); % ISI mean
@@ -821,15 +795,14 @@ for v = 1:numel(changs) %
     ostruct.simple = 0;
     ostruct.reduce = 1;
     ostruct.relamp = 0;
-    t2n_bAP(neuron,tree,params,targetfolder_data,ostruct)
+    t2n_bAP(neuron,tree,targetfolder_data,ostruct)
     [bAPdisthm,mveloc_dend,mveloc_farax,mveloc_nearax] = t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
     rmatrix(13,v) = nanmean(mveloc_dend);
     rmatrix(14,v) = nanmean(mveloc_farax);
     
     neuron = neuron_orig;
-    params = params_orig;
     neuron.experiment = strcat('robust_',neuron.experiment);
-    params.exchfolder = 't2nexchange_aGCmorphsim4';
+    neuron.params.exchfolder = 't2nexchange_aGCmorphsim4';
     waitbar(v/numel(changs),w)
 end
 close(w)

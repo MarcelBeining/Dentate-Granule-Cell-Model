@@ -1,14 +1,14 @@
-function aGC_Shruti_current(neuron,tree,params,targetfolder,ostruct)
+function aGC_Shruti_current(neuron,tree,ostruct)
 % if nargin < 5 || ~isfield(ostruct,'holding_voltage')
 ostruct.holding_voltage = -80;
 % end
 elecnode = 1;
 
-params.prerun = 300;
-params.skiprun = 0;
-params.tstop = 920;
-params.dt= 1;  % 1 ms time step ist vollkommen ausreichend
-params.cvode = 0;
+neuron.params.prerun = 300;
+neuron.params.skiprun = 0;
+neuron.params.tstop = 920;
+neuron.params.dt= 1;  % 1 ms time step ist vollkommen ausreichend
+neuron.params.cvode = 0;
 
 
 for t = 1:numel(tree)
@@ -22,7 +22,7 @@ nneuron{1} = t2n_blockchannel(neuron,{'na8st'},100);
 nneuron{2} = t2n_blockchannel(neuron,{'na8st','BK'},100,[],{'gbar','gakbar'});   % block with iberitoxin
 nneuron{3} = t2n_blockchannel(neuron,{'na8st','BK'},100);         % block with paxilline
 
-[out, ~] = t2n(tree,params,nneuron,'-q-d-w');
+[out, ~] = t2n(tree,nneuron,'-q-d-w');
 if any(cellfun(@(x) x.error,out))
     return
 end

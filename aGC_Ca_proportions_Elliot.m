@@ -1,13 +1,13 @@
-function aGC_Ca_proportions_Elliot(neuron,tree,params,targetfolder)
+function aGC_Ca_proportions_Elliot(neuron,tree,targetfolder)
 % if nargin < 5 || ~isfield(ostruct,'holding_voltage')
 % end
 elecnode = 1;
 
-params.prerun = 300;
-params.skiprun = 0;
-params.tstop = 100;
-params.dt= 1;  % 1 ms time step ist vollkommen ausreichend
-params.cvode = 0;
+neuron.params.prerun = 300;
+neuron.params.skiprun = 0;
+neuron.params.tstop = 100;
+neuron.params.dt= 1;  % 1 ms time step ist vollkommen ausreichend
+neuron.params.cvode = 0;
 
 
 for t = 1:numel(tree)
@@ -41,7 +41,7 @@ nneuron{3} = t2n_blockchannel(nneuron{1},'Cav22',100);
 nneuron{4} = t2n_blockchannel(nneuron{1},{'Cav12','Cav13'},100);
 nneuron{5} = t2n_blockchannel(nneuron{1},{'Cav32','Cav12','Cav13','Cav22'},100);
 
-[out, ~] = t2n(tree,params,nneuron,'-q-d-w');
+[out, ~] = t2n(tree,nneuron,'-q-d-w');
 if any(cellfun(@(x) x.error,out))
     return
 end

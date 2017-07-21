@@ -1,4 +1,4 @@
-function fig = aGC_IVplotExp(params,ostruct,loadingfile)
+function fig = aGC_IVplotExp(ostruct,loadingfile)
 
 load(loadingfile,'mholding_current','steadyStateCurrVec','holding_voltage','vstepsModel')
 if ostruct.subtract_hv
@@ -85,8 +85,8 @@ if ~all(ostruct.dataset == 0)
         
         stdIV = std (meas_curr,1);
         if ostruct.newborn
-            if ostruct.dataset == 2.28 && exist(fullfile(params.path,'raw data','IV_29dpi_S3.csv'),'file')
-                meas_curr = importdata(fullfile(params.path,'raw data','IV_29dpi_S3.csv'));
+            if ostruct.dataset == 2.28 && exist(fullfile(pwd,'raw data','IV_29dpi_S3.csv'),'file')
+                meas_curr = importdata(fullfile(pwd,'raw data','IV_29dpi_S3.csv'));
                 mIV = meas_curr(1:19,2)';
                 stdIV = meas_curr(20:end,2)' - mIV;
             else

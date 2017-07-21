@@ -1,4 +1,4 @@
-function handles = aGC_synstim_plot(params,tree,type,ostruct,targetfolder_data,targetfolder_results,showv,c)
+function handles = aGC_synstim_plot(tree,type,ostruct,targetfolder_data,targetfolder_results,showv,c)
 if ostruct.newborn
     str = '_newborn';
     str2 = 'bliblablub';
@@ -17,7 +17,7 @@ end
 col = colorme(c+1);
 folds = dir(targetfolder_data);
 folds = {folds.name};
-folds = folds(cellfun(@(x) isempty(strfind(x,str2)) & ~isempty(strfind(x,sprintf('Exp_%s_%s%s',type,params.tname,str))),folds));
+folds = folds(cellfun(@(x) isempty(strfind(x,str2)) & ~isempty(strfind(x,sprintf('Exp_%s_%s%s',type,tree{1}.name,str))),folds));
 if isempty(folds)
     errordlg('No experiment found')
     return
@@ -97,7 +97,7 @@ switch type
         subplot(3,1,1)
         plot(out.t,out.record{t}.cell.v{1})
         subplot(3,1,2)
-        f = ones(1,1/params.dt)*params.dt/1;
+        f = ones(1,1/neuron.params.dt)*neuron.params.dt/1;
         m_spikeMat = filtfilt(f,1,sum(spikeMat,1));
         plot(tvec,m_spikeMat)
         subplot(3,1,3)
@@ -108,10 +108,10 @@ switch type
         %         subplot(5,1,1:4)
         %         plot(out.t,out.record{t}.cell.v{1})
         %         subplot(5,1,5)
-        % %         line(repmat(1/freq:1/freq:params.tstop,2,1),repmat([0;1],1,params.tstop*freq),'color','k','LineWidth',3)
+        % %         line(repmat(1/freq:1/freq:neuron.params.tstop,2,1),repmat([0;1],1,neuron.params.tstop*freq),'color','k','LineWidth',3)
         %         ylim([-0.5 1.5])
         %         set(gca,'ytick',[])
-        %         xlim([0,params.tstop])
+        %         xlim([0,neuron.params.tstop])
         freqmodel = NaN(numel(freq),numel(tree)-1);
         if numel(handles)>=counter && ishandle(handles(counter))
             figure(handles(counter));
@@ -122,12 +122,12 @@ switch type
         fig =[];
         for f = 1:numel(freq)
             subplot(numel(freq),1,f)
-            line(repmat(1000/freq(f):1000/freq(f):params.tstop,2,1),repmat([0;1],1,params.tstop*freq(f)/1000),'color','k','LineWidth',2)
+            line(repmat(1000/freq(f):1000/freq(f):neuron.params.tstop,2,1),repmat([0;1],1,neuron.params.tstop*freq(f)/1000),'color','k','LineWidth',2)
             for t = 1:numel(tree)-1
                 hold all
                 %                 plot(out{f}.t,out{f}.record{t}.cell.v{1})
                 [~,ind] = findpeaks(out{f}.record{t}.cell.v{1},'MinPeakHeight',0);
-                freqmodel(f,t) = numel(ind)/params.tstop*1000;
+                freqmodel(f,t) = numel(ind)/neuron.params.tstop*1000;
                 line(repmat(out{f}.t(ind)',2,1),repmat([t;t+1],1,numel(ind)),'color','b','LineWidth',2)
                 if freq(f) == 40
                     if numel(handles)>=counter && ishandle(handles(counter))
@@ -135,14 +135,14 @@ switch type
                     else
                         handles(counter) = figure;hold all;
                     end
-                    line(repmat(1000/freq(f):1000/freq(f):params.tstop,2,1),repmat([0;1],1,params.tstop*freq(f)/1000),'color','k','LineWidth',2)
+                    line(repmat(1000/freq(f):1000/freq(f):neuron.params.tstop,2,1),repmat([0;1],1,neuron.params.tstop*freq(f)/1000),'color','k','LineWidth',2)
                     line(repmat(out{f}.t(ind)',2,1),repmat([t;t+1],1,numel(ind)),'color',col{c},'LineWidth',2)
                     xlim([0 500])
                     figure(handles(counter-1))
                 end
             end
 
-            xlim([0,params.tstop])
+            xlim([0,neuron.params.tstop])
             %             ylim([0,numel(tree)+1-1])
         end
         if any(freq == 40)
@@ -177,8 +177,8 @@ switch type
                 ind = (f-1)*numel(dt0) + n;
                 subplot(numel(freq),numel(dt0),ind)
                 hold all
-                line(repmat(1000/freq(f):1000/freq(f):params.tstop,2,1),repmat([-1;0],1,floor(params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
-                line(repmat(1000/freq(f):1000/freq(f):params.tstop,2,1)+dt0(n),repmat([-2;-1],1,floor(params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
+                line(repmat(1000/freq(f):1000/freq(f):neuron.params.tstop,2,1),repmat([-1;0],1,floor(neuron.params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
+                line(repmat(1000/freq(f):1000/freq(f):neuron.params.tstop,2,1)+dt0(n),repmat([-2;-1],1,floor(neuron.params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
                 for t = 1:numel(tree)-2
                     if showv
                         plot(out{ind}.t,out{ind}.record{t}.cell.v{1})
@@ -187,7 +187,7 @@ switch type
                         ylim([0 numel(tree)]-2)
                     end
                     [~,ind2] = findpeaks(out{ind}.record{t}.cell.v{1},'MinPeakHeight',0);
-                    freqmodel(f,n,t) = numel(ind2)/params.tstop*1000;
+                    freqmodel(f,n,t) = numel(ind2)/neuron.params.tstop*1000;
                     line(repmat(out{ind}.t(ind2)',2,1),repmat([t-1;t],1,numel(ind2)),'color','b','LineWidth',2)
                     if freq(f) == 10
                         if numel(handles)>=counter && ishandle(handles(counter))
@@ -198,8 +198,8 @@ switch type
                         if any(dt0(n) == [-15,0])
                             subplot(1,2,find(dt0(n)==[-15,0])), hold all
                             if t == 1
-                                line(repmat(1000/freq(f):1000/freq(f):params.tstop,2,1),repmat([-1;0],1,floor(params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
-                                line(repmat(1000/freq(f):1000/freq(f):params.tstop,2,1)+dt0(n),repmat([-2;-1],1,floor(params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
+                                line(repmat(1000/freq(f):1000/freq(f):neuron.params.tstop,2,1),repmat([-1;0],1,floor(neuron.params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
+                                line(repmat(1000/freq(f):1000/freq(f):neuron.params.tstop,2,1)+dt0(n),repmat([-2;-1],1,floor(neuron.params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
                             end
                             line(repmat(out{ind}.t(ind2)',2,1),repmat([t-1;t],1,numel(ind2)),'color',col{c},'LineWidth',2)
                             xlim([0 500])
@@ -207,7 +207,7 @@ switch type
                         figure(handles(counter-1))
                     end
                 end
-                xlim([0 params.tstop])
+                xlim([0 neuron.params.tstop])
             end
         end
         
@@ -216,7 +216,7 @@ switch type
         if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
                 tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
         else
-            tprint(fullfile(targetfolder_results,sprintf('TemporalSumRaster_%s_%s%s',type,params.tname,str)),'-pdf');
+            tprint(fullfile(targetfolder_results,sprintf('TemporalSumRaster_%s_%s%s',type,tree{1}.name,str)),'-pdf');
         end
         if any(freq == 10)
             figure(handles(counter))
@@ -247,7 +247,7 @@ switch type
         if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
                 tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
         else
-            tprint(fullfile(targetfolder_results,sprintf('TemporalSumPlot_%s_%s%s',type,params.tname,str)),'-pdf');
+            tprint(fullfile(targetfolder_results,sprintf('TemporalSumPlot_%s_%s%s',type,tree{1}.name,str)),'-pdf');
         end
         if numel(handles)>=counter && ishandle(handles(counter))
             figure(handles(counter))
@@ -266,7 +266,7 @@ switch type
         if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
                 tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
         else
-            tprint(fullfile(targetfolder_results,sprintf('TemporalSumImag_%s_%s%s',type,params.tname,str)),'-pdf');
+            tprint(fullfile(targetfolder_results,sprintf('TemporalSumImag_%s_%s%s',type,tree{1}.name,str)),'-pdf');
         end
     case 'spatial'
         if numel(handles)>=counter && ishandle(handles(counter))
@@ -282,7 +282,7 @@ switch type
                 ind = (f-1)*numel(dd0) + n;
                 subplot(numel(freq),numel(dd0),ind)
                 hold all
-                line(repmat(1000/freq(f):1000/freq(f):params.tstop,2,1),repmat([-1;0],1,floor(params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
+                line(repmat(1000/freq(f):1000/freq(f):neuron.params.tstop,2,1),repmat([-1;0],1,floor(neuron.params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
                 for t = 1:numel(tree)-1
                     if showv
                     plot(out{ind}.t,out{ind}.record{t}.cell.v{1})
@@ -290,10 +290,10 @@ switch type
                         ylim([-1 numel(tree)])
                     end
                     [~,ind2] = findpeaks(out{ind}.record{t}.cell.v{1},'MinPeakHeight',0);
-                    freqmodel(f,n,t) = numel(ind2)/params.tstop*1000;
+                    freqmodel(f,n,t) = numel(ind2)/neuron.params.tstop*1000;
                     line(repmat(out{ind}.t(ind2)',2,1),repmat([t-1;t],1,numel(ind2)),'color','b','LineWidth',2)
                 end
-                xlim([0 params.tstop])
+                xlim([0 neuron.params.tstop])
             end
         end
         if numel(handles)>=counter && ishandle(handles(counter))
@@ -336,11 +336,11 @@ switch type
                 ind2 = (f-1)*numel(dd0) + 1;
                 subplot(numel(freq),numel(dd0),ind)
                 hold all
-%                 line(repmat(1000/freq(f):1000/freq(f):params.tstop,2,1),repmat([-1;0],1,floor(params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
+%                 line(repmat(1000/freq(f):1000/freq(f):neuron.params.tstop,2,1),repmat([-1;0],1,floor(neuron.params.tstop*freq(f)/1000)),'color','k','LineWidth',2)
                 for t = 1:numel(tree)-1
                     plot(out{ind}.t,out{ind}.record{t}.cell.v{1})
                 end
-                xlim([0 params.tstop])
+                xlim([0 neuron.params.tstop])
                 ylim([-90 -50])
             end
         end

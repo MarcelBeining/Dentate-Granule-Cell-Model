@@ -1,6 +1,6 @@
-function aGC_CaDyn(neuron,tree,params,targetfolder_data,ostruct)
+function aGC_CaDyn(neuron,tree,targetfolder_data,ostruct)
 
-params.v_init = -85.4;
+neuron.params.v_init = -85.4;
 
 if ~isfield(ostruct,'cai')
     ostruct.cai = 'cai';
@@ -9,9 +9,9 @@ if ~isfield(ostruct,'cstep')
     ostruct.cstep = 1.3; % nA
 end
 
-params.tstop = 1000;
-params.dt=0.025;
-params.cvode = 1;
+neuron.params.tstop = 1000;
+neuron.params.dt=0.025;
+neuron.params.cvode = 1;
 nodes = cell(numel(tree),1);
 plen = nodes;
 eucl = nodes;
@@ -19,7 +19,7 @@ plotcaivals = nodes;
 CaNodes = nodes;
 ipar = nodes;
 
-hstep = t2n_findCurr(tree,params,neuron,params.v_init); %assuming a HP of xxx mV
+hstep = t2n_findCurr(tree,neuron,neuron.params.v_init); %assuming a HP of xxx mV
 
 
 for t = 1:numel(tree)
@@ -47,8 +47,8 @@ for t = 1:numel(tree)
     % this part would have been done by t2n anyway, however to avoid
     % loading a lot of redundant values into Matlab, nodes are reduced to
     % the locations were NEURON actually calculates voltage here
-    minterf = load(fullfile(params.path,'morphos','hocs',sprintf('%s_minterf.mat',tree{t}.NID)));
-    minterf = t2n_make_nseg(tree{t},minterf.minterf,params,neuron.mech{t});
+    minterf = load(fullfile(pwd,'morphos','hocs',sprintf('%s_minterf.mat',tree{t}.NID)));
+    minterf = t2n_make_nseg(tree{t},minterf.minterf,neuron.params,neuron.mech{t});
     inode = zeros(numel(nodes{t}),1);
     for in = 1:numel(nodes{t})
         inode(in) = find(minterf(:,1) == nodes{t}(in),1,'first');    %find the index of the node in minterf
@@ -64,7 +64,7 @@ for t = 1:numel(tree)
     neuron.pp{t}.IClamp = struct('node',1,'times',[-200 30,32.5],'amp', [hstep(t) hstep(t)+ostruct.cstep hstep(t)]); %n,del,dur,amp
     eucl{t} = eucl_tree(tree{t});
 end
-[out, ~] = t2n(tree,params,neuron,'-w-q-d');
+[out, ~] = t2n(tree,neuron,'-w-q-d');
 tim = out.t;
 tw = NaN(numel(tree),4,max(cellfun(@(x) numel(x{4}),CaNodes)));
 maxcai = tw;
@@ -121,4 +121,4 @@ for t = 1:numel(tree)
     end
 end
 
-save(fullfile(targetfolder_data,sprintf('Exp_CaDyn_%s.mat',neuron.experiment)),'plotcaivals','params','nodes','neuron','tree','CaNodes','mCai','stdCai','mV','stdV','tim','tw','maxcai')
+save(fullfile(targetfolder_data,sprintf('Exp_CaDyn_%s.mat',neuron.experiment)),'plotcaivals','nodes','neuron','tree','CaNodes','mCai','stdCai','mV','stdV','tim','tw','maxcai')

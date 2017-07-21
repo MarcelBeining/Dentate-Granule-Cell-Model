@@ -1,19 +1,19 @@
-function aGC_AHP(neuron,tree,params,targetfolder_data)
+function aGC_AHP(neuron,tree,targetfolder_data)
 
 LJP = 7;  % from the paper
 cd(path)
-params.accuracy = 1;  % for more nseg in axon and soma!
-params.v_init = -58 - LJP;
+neuron.params.accuracy = 1;  % for more nseg in axon and soma!
+neuron.params.v_init = -58 - LJP;
 
-params.tstop = 3000;
-params.dt=0.05;
-params.cvode = 1;
+neuron.params.tstop = 3000;
+neuron.params.dt=0.05;
+neuron.params.cvode = 1;
     
 %!!!
 meanhvol = -58 - LJP;   % corrected!!
-params.skiprun = 0; %!!!!!!!!!
+neuron.params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep2','var')
-    hstep2 = t2n_findCurr(tree,params,neuron,meanhvol,[],'-q-d');
+    hstep2 = t2n_findCurr(tree,neuron,meanhvol,[],'-q-d');
 end
 for t=1:numel(tree)
     neuron.APCount{t} = [1,-30];
@@ -52,8 +52,7 @@ for s = 1:3
 end
 nneuron = t2n_as(1,nneuron);
 
-% params.skiprun = 1 %!!!!!!!!!
-    [out, ~] = t2n(tree,params,nneuron,'-q-d-w');
+    [out, ~] = t2n(tree,nneuron,'-q-d-w');
     if isfield(out,'error')
         return
     end
@@ -70,4 +69,4 @@ for s = 1:3
     end
 end
 
-save(fullfile(targetfolder_data,'EphysModel',sprintf('Exp_msAHP_%s.mat',neuron.experiment)),'AHPvoltVec','AHPtimeVec','params','neuron','tree')
+save(fullfile(targetfolder_data,'EphysModel',sprintf('Exp_msAHP_%s.mat',neuron.experiment)),'AHPvoltVec','AHPtimeVec','neuron','tree')

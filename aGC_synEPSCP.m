@@ -1,18 +1,18 @@
-function [EPSC,EPSP1] = aGC_synEPSCP(nneuron,tree,params,targetfolder_data,ostruct)
+function [EPSC,EPSP1] = aGC_synEPSCP(nneuron,tree,targetfolder_data)
 dists = 0:50:300;
 rs = 15;
 onset = 10;
 nsyns = 5:5:25;
-params.v_init = -80;
-params.skiprun = 0;
+neuron.params.v_init = -80;
+neuron.params.skiprun = 0;
 % cstep = 1300*0.001; %nA
-params.tstop = 50;
-% params.dt=0.025;
-params.cvode = 1;
+neuron.params.tstop = 50;
+% neuron.params.dt=0.025;
+neuron.params.cvode = 1;
 
 
 
-hstep = t2n_findCurr(tree,params,nneuron,-82.1); %assuming a HP of xxx mV
+hstep = t2n_findCurr(tree,nneuron,-82.1); %assuming a HP of xxx mV
 
 
 for t=1:numel(tree)
@@ -52,7 +52,7 @@ for s = numel(nsyns):-1:1
         neuron.pp{t}.AlphaSynapse.node = neuron.pp{t}.AlphaSynapse.node(1:nsyns(s));  % reduce number of synapses to current nsyns       
         neuron.pp{t}.IClamp = struct('node',1,'times',-200,'amp',hstep(t)); %n,del,dur,amp
     end
-    [out, ~] = t2n(tree,params,neuron,'-w-q-d');
+    [out, ~] = t2n(tree,neuron,'-w-q-d');
     
     figure(fig(1));p = plot(out.t,cat(2,out.record{t}.cell.v{dpath{t}}));
     %     hold all;plot(out.t,out.record{t}.cell.v{thesesynids{t}(1)},'r')
@@ -65,7 +65,7 @@ for s = numel(nsyns):-1:1
         neuron.pp{t}.SEClamp = struct('node',1,'times',-200,'amp', -82.1,'rs',rs); %n,del,dur,amp
         neuron.record{t}.SEClamp = struct('node',1,'record','i');
     end
-    [out2, ~] = t2n(tree,params,neuron,'-w-q-d');
+    [out2, ~] = t2n(tree,neuron,'-w-q-d');
     figure(fig(2));p = plot(out2.t,out2.record{t}.SEClamp.i{1}*1000);
     %     hold all;plot(out.t,out.record{t}.cell.v{thesesynids{t}(1)},'r')
     %     legend(p,sprintfc('%d µm',dists(1:numel(dpath{t}))))
@@ -84,4 +84,4 @@ for s = numel(nsyns):-1:1
     
 end
 
-save(fullfile(targetfolder_data,sprintf('Exp_synEPSCP_%s.mat',neuron.experiment)),'nneuron','params','tree','EPSP1','EPSC','dists','nsyns')
+save(fullfile(targetfolder_data,sprintf('Exp_synEPSCP_%s.mat',neuron.experiment)),'nneuron','tree','EPSP1','EPSC','dists','nsyns')

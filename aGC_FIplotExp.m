@@ -1,10 +1,10 @@
-function fig = aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,params,ostruct)
+function fig = aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,ostruct)
 %
 if ~isfield(ostruct,'duration') && ostruct.dataset < 7
     ostruct.duration = 200;
 end
 
-load(t2n_catName(targetfolder_data,'Exp_Spiking',neuron.experiment,'.mat'),'voltVec','timeVec','numspikes','params','cstepsSpikingModel','tree','nneuron')
+load(t2n_catName(targetfolder_data,'Exp_Spiking',neuron.experiment,'.mat'),'voltVec','timeVec','numspikes','cstepsSpikingModel','tree','nneuron')
 
 [exp_iclamp,cstepsSpiking] = load_ephys(ostruct.dataset,'CClamp');
 
@@ -22,23 +22,23 @@ if ostruct.duration == 200 && ostruct.dataset ~= 0
     stdFI= stdFI(1:numel(x));
     hp = patch ([x (fliplr (x))], [(mFI + stdFI) (fliplr (mFI - stdFI))],[0.7 0.7 0.7],'edgecolor','none' );
     p = plot (x, mFI, 'k');
-elseif ostruct.duration == 900 && exist(fullfile(params.path,'raw data','FI_Brenner.csv'),'file')
-    dataBrenner = importdata(fullfile(params.path,'raw data','FI_Brenner.csv'));
+elseif ostruct.duration == 900 && exist(fullfile(pwd,'raw data','FI_Brenner.csv'),'file')
+    dataBrenner = importdata(fullfile(pwd,'raw data','FI_Brenner.csv'));
     hp = patch ([50:50:400 (fliplr (50:50:400))], [(dataBrenner.data(2:2:end))' (fliplr (2*dataBrenner.data(1:2:end)'-dataBrenner.data(2:2:end)'))], [0 0 0]);
     set (hp, 'facealpha', 0.2, 'edgecolor', 'none')
     p = plot (50:50:400, dataBrenner.data(1:2:end), 'k');
-elseif ostruct.duration == 1000 && exist(fullfile(params.path,'raw data','FI_Mehranfard15b_RAT.csv'),'file')
-    dataMA = importdata(fullfile(params.path,'raw data','FI_Mehranfard15b_RAT.csv'));
+elseif ostruct.duration == 1000 && exist(fullfile(pwd,'raw data','FI_Mehranfard15b_RAT.csv'),'file')
+    dataMA = importdata(fullfile(pwd,'raw data','FI_Mehranfard15b_RAT.csv'));
     MAstd = dataMA(7:end,2)-dataMA(1:6,2);
     hp(1) = patch ([dataMA(1:6,1); (flipud (dataMA(1:6,1)))], [dataMA(1:6,2)-MAstd ;(flipud (dataMA(1:6,2)+MAstd))], [0 0 0]);
     set (hp, 'facealpha', 0.2, 'edgecolor', 'none')
     p(1) = plot (dataMA(1:6,1), dataMA(1:6,2), 'k');
-    dataMA = importdata(fullfile(params.path,'raw data','FI_Mehranfard14_RAT.csv'));
+    dataMA = importdata(fullfile(pwd,'raw data','FI_Mehranfard14_RAT.csv'));
     MAstd = -dataMA.data(1:2:end-1)+dataMA.data(2:2:end);
     hp(2) = patch ([(100:50:250)'; (fliplr (100:50:250)')], [dataMA.data(1:2:end-1)-MAstd ;(flipud (dataMA.data(1:2:end-1)+MAstd))], [0 0 0]);
     set (hp, 'facecolor',[0.7,0.7,0.7],'facealpha', 0.2, 'edgecolor', 'none')
     p(2) = plot (100:50:250, dataMA.data(1:2:end-1), 'Color',[0.7,0.7,0.7]);
-    dataMA = importdata(fullfile(params.path,'raw data','FI_Mehranfard15a_RAT.csv'));
+    dataMA = importdata(fullfile(pwd,'raw data','FI_Mehranfard15a_RAT.csv'));
     MAstd = dataMA(2:2:end,2)-dataMA(1:2:end-1,2);
     hp(3) = patch ([(50:50:250)'; (flipud ((50:50:250)'))], [dataMA(1:2:end-1,2)-MAstd ;(flipud (dataMA(1:2:end-1,2)+MAstd))], [0 0 0]);
     set (hp, 'facecolor',[0.5,0.5,0.5],'facealpha', 0.2, 'edgecolor', 'none')
@@ -97,18 +97,18 @@ elseif ostruct.duration == 900
     hp = patch ([50:50:400 (fliplr (50:50:400))], [(dataBrenner.data(2:2:end))' (fliplr (2*dataBrenner.data(1:2:end)'-dataBrenner.data(2:2:end)'))]/0.9, [0 0 0]);
     set (hp, 'facealpha', 0.2, 'edgecolor', 'none')
     p = plot (50:50:400, dataBrenner.data(1:2:end)/0.9, 'k');
-elseif ostruct.duration == 1000 && exist(fullfile(params.path,'raw data','FI_Mehranfard15b_RAT.csv'),'file')
-    dataMA = importdata(fullfile(params.path,'raw data','FI_Mehranfard15b_RAT.csv'));
+elseif ostruct.duration == 1000 && exist(fullfile(pwd,'raw data','FI_Mehranfard15b_RAT.csv'),'file')
+    dataMA = importdata(fullfile(pwd,'raw data','FI_Mehranfard15b_RAT.csv'));
     MAstd = dataMA(7:end,2)-dataMA(1:6,2);
     hp(1) = patch ([dataMA(1:6,1); (flipud (dataMA(1:6,1)))], [dataMA(1:6,2)-MAstd ;(flipud (dataMA(1:6,2)+MAstd))], [0 0 0]);
     set (hp, 'facealpha', 0.2, 'edgecolor', 'none')
     p(1) = plot (dataMA(1:6,1), dataMA(1:6,2), 'k');
-    dataMA = importdata(fullfile(params.path,'raw data','FI_Mehranfard14_RAT.csv'));
+    dataMA = importdata(fullfile(pwd,'raw data','FI_Mehranfard14_RAT.csv'));
     MAstd = -dataMA.data(1:2:end-1)+dataMA.data(2:2:end);
     hp(2) = patch ([(100:50:250)'; (fliplr (100:50:250)')], [dataMA.data(1:2:end-1)-MAstd ;(flipud (dataMA.data(1:2:end-1)+MAstd))], [0 0 0]);
     set (hp, 'facecolor',[0.7,0.7,0.7],'facealpha', 0.2, 'edgecolor', 'none')
     p(2) = plot (100:50:250, dataMA.data(1:2:end-1), 'Color',[0.7,0.7,0.7]);
-    dataMA = importdata(fullfile(params.path,'raw data','FI_Mehranfard15a_RAT.csv'));
+    dataMA = importdata(fullfile(pwd,'raw data','FI_Mehranfard15a_RAT.csv'));
     MAstd = dataMA(2:2:end,2)-dataMA(1:2:end-1,2);
     hp(3) = patch ([(50:50:250)'; (flipud ((50:50:250)'))], [dataMA(1:2:end-1,2)-MAstd ;(flipud (dataMA(1:2:end-1,2)+MAstd))], [0 0 0]);
     set (hp, 'facecolor',[0.5,0.5,0.5],'facealpha', 0.2, 'edgecolor', 'none')

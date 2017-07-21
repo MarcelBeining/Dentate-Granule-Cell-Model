@@ -1,17 +1,15 @@
-function aGC_APsomax(neuron,tree,params,treepath,targetfolder_results)
+function aGC_APsomax(neuron,tree,treepath,targetfolder_results)
 
-display('echte current injection 2 oder weniger nA. und nur 0.5 ms duration\n')
-display('check das nochmal sobald passives modell steht. evt muss das axon weniger leaky sein?')
-display('check axon geschwindigkeit (teilweise von leakyness abh.) bzw axon AP broadness\n')
+disp('echte current injection 2 oder weniger nA. und nur 0.5 ms duration\n')
+disp('check das nochmal sobald passives modell steht. evt muss das axon weniger leaky sein?')
+disp('check axon geschwindigkeit (teilweise von leakyness abh.) bzw axon AP broadness\n')
 
 cstep = 1.8; %nA !
-params.accuracy = 1;  % for more nseg in axon and soma!
-params.dt=0.05;
-params.cvode = 1;
-params.tstop = 350;    
-params.skiprun = 0; %!!!!!!!!!
-params.tname = strcat(params.tname,'_bleb');
-
+neuron.params.accuracy = 1;  % for more nseg in axon and soma!
+neuron.params.dt=0.05;
+neuron.params.cvode = 1;
+neuron.params.tstop = 350;    
+neuron.params.skiprun = 0; %!!!!!!!!!
 
 for t = 1:numel(tree)
     tree{t} = bleb_tree(tree{t},30);
@@ -20,9 +18,9 @@ for t = 1:numel(tree)
     plen = Pvec_tree(tree{t});
     nodes{t} = [1,ind,find(plen >= 100 & tree{t}.R ~= 1,1,'first')];
 end
-tree = t2n_writeTrees(tree,tree,strcat(treepath(1:end-4),'_bleb.mtr'));
+tree = t2n_writeTrees(tree,[],strcat(treepath(1:end-4),'_bleb.mtr'));
     
-hstep = t2n_findCurr(tree,params,neuron,-80,[],'-q-d');
+hstep = t2n_findCurr(tree,neuron,-80,[],'-q-d');
 
 for t = 1:numel(tree)
 %     eucl{t} = eucl_tree(tree{t});
@@ -32,7 +30,7 @@ for t = 1:numel(tree)
 end
 
 
-out = t2n(tree,params,neuron,'-q-d-w');
+out = t2n(tree,neuron,'-q-d-w');
 
 if isfield(out,'error') && out.error > 0
     return

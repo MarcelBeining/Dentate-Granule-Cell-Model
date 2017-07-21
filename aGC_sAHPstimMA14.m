@@ -1,15 +1,15 @@
-function aGC_sAHPstimMA14(neuron,tree,params,targetfolder)
+function aGC_sAHPstimMA14(neuron,tree,targetfolder)
 
 cstep = 0.2; %nA !
-params.accuracy = 1;  % for more nseg in axon and soma!
-params.dt=0.05;
-params.cvode = 1;
-params.tstop = 350;    
-params.skiprun = 0; %!!!!!!!!!
+neuron.params.accuracy = 1;  % for more nseg in axon and soma!
+neuron.params.dt=0.05;
+neuron.params.cvode = 1;
+neuron.params.tstop = 350;    
+neuron.params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep','var')
     hstep = [];
 end
-hstep = t2n_findCurr(tree,params,neuron,-62,hstep,'-q-d');
+hstep = t2n_findCurr(tree,neuron,-62,hstep,'-q-d');
 
 for t = 1:numel(tree)
     nodes{t} = 1;
@@ -24,7 +24,7 @@ for s = 1:2
         nneuron{s} = neuron;
     end
 end
-[out, minterf] = t2n(tree,params,nneuron,'-q-d-w');
+out = t2n(tree,nneuron,'-q-d-w');
 % out = out{1};
 if isfield(out,'error')
     return

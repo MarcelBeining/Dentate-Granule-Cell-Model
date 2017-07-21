@@ -1,23 +1,9 @@
 %% comments
 
 %% initialize trees and mechanisms
-params = [];
-
 %********* folders 
 targetfolder_results = 'D:\GCModel\results';  % the folder where the graphs and pictures are saved
 targetfolder_data = 'D:\GCModel\simdata';  % the folder where simulated data is saved (that you do not need to simulate it again if you just want to plot something)
-% these params are t2n specific
-params.neuronpath = 'C:/nrn73w64/bin64/nrniv.exe';   % the path to your NEURON exe
-params.path = pwd;  % your main folder of the model
-params.exchfolder = 't2nexchange';  % folder which is used to exchange data between Matlab and NEURON
-% ***********
-
-params.celsius = 24;   % temperature
-params.prerun = 400;   % large-dt prerun to let the system equilibrate
-params.v_init = -90;  % initial membrane voltage
-params.dt = 1;       % standard time step (is automatically changed to a smaller dt in most simulations below)
-params.nseg = 'd_lambda';  % number of segments, can be constant or 'd_lambda' to adjust it according to the d-lambda rule
-params.openNeuron = 1;   % make it 1 to open each NEURON instance (is suppressed if t2n is run with the -q argument)
 
 ostruct = struct('plot','auto','show',3,'legend',0,'marker','o','sem',1,'FontSize',10,'FontType','Arial','barwidth',0.3,'figurewidth',8,'figureheight',5,'LineWidth',1,'grid',0,'priority','plot','ticklength',0.015);  % some options that are used when something is plotted
 ostruct.usecol = 1;  % 0 = pseudorandom colors for each simulated cell in graph, 1 = green or blue grading
@@ -58,15 +44,14 @@ else
 end
 
 
-[tree,params,neuron,treename] = GC_initModel(params,ostruct);  % initialize the model by loading the morphologies and setting the biophysical parameters
+[tree,neuron,treeFilename] = GC_initModel(ostruct);  % initialize the model by loading the morphologies and setting the biophysical parameters
 
 neuron_orig = neuron;
-params_orig = params;
 
 %% rewrite trees if necessary
 origfolder = pwd;
 cd(path)
-tree = t2n_writeTrees(tree,params,treename);
+tree = t2n_writeTrees(tree,[],treeFilename);
 cd(origfolder)
 
 %% plot trees
@@ -79,7 +64,7 @@ t2n_plotTrees(tree,targetfolder_results,[],ostruct) % '-s'
 % passive parameter tests (SH 2007)
 neuron = neuron_orig;
 ostruct.passtest = 'Mehranfard'; %Mongiat Mongiat2 SH Brenner
-[Rin, tau, cap,Vrest] = t2n_passTests(neuron,tree,params,targetfolder_results,ostruct);
+[Rin, tau, cap,Vrest] = t2n_passTests(neuron,tree,targetfolder_results,ostruct);
 % caution, VoltageClamps add the series resistance of the electrode (10MOhm
 % by now). With passive, capacitance is higher..? But Rin is always same
 
@@ -90,11 +75,11 @@ ostruct.holding_voltage = -80; % mV
 ostruct.subtract_hv = 1; % boolean subtract holding voltage current
 ostruct.show = 1:2; % 0= nothing, 1 = only exp data, 2 = only model data
 ostruct.coarse = 1;
-params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
-params.dt = 0.25;  % this is ignored if cvode = 1
+neuron.params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
+neuron.params.dt = 0.25;  % this is ignored if cvode = 1
 ostruct.single = 0;
 %
-t2n_VoltSteps(neuron,tree,params,targetfolder_data,ostruct);
+t2n_VoltSteps(neuron,tree,targetfolder_data,ostruct);
 %
 t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct);
 if ostruct.dataset ~= 2.28
@@ -109,17 +94,17 @@ ostruct.duration = 200;%200;
 ostruct.coarse = 0.5;
 
 ostruct.amp = [20,65,80,120]/1000; %nA
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
-params.dt = 0.25;  % this is ignored if cvode = 1
+neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.params.dt = 0.25;  % this is ignored if cvode = 1
 
 ostruct.show = 1:2;
 ostruct.ampprop = 65/1000;
 
 %%%%%%%%%%%%%%%%%%%%%
-% params.celsius = 33
+% neuron.params.celsius = 33
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct);
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct);
 
 % % VI plot
 % % aGC_VIplot(targetfolder_data,neuron.experiment,ostruct)
@@ -134,7 +119,7 @@ prop =     t2n_APprop(targetfolder_data,neuron,ostruct,tree);
 t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %% Compare spike soma/axon with a axon bleb (simulation!) SH2010
-% aGC_APsomax(neuron,tree,params,fullfile(treepath,treename),targetfolder_results)
+% aGC_APsomax(neuron,tree,fullfile(treepath,treename),targetfolder_results)
 
 
 
@@ -142,8 +127,8 @@ t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
 neuron = neuron_orig;
 neuron.experiment = strcat(neuron.experiment,'_dV');
 ostruct.amp = [40,65,90,115]/1000; % nA
-params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
-params.dt = 0.25;  % this is ignored if cvode = 1
+neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
+neuron.params.dt = 0.25;  % this is ignored if cvode = 1
 ostruct.coarse = 0;
 ostruct.show = 1:2;
 ostruct.ampprop = 90/1000;
@@ -152,55 +137,55 @@ if ostruct.newborn
 else
     ostruct.dataset =3;
 end
-t2n_currsteps(neuron,tree,params,targetfolder_data,ostruct)
+t2n_currsteps(neuron,tree,targetfolder_data,ostruct)
 shoulder = t2n_plotdV(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %% bAP simulation (Krueppel 2011)
-% params.celsius = 33; %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 neuron = neuron_orig;
+% neuron.params.celsius = 33; %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ostruct.simple = 0;
 ostruct.reduce = 1;
 ostruct.dist = 'Eucl'; % PL, Eucl
 ostruct.relamp = 0;
 
-t2n_bAP(neuron,tree,params,targetfolder_data,ostruct)
+t2n_bAP(neuron,tree,targetfolder_data,ostruct)
 
 t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
 
 %% mAHP/sAHP simulation ********************************************************************
 
-% aGC_AHP(neuron,tree,params,targetfolder_data)
+% aGC_AHP(neuron,tree,targetfolder_data)
 %
 % aGC_AHP_plot(targetfolder_data,neuron)
 
 %% block BK (Brenner 2005, Jaffe 2011) -> broader AP
-% aGC_BKblockJaffe11(neuron,tree,params,targetfolder_results)
+% aGC_BKblockJaffe11(neuron,tree,targetfolder_results)
 
 %% get ratio of aBK to aBK+abBK (Shruti 2012)
-% aGC_Shruti_current(neuron,tree,params,targetfolder_results,ostruct)
+% aGC_Shruti_current(neuron,tree,ostruct)
 %!!!!!!!!!!!!!!!!!!!!!!
 
 %% spiking adaptation, as in Mateos-Aparicio 2014 (SK,M-Current contribution) ACHTUNG RATTE !!!!!!!!!!
 holding_voltage = -77; % mV
 % ostruct.show = 1:2; % 1 = only exp data, 2 = only model data
 
-aGC_spikingadaptation(neuron,tree,params,targetfolder_data,holding_voltage);
+aGC_spikingadaptation(neuron,tree,targetfolder_data,holding_voltage);
 aGC_plotSA(t2n_catName(targetfolder_data,'Exp_Adaptation',neuron.experiment,'.mat'),targetfolder_results)
 %% block SK (Mateos-Aparicio 2014) ACHTUNG RATTE !!!!!!!!!!
-% aGC_sAHPstimMA14(neuron,tree,params,targetfolder_data)
+% aGC_sAHPstimMA14(neuron,tree,targetfolder_data)
 % aGC_plotsAHP(targetfolder_data,targetfolder_results,neuron)
 
 %% Calcium channel contributions (Eliot Johnston 1994)
-aGC_Ca_proportions_Elliot(neuron,tree,params,targetfolder_results)
+aGC_Ca_proportions_Elliot(neuron,tree,targetfolder_results)
 
 % %% dendritic synaptic stimulation EPSC/EPSP
 % % 
-% aGC_synEPSCP(neuron,tree,params,targetfolder_data,ostruct)
+% aGC_synEPSCP(neuron,tree,targetfolder_data,ostruct)
 % aGC_synEPSCP_plot(targetfolder_data,targetfolder_results,neuron,ostruct);
 % 
 %% Krueppel linear gain
 ostruct.mode = 3;  % 1 = Alpha syn, 2 = Krueppel AMPAR+NMDAR, 3 = D-APV NMDAR block, 4 = TTX, 5 = Nickel (T-type block)
-aGC_syngain(neuron,tree,params,targetfolder_data,ostruct)
+aGC_syngain(neuron,tree,targetfolder_data,ostruct)
 aGC_syngain_plot(neuron,targetfolder_data,ostruct)
 
 %%
@@ -208,12 +193,12 @@ ostruct.handles = [];
 type = 'temporal'; % test, theta-burst stimulation, regular input, temporal shift in input, spatial shift in input
 ostruct.synmode = 1; % 1 = no adjustment of synapse number, 2 = newborns have only half of synapse number, 3 = adjust the number of synapses to get subthreshold response
 % ostruct.figureheight = 3;
-aGC_synstim(params,neuron,tree,type,ostruct,targetfolder_data)
+aGC_synstim(neuron,tree,type,ostruct,targetfolder_data)
 
-ostruct.handles = aGC_synstim_plot(params,tree,type,ostruct,targetfolder_data,targetfolder_results,0);
+ostruct.handles = aGC_synstim_plot(tree,type,ostruct,targetfolder_data,targetfolder_results,0);
 
 %%
 ostruct.newborn = 1;
-aGC_synstim_plot(params,tree,type,ostruct,targetfolder_data,targetfolder_results,0,3);
-aGC_synstim_plot(params,tree,type,ostruct,targetfolder_data,targetfolder_results,0,4);
+aGC_synstim_plot(tree,type,ostruct,targetfolder_data,targetfolder_results,0,3);
+aGC_synstim_plot(tree,type,ostruct,targetfolder_data,targetfolder_results,0,4);
 ostruct.handles = []

@@ -1,4 +1,4 @@
-function aGC_syngain(nneuron,tree,params,targetfolder_data,ostruct)
+function aGC_syngain(nneuron,tree,targetfolder_data,ostruct)
 
 nneuron_orig = nneuron;
 syn = 'Krueppel';
@@ -22,19 +22,19 @@ rs = 15;
 onset = 10;
 nsyn = 10;
 
-params.v_init = -80;
-params.skiprun = 0;
+nneuron.params.v_init = -80;
+nneuron.params.skiprun = 0;
 % cstep = 1300*0.001; %nA
-params.tstop = 70;
-% params.dt=0.025;
+nneuron.params.tstop = 70;
+% nneuron.params.dt=0.025;
 
 ntree = numel(tree);
 if strcmp(syn,'Krueppel')
     tree{end+1} = struct('artificial','NetStim','params',struct('number',1,'start',10)); % add a netstim to activate the krueppel synapses
-    params.cvode = 0;
-    params.dt = 0.05;
+    nneuron.params.cvode = 0;
+    nneuron.params.dt = 0.05;
 else
-   params.cvode = 1; 
+   nneuron.params.cvode = 1; 
 end
 for t=1:ntree
     ipar = ipar_tree(tree{t});
@@ -61,9 +61,8 @@ for t=1:ntree
     end
     nneuron.record{t}.cell = struct('node',[1,thesesynids{t}],'record',{'v','cai'});
 end
-% params.tname = strcat(params.tname,'_spined');
 
-hstep = t2n_findCurr(tree,params,nneuron,-82.1); %assuming a HP of xxx mV
+hstep = t2n_findCurr(tree,nneuron,-82.1); %assuming a HP of xxx mV
 
 % fig(1) = figure;hold all,
 % fig(2) = figure;hold all,
@@ -81,7 +80,7 @@ for s = nsyn:-1:1
         end
         neuron.pp{t}.IClamp = struct('node',1,'times',-200,'amp',hstep(t)); %n,del,dur,amp
     end
-    [out, ~] = t2n(tree,params,neuron,'-w-q-d');
+    [out, ~] = t2n(tree,neuron,'-w-q-d');
     
 %     figure(fig(1));p = plot(out.t,cat(2,out.record{t}.cell.v{thesesynids{t}}));
 %     figure(fig(2));p = plot(out.t,cat(2,out.record{t}.cell.v{1}));
@@ -94,4 +93,4 @@ for s = nsyn:-1:1
     end
     
 end
-save(fullfile(targetfolder_data,sprintf('Exp_syngain_%s_%s.mat',tit,nneuron_orig.experiment)),'nneuron','params','tree','EPSP','nsyn','tit')
+save(fullfile(targetfolder_data,sprintf('Exp_syngain_%s_%s.mat',tit,nneuron_orig.experiment)),'nneuron','tree','EPSP','nsyn','tit')
