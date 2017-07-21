@@ -3,9 +3,9 @@ function aGC_BKblockJaffe11(neuron,tree,params,targetfolder_results)
 % cstep = 1.8; %nA !
 cstep = 0.3; % 300 pA
 params.accuracy = 1;  % for more nseg in axon and soma!
-neuron.time.dt=0.05;
-neuron.time.cvode = 1;
-neuron.time.tstop = 400;    
+params.dt=0.05;
+params.cvode = 1;
+params.tstop = 400;    
 params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep','var')
     hstep = [];

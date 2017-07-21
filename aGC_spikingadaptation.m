@@ -5,9 +5,9 @@ current = 150*0.001;
 
 params.celsius = 33;
 params.accuracy = 1;  % for more nseg in axon and soma!
-neuron.time.tstop = 1500;
-neuron.time.dt=0.05;
-neuron.time.cvode = 1;
+params.tstop = 1500;
+params.dt=0.05;
+params.cvode = 1;
 
 hstep = t2n_findCurr(tree,params,neuron,holding_voltage,[],'-q-d');
 

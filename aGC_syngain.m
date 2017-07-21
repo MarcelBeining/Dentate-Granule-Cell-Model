@@ -25,16 +25,16 @@ nsyn = 10;
 params.v_init = -80;
 params.skiprun = 0;
 % cstep = 1300*0.001; %nA
-nneuron.time.tstop = 70;
-% nneuron.time.dt=0.025;
+params.tstop = 70;
+% params.dt=0.025;
 
 ntree = numel(tree);
 if strcmp(syn,'Krueppel')
     tree{end+1} = struct('artificial','NetStim','params',struct('number',1,'start',10)); % add a netstim to activate the krueppel synapses
-    nneuron.time.cvode = 0;
-    nneuron.time.dt = 0.05;
+    params.cvode = 0;
+    params.dt = 0.05;
 else
-   nneuron.time.cvode = 1; 
+   params.cvode = 1; 
 end
 for t=1:ntree
     ipar = ipar_tree(tree{t});

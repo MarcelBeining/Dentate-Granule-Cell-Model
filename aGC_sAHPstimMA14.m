@@ -2,9 +2,9 @@ function aGC_sAHPstimMA14(neuron,tree,params,targetfolder)
 
 cstep = 0.2; %nA !
 params.accuracy = 1;  % for more nseg in axon and soma!
-neuron.time.dt=0.05;
-neuron.time.cvode = 1;
-neuron.time.tstop = 350;    
+params.dt=0.05;
+params.cvode = 1;
+params.tstop = 350;    
 params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep','var')
     hstep = [];
@@ -24,7 +24,7 @@ for s = 1:2
         nneuron{s} = neuron;
     end
 end
-out = t2n(tree,params,nneuron,'-q-d-w');
+[out, minterf] = t2n(tree,params,nneuron,'-q-d-w');
 % out = out{1};
 if isfield(out,'error')
     return

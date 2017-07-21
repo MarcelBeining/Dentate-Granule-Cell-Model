@@ -5,9 +5,9 @@ cd(path)
 params.accuracy = 1;  % for more nseg in axon and soma!
 params.v_init = -58 - LJP;
 
-neuron.time.tstop = 3000;
-neuron.time.dt=0.05;
-neuron.time.cvode = 1;
+params.tstop = 3000;
+params.dt=0.05;
+params.cvode = 1;
     
 %!!!
 meanhvol = -58 - LJP;   % corrected!!
