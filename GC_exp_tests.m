@@ -81,7 +81,7 @@ ostruct.single = 0;
 %
 t2n_VoltSteps(neuron,tree,targetfolder_data,ostruct);
 %
-t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct);
+t2n_IVplot(targetfolder_data,neuron,ostruct);
 if ostruct.dataset ~= 2.28
     t2n_plotVoltSteps(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct);
 end

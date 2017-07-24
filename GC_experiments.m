@@ -89,13 +89,13 @@ else
     savename = sprintf('Fig6-IV+Ba_young-%s',neuron.experiment);
 end
 
-ostruct.handles = t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'),ostruct);
+ostruct.handles = t2n_IVplot(targetfolder_data,neuron_orig,ostruct);
 aGC_IVplotExp(ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
 
 neuron = t2n_blockchannel(neuron,{'Kir21','pas'},[99 30]);
 t2n_VoltSteps(vstepsModel,dur,holding_voltage,neuron,tree,targetfolder_data);
 
-t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct)
+t2n_IVplot(targetfolder_data,neuron,ostruct)
 if ~ostruct.newborn % plot mongiat data
     ostruct.dataset =5;
     aGC_IVplotExp(ostruct,t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron_orig.experiment,'.mat'))
@@ -362,7 +362,7 @@ if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
     ostruct.savename = strcat(ostruct.savename,'_ratadjust');
 end
 ostruct.dataset = 0;
-ostruct.handles = t2n_IVplot(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct);
+ostruct.handles = t2n_IVplot(targetfolder_data,neuron,ostruct);
 xlim([-125 -60])
 if ostruct.newborn
     ylim([-200 100])
