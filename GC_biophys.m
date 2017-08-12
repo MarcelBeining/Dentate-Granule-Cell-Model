@@ -3,6 +3,7 @@ function strct = GC_biophys(options)
 % -p    include passive parameters (default)
 % -a    include active parameters (default)
 % -o    old AH99....also calcium channels with uncorrected Ca buffer shell model
+% -s   orig na8st vshifts and rates as in SH10
 % -n   latest changes as published in Beining et al 2017
 
 %% Paramters
@@ -165,11 +166,16 @@ if ~isempty(strfind(options,'-a'))
         % Na channel
         if on.Na>0
             %**********
+            if ~isempty(strfind(options,'-s'))
+                addShift = 0;   %no additional shift in SH10
+            else
+                addShift = 10;  % additional shift in my model
+            end
             if ~isempty(strfind(options,'-y'))
-                vShift = 12+10 ; %12 is default
+                vShift = 12+addShift ; %12 is default
                 vShift_inact = 22-vShift;
             else
-                vShift = 12+10 ; %12 is default
+                vShift = 12+addShift ; %12 is default
                 vShift_inact = 22-vShift;
             end
             %**********
@@ -186,10 +192,10 @@ if ~isempty(strfind(options,'-a'))
             gnabar_axon = on.Na*0.03 * 1.7;  %siemens;
             
             gnabar_dend = 0*on.Na*0.0005;  % only for test purpose
-            
-            rates_axon{1}(13:end) = [2.9807,0.4679,--0.0596,0.3962,2982.1,0.0635];%  ah = [0.3962,2982.1,0.0635]; bh = [2.9807,0.4679,--0.0596];
-            rates_soma{1}(13:end) = [2.9713,0.6443,--0.0594,1.5860,2306.7,0.0493]; % new fitted inactivation kinetics since SH10 seems not to consider recov from inact values
-            
+            if isempty(strfind(options,'-s'))
+                rates_axon{1}(13:end) = [2.9807,0.4679,--0.0596,0.3962,2982.1,0.0635];%  ah = [0.3962,2982.1,0.0635]; bh = [2.9807,0.4679,--0.0596];
+                rates_soma{1}(13:end) = [2.9713,0.6443,--0.0594,1.5860,2306.7,0.0493]; % new fitted inactivation kinetics since SH10 seems not to consider recov from inact values
+            end
             strct.axon.na8st = struct('vShift',vShift,'vShift_inact',vShift_inact,'a1_0',rates_axon{1}(1),'a1_1',rates_axon{1}(2),'b1_0',rates_axon{1}(3),'b1_1',rates_axon{1}(4),'a2_0',rates_axon{1}(5),'a2_1',rates_axon{1}(6),'b2_0',rates_axon{1}(7),'b2_1',rates_axon{1}(8),'a3_0',rates_axon{1}(9),'a3_1',rates_axon{1}(10),'b3_0',rates_axon{1}(11),'b3_1',rates_axon{1}(12),'bh_0',rates_axon{1}(13),'bh_1',rates_axon{1}(14),'bh_2',rates_axon{1}(15),'ah_0',rates_axon{1}(16),'ah_1',rates_axon{1}(17),'ah_2',rates_axon{1}(18),'gbar',gnabar_axon);%,'maxrate',8000,'vshift_inact',vshift_inact,'vShift',vdonnan,);
             strct.axonh.na8st = struct('vShift',vShift,'vShift_inact',vShift_inact,'a1_0',rates_axon{1}(1),'a1_1',rates_axon{1}(2),'b1_0',rates_axon{1}(3),'b1_1',rates_axon{1}(4),'a2_0',rates_axon{1}(5),'a2_1',rates_axon{1}(6),'b2_0',rates_axon{1}(7),'b2_1',rates_axon{1}(8),'a3_0',rates_axon{1}(9),'a3_1',rates_axon{1}(10),'b3_0',rates_axon{1}(11),'b3_1',rates_axon{1}(12),'bh_0',rates_axon{1}(13),'bh_1',rates_axon{1}(14),'bh_2',rates_axon{1}(15),'ah_0',rates_axon{1}(16),'ah_1',rates_axon{1}(17),'ah_2',rates_axon{1}(18),'gbar',gnabar_axonh);%,'maxrate',8000,'vshift_inact',vshift_inact,'vShift',vdonnan,);
             strct.soma.na8st = struct('vShift',vShift,'vShift_inact',vShift_inact,'a1_0',rates_soma{1}(1),'a1_1',rates_soma{1}(2),'b1_0',rates_soma{1}(3),'b1_1',rates_soma{1}(4),'a2_0',rates_soma{1}(5),'a2_1',rates_soma{1}(6),'b2_0',rates_soma{1}(7),'b2_1',rates_soma{1}(8),'a3_0',rates_soma{1}(9),'a3_1',rates_soma{1}(10),'b3_0',rates_soma{1}(11),'b3_1',rates_soma{1}(12),'bh_0',rates_soma{1}(13),'bh_1',rates_soma{1}(14),'bh_2',rates_soma{1}(15),'ah_0',rates_soma{1}(16),'ah_1',rates_soma{1}(17),'ah_2',rates_soma{1}(18),'gbar',gnabar_soma);%,'maxrate',8000,'vshift_inact',vshift_inact,'vShift',vdonnan,);
@@ -397,6 +403,8 @@ if ~isempty(strfind(options,'-a'))
             on.LCa = on.LCa /30; 
             on.NCa = on.NCa *3;
             kf = 0.0005; % = 0.5µM = 500 nM
+            vdi12 = 1;  % voltage dependent inactivation of the channel (0-1)
+            vdi13 = 0.85;   % voltage dependent inactivation of the channel (0-1)
             strct.axon.Cav22 = struct('gbar', on.NCa * 0.0001 * 5 / fac,'hTau',80);
             strct.axonh.Cav22 = struct('gbar', on.NCa * 0.0001 * 5/ fac,'hTau',80);
             strct.soma.Cav22 = struct('gbar', on.NCa * 0.0015 *2 / fac,'hTau',80);
@@ -406,22 +414,22 @@ if ~isempty(strfind(options,'-a'))
             strct.adendMML.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);
             strct.adendOML.Cav22 = struct('gbar', on.NCa * 0.0001 *5 / fac,'hTau',80);
             
-            strct.axonh.Cav12 = struct('gbar', on.LCa * 0.0005 * 3/2 / fac,'kf',kf);
-            strct.soma.Cav12 = struct('gbar', on.LCa  * 0.0015 / fac,'kf',kf);
-            strct.SGCL.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 / fac,'kf',kf);
-            strct.GCL.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 / fac,'kf',kf);
-            strct.adendIML.Cav12 = struct('gbar', on.LCa  *  0.0005 * 3/2 * 4 / fac,'kf',kf);
-            strct.adendMML.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 * 4 / fac,'kf',kf);
-            strct.adendOML.Cav12 = struct('gbar', on.LCa  *  0.0005 * 3/2 * 4 / fac,'kf',kf);
+            strct.axonh.Cav12 = struct('gbar', on.LCa * 0.0005 * 3/2 / fac,'kf',kf,'VDI',vdi12);
+            strct.soma.Cav12 = struct('gbar', on.LCa  * 0.0015 / fac,'kf',kf,'VDI',vdi12);
+            strct.SGCL.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 / fac,'kf',kf,'VDI',vdi12);
+            strct.GCL.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 / fac,'kf',kf,'VDI',vdi12);
+            strct.adendIML.Cav12 = struct('gbar', on.LCa  *  0.0005 * 3/2 * 4 / fac,'kf',kf,'VDI',vdi12);
+            strct.adendMML.Cav12 = struct('gbar', on.LCa  * 0.0005 * 3/2 * 4 / fac,'kf',kf,'VDI',vdi12);
+            strct.adendOML.Cav12 = struct('gbar', on.LCa  *  0.0005 * 3/2 * 4 / fac,'kf',kf,'VDI',vdi12);
             
-            strct.axon.Cav13 = struct('gbar', on.LCa * 0.0005 / 2 / fac3,'kf',kf);
-            strct.axonh.Cav13 = struct('gbar', on.LCa * 0.0005 / fac3,'kf',kf);
-            strct.soma.Cav13 = struct('gbar', on.LCa  * 0.0005 * 2 / fac3,'kf',kf);
-            strct.SGCL.Cav13 = struct('gbar', on.LCa  * 0.0005 /2  / fac3,'kf',kf);
-            strct.GCL.Cav13 = struct('gbar', on.LCa  * 0.0005 /2 / fac3);
-            strct.adendIML.Cav13 = struct('gbar', on.LCa  *  0.0005 * 4/2 / 2 / fac3,'kf',kf);
-            strct.adendMML.Cav13 = struct('gbar', on.LCa  * 0.0005 * 4/2 / 2 / fac3,'kf',kf);
-            strct.adendOML.Cav13 = struct('gbar', on.LCa  *  0.0005 * 4/2 / 2 / fac3,'kf',kf);
+            strct.axon.Cav13 = struct('gbar', on.LCa * 0.0005 / 2 / fac3,'kf',kf,'VDI',vdi13);
+            strct.axonh.Cav13 = struct('gbar', on.LCa * 0.0005 / fac3,'kf',kf,'VDI',vdi13);
+            strct.soma.Cav13 = struct('gbar', on.LCa  * 0.0005 * 2 / fac3,'kf',kf,'VDI',vdi13);
+            strct.SGCL.Cav13 = struct('gbar', on.LCa  * 0.0005 /2  / fac3,'kf',kf,'VDI',vdi13);
+            strct.GCL.Cav13 = struct('gbar', on.LCa  * 0.0005 /2 / fac3,'kf',kf,'VDI',vdi13);
+            strct.adendIML.Cav13 = struct('gbar', on.LCa  *  0.0005 * 4/2 / 2 / fac3,'kf',kf,'VDI',vdi13);
+            strct.adendMML.Cav13 = struct('gbar', on.LCa  * 0.0005 * 4/2 / 2 / fac3,'kf',kf,'VDI',vdi13);
+            strct.adendOML.Cav13 = struct('gbar', on.LCa  *  0.0005 * 4/2 / 2 / fac3,'kf',kf,'VDI',vdi13);
             %
             strct.axon.Cav32 = struct('gbar', 0.0005/1.375 *tfac / fac);% no T-type in axon bouton (Li,Bischofberger 2007) but Martinello finds some immunogold...
             strct.axonh.Cav32 = struct('gbar', 0.0005/1.375  *tfac / fac);
