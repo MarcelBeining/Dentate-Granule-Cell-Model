@@ -213,7 +213,7 @@ if ~isempty(strfind(options,'-a'))
 %             % distance dependent and thus need the tree morphology for
 %             % calculation of distribution. Is not used in the model
 %             if isempty(tree)
-%                 warndlg('Tree not given to GC_biophys. 8st sodium channel model cannot be inserted!')
+%                 warning('Tree not given to GC_biophys. 8st sodium channel model cannot be inserted!')
 %             else
 %                 
 %                 toaxon = false(numel(tree.X),1);

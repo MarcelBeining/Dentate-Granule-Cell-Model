@@ -1,6 +1,6 @@
 function  neuron = scale_spines(neuron,options,tree)
 % goes through all regions and scales the conductances (and cm) if it finds
-% a spines mechanim. Then it deletes the spines mechanism.
+% a spines mechanism. Then it deletes the spines mechanism.
 %  options : -a : scale all channels (not only passive)
 if nargin < 3
     tree = [];
@@ -26,8 +26,7 @@ for n = 1:numel(neuron)
                     fields2 = fieldnames(neuron{n}.mech{t}.(fields{f1}));
                     if strcmp('range',fields{f1})  %thats complicated...go through all regions and find all gbars and make range variables out of it...
                         if isempty(tree)
-                            errordlg('Corresponding tree structure is needed as third input if spines should be scaled in a range instead of region manner!')
-                            return
+                            error('Corresponding tree structure is needed as third input if spines should be scaled in a range instead of region manner!')
                         end
                         sscale = scale;
                         sscale(isnan(sscale)) = 1;  % in order to not make defined variables NaN
@@ -53,7 +52,7 @@ for n = 1:numel(neuron)
                             fields_all = fields_all(cellfun(@(x) isempty(strfind(x,'_ion')),fields_all)); % sort out ion mechanisms
                             if ~isempty(setdiff(fields_all,fields2)) % if there are mechanisms defined in "all" regions that have not been addressed in the current region
                                 if any(strcmp(fields_all,'spines'))
-                                    warndlg(sprintf('CAUTION! Field "spines" has been defined in region %s and in region "all"! Please check!',rangefields{ff1}))
+                                    warning('CAUTION! Field "spines" has been defined in region %s and in region "all"! Please check!',rangefields{ff1})
                                 else
                                     morefields = setdiff(fields_all,fields2);
                                     for f2 = 1:numel(morefields)
@@ -92,7 +91,7 @@ for n = 1:numel(neuron)
                             fields_all = fields_all(cellfun(@(x) isempty(strfind(x,'_ion')),fields_all)); % sort out ion mechanisms
                             if ~isempty(setdiff(fields_all,fields2)) % if there are mechanisms defined in "all" regions that have not been addressed in the current region
                                 if any(strcmp(fields_all,'spines'))
-                                    warndlg(sprintf('CAUTION! Field "spines" has been defined in region %s and in region "all"! Please check!',fields{f1}))
+                                    warning('CAUTION! Field "spines" has been defined in region %s and in region "all"! Please check!',fields{f1})
                                 else
                                     morefields = setdiff(fields_all,fields2);
                                     for f2 = 1:numel(morefields)

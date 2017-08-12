@@ -49,7 +49,7 @@ for t = 1:numel(tree)
     if ~isempty(ind)
         tree{t} = tran_tree(tree{t},[-mean(tree{t}.X(ind)) 0 0]);
     else
-       errordlg('Error')
+       error('Error')
     end
     tree{t} = cap_tree(tree{t},'-i-a');
     

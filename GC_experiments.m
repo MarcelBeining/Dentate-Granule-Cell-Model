@@ -36,7 +36,9 @@ end
 if ostruct.newborn
     ostruct.scalespines = 0.3 * ostruct.scalespines;  % means g_pas and cm are only scaled by 30% of the original spine densities due to reduced spine density in young abGCs
 end
-
+if ~exist(fullfile(pwd,'GC_initModel.m'),'file')
+    error('It seems your current folder is not the GC model folder. Please change it')
+end
 if ~exist(targetfolder_data,'file')
     mkdir(targetfolder_data)
 end

@@ -72,8 +72,7 @@ switch datanum
         thisdata = [];
         rate = [];
     otherwise
-        errordlg('datanumber not found')
-        return
+        error('datanumber not found')
 end
 
 switch str

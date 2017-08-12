@@ -19,8 +19,7 @@ folds = dir(targetfolder_data);
 folds = {folds.name};
 folds = folds(cellfun(@(x) isempty(strfind(x,str2)) & ~isempty(strfind(x,sprintf('Exp_%s_%s%s',type,tree{1}.name,str))),folds));
 if isempty(folds)
-    errordlg('No experiment found')
-    return
+    error('No experiment found')
 else
     answer = listdlg('ListString',folds,'selectionmode','single','promptstring','Please select file to load','listsize',[300,200]);
 end
