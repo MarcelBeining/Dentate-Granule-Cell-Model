@@ -29,7 +29,7 @@ if ~all(ostruct.dataset == 0)
         Rin = Rin2;
         cap = Rin2;
         for t = 1:size(exp_vclamp,2)
-            d = exp_vclamp(:,t,vsteps==holding_voltage+10);
+            d = exp_vclamp(:,t,vsteps==holding_voltage(1)+10);
             is = mean(d(tvec>190&tvec<204));
             i0 = mean(d(tvec<104));
             Rin2(t) = (10)/(is-i0)*1000;  % Rin (in MOhm) mV/pA
@@ -39,7 +39,7 @@ if ~all(ostruct.dataset == 0)
             x = x(x<=x(1)+50);
             cap2(t) = trapz(x,y)/(-10); % calculate capacitance as integral (charge) divided by amplitude of voltage step
             
-            d = exp_vclamp(:,t,vsteps==holding_voltage-10);
+            d = exp_vclamp(:,t,vsteps==holding_voltage(1)-10);
             is = mean(d(tvec>190&tvec<204));
             i0 = mean(d(tvec<104));
             Rin(t) = (-10)/(is-i0)*1000;  % Rin (in MOhm) mV/pA
@@ -49,10 +49,10 @@ if ~all(ostruct.dataset == 0)
             x = x(x<=x(1)+50);
             cap(t) = trapz(x,y)/(-10); % calculate capacitance as integral (charge) divided by amplitude of voltage step
         end
-        fprintf('Mean Rin in Exp(@%gmV) is %g +- %g MOhm (s.e.m., -10mV)\n',holding_voltage-10,mean(Rin),std(Rin)/sqrt(numel(Rin)))
-        fprintf('Mean Rin in Exp(@%gmV) is %g +- %g MOhm (s.e.m., +10mV)\n',holding_voltage+10,mean(Rin2),std(Rin2)/sqrt(numel(Rin2)))
-        fprintf('\nMean capacitance in Exp(@%gmV) is %g +- %g pF (s.e.m. -10mV)',holding_voltage-10,mean(cap),std(cap)/sqrt(numel(cap)))
-        fprintf('\nMean capacitance in Exp(@%gmV) is %g +- %g pF (s.e.m. +10mV)\n',holding_voltage+10,mean(cap2),std(cap2)/sqrt(numel(cap2)))
+        fprintf('Mean Rin in Exp(@%gmV) is %g +- %g MOhm (s.e.m., -10mV)\n',holding_voltage(1)-10,mean(Rin),std(Rin)/sqrt(numel(Rin)))
+        fprintf('Mean Rin in Exp(@%gmV) is %g +- %g MOhm (s.e.m., +10mV)\n',holding_voltage(1)+10,mean(Rin2),std(Rin2)/sqrt(numel(Rin2)))
+        fprintf('\nMean capacitance in Exp(@%gmV) is %g +- %g pF (s.e.m. -10mV)',holding_voltage(1)-10,mean(cap),std(cap)/sqrt(numel(cap)))
+        fprintf('\nMean capacitance in Exp(@%gmV) is %g +- %g pF (s.e.m. +10mV)\n',holding_voltage(1)+10,mean(cap2),std(cap2)/sqrt(numel(cap2)))
     end
     if exist('delind','var')
         meas_curr = squeeze(mean(exp_vclamp(194*rate+1:204*rate+1,setdiff(1:size(exp_vclamp,2),delind),:),1));

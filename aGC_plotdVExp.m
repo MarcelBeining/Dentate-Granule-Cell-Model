@@ -100,6 +100,7 @@ hp = patch ([cstepsSpiking*1000 (fliplr (cstepsSpiking*1000))], [(mean(maxdv{1},
 p = plot (cstepsSpiking*1000, mean(maxdv{1},1), 'k');
 uistack(p,'bottom')
 uistack(hp,'bottom')
+ylim([0 700])
 FontResizer
 FigureResizer(ostruct.figureheight,ostruct.figurewidth,ostruct)
 ylabel('Maximal dV/dt [mV/ms]')
