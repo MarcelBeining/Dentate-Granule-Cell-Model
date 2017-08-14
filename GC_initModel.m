@@ -14,7 +14,7 @@ neuron.params.celsius = 24;   % temperature
 neuron.params.prerun = 400;   % large-dt prerun to let the system equilibrate
 neuron.params.v_init = -90;  % initial membrane voltage
 neuron.params.dt = 1;       % standard time step (is automatically changed to a smaller dt in most simulations below)
-neuron.params.nseg = 'd_lambda';  % number of segments, can be constant or 'd_lambda' to adjust it according to the d-lambda rule
+neuron.params.nseg = 'dlambda';  % number of segments, can be constant or 'dlambda' to adjust it according to the d-lambda rule
 neuron.params.v_init = -80;
 
 AHflag = false;

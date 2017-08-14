@@ -26,3 +26,5 @@ x86_64/
 *.m~
 channelPlots/
 t2n_exchange/
+*.hoc
+morphos/hocs/

@@ -129,7 +129,7 @@ if ostruct.usemorph < 4  % mouse experiments
     
     ostruct.figureheight = 4;
     ostruct.figurewidth = 6;
-    ostruct.amp = (0:10:120)/1000;% current steps in nA which are to be simulated
+    ostruct.amp = (0:5:120)/1000;% current steps in nA which are to be simulated
     neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;  % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     
@@ -155,7 +155,7 @@ if ostruct.usemorph < 4  % mouse experiments
     
     ostruct.handles = figure;
     t2n_plotCurrSteps(targetfolder_data,neuron,steps);
-    if ~ostruct.reducecells
+    if ~ostruct.reducecells && numel(ostruct.amp) == 25
         if ostruct.newborn
             delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,0,1,1,0,0,1,1],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
         else
@@ -205,9 +205,10 @@ if ostruct.usemorph < 4  % mouse experiments
             ylim(yl(f,:))
             xlim(xl(f,:))
             set(gca,'XTick',1:5)
+        else
             switch f
                 case 6
-                    xlim(yl(2,:))
+                    xlim([-60 -30])
                     if ostruct.newborn
                         ylim([-10 30])
                     else
@@ -215,7 +216,7 @@ if ostruct.usemorph < 4  % mouse experiments
                     end
                 case 7
                     xlim(yl(5,:))
-                    ylim(yl(1,:))
+                    ylim([0 2])
                 case 8
                     xlim([20 70])
                     if ostruct.newborn
@@ -225,7 +226,8 @@ if ostruct.usemorph < 4  % mouse experiments
                     end
                 case 9
                     xlim(xl(1,:))
-                    ylim([0 5])
+                    ylim([0 4])
+                    set(gca,'XTick',1:5)
             end
         end
         FontResizer
@@ -254,7 +256,7 @@ if ostruct.usemorph < 4  % mouse experiments
         end
         
         t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
-        
+        ostruct.handles = [];
         ostruct.savename = ostruct.savename3;
         ostruct.handles = t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
         aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,ostruct)
@@ -315,7 +317,8 @@ if ostruct.usemorph < 4  % mouse experiments
     t2n_plotCurrSteps(targetfolder_data,neuron,steps);
     ostruct.color = [0 0 1];
     ostruct.handles2 = t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
-    
+    newcol = colorme(numel(neuron.mech),'-grr');
+    tmptree = tree;
     %increase Kv1.1 10fold
     for t = 1:numel(neuron.mech)
         fields = fieldnames(neuron.mech{t});
@@ -324,9 +327,10 @@ if ostruct.usemorph < 4  % mouse experiments
                 neuron.mech{t}.(fields{f1}).Kv11.gkbar = neuron.mech{t}.(fields{f1}).Kv11.gkbar * 10;
             end
         end
+        tmptree{t}.col = newcol(t);  % give trees different color for the plot
     end
     neuron.experiment = strcat(neuron.experiment,'_Kv11oe');
-    t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
+    t2n_currsteps(neuron,tmptree,targetfolder_data,ostruct)  % do the simulation
     
     ostruct.savename = ostruct.savename1;
     figure(handles1);
@@ -440,7 +444,7 @@ else   % to avoid running through rat experiments when just running the script
     t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
     fig = figure; hold all
     t2n_plotCurrSteps(targetfolder_data,neuron,steps);
-    ax = gca; p1 = ax.Children; p1.Color = [0 0 0];
+    ax = gca; p1 = ax.Children; for n = 1:numel(p1), p1(n).Color = [0 0 0]; end
     props = t2n_APprop(targetfolder_data,neuron,ostruct.ampprop);
     
     ISIadp{1} = NaN(numel(tree),1);
@@ -454,7 +458,7 @@ else   % to avoid running through rat experiments when just running the script
     t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
     figure(fig)
     t2n_plotCurrSteps(targetfolder_data,neuron,steps);
-    p2 = setdiff(ax.Children,p1); p2.Color = [1 0 0];
+    p2 = setdiff(ax.Children,p1); for n = 1:numel(p2), p2(n).Color = [1 0 0]; end
     props = t2n_APprop(targetfolder_data,neuron,ostruct.ampprop);
     
     ISIadp{2} = NaN(numel(tree),1);
@@ -471,7 +475,7 @@ else   % to avoid running through rat experiments when just running the script
     
     figure(fig)
     t2n_plotCurrSteps(targetfolder_data,neuron,steps);
-    p3 = setdiff(ax.Children,[p1,p2]); p3.Color = [0 0 1];
+    p3 = setdiff(ax.Children,[p1,p2]); for n = 1:numel(p3), p3(n).Color = [0 0 1]; end
     
     props = t2n_APprop(targetfolder_data,neuron,ostruct.ampprop);
     
@@ -500,52 +504,6 @@ else   % to avoid running through rat experiments when just running the script
     
     neuron.params.celsius = 24;
     ostruct = rmfield(ostruct,'find_freq');
-    %% bAP simulation (Krueppel 2011) Teil Ratte, Figure 4
-    neuron = neuron_orig;
-    ostruct.simple = 0;  % only recording along longest dendrite
-    ostruct.reduce = 0;  % only measure every third node
-    ostruct.dist = 'Eucl.'; % PL., Eucl.
-    ostruct.relamp = 0;  % relative amplitudes
-    celsius_orig = neuron.params.celsius;
-    neuron.params.celsius = 33;  % temperature
-    neuron = t2n_Q10pas(neuron.celsius);
-    neuron.experiment = sprintf('%s_%d°',neuron.experiment,neuron.params.celsius);
-    if ~(ostruct.vmodel>=0)
-        neuron = manipulate_Ra(neuron,1,'axon'); % necessary because otherwise the axon spikes permanently after the buzz and Ca decay measurement is not possible
-        neuron.params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
-        neuron.params.accuracy = 1; % improve AIS segment number for more accurate simulation
-        ostruct.cstep = 1700*0.001; %nA %AH99 model, cstep has to be bigger otherwise not all cells fire
-    else
-        ostruct.cstep = 1300*0.001; %nA
-    end
-    t2n_bAP(neuron,tree,targetfolder_data,ostruct)  % do the simulation
-    
-    neuron.params.celsius = celsius_orig; % back to normal temp
-    [bAPdisthm,mveloc_dend,mveloc_farax,mveloc_nearax,fig] = t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
-    %%  Calcium dynamics (Stocca 2008) Teil Ratte, Figure 4
-    neuron = neuron_orig;
-    ostruct.simple = 0;  % only recording along longest dendrite
-    ostruct.reduce = 0;  % only measure every third node
-    ostruct.dist = 'Eucl.'; % PL., Eucl.
-    ostruct.relamp = 0;  % relative amplitudes
-    celsius_orig = neuron.params.celsius;
-    neuron.params.celsius = 24;  % temperature
-    neuron = t2n_Q10pas(neuron,neuron.params.celsius);
-    neuron.experiment = sprintf('%s_%d°',neuron.experiment,neuron.params.celsius);
-    if ~(ostruct.vmodel>=0)
-        ostruct.cai = 'caim_Caold';  % AH99 model, does not have an own calcium buffer mechanism, thus variable has a different name
-        neuron = manipulate_Ra(neuron,1,'axon'); % necessary because otherwise the axon spikes permanently after the buzz and Ca decay measurement is not possible
-        neuron.params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
-        neuron.params.accuracy = 1; % improve AIS segment number for more accurate simulation
-        ostruct.cstep = 1700*0.001; %nA %AH99 model, cstep has to be bigger otherwise not all cells fire
-    else
-        ostruct.cai = 'cai';
-        ostruct.cstep = 1300*0.001; %nA
-    end
-    aGC_CaDyn(neuron,tree,targetfolder_data,ostruct)  % do the simulation
-    
-    neuron.params.celsius = celsius_orig; % back to normal temp
-    aGC_plotCaDyn(targetfolder_data,targetfolder_results,neuron,ostruct);
     
     %% AP width BK/Kv34 + spike adaptation, Figure 5
     neuron = neuron_orig;
@@ -697,6 +655,54 @@ else   % to avoid running through rat experiments when just running the script
     ylim([0 350])
     %%
 end
+%% here are simulations done in both mouse and rat
+%% bAP simulation (Krueppel 2011) Teil Ratte, Figure 4
+neuron = neuron_orig;
+ostruct.simple = 0;  % only recording along longest dendrite
+ostruct.reduce = 0;  % only measure every third node
+ostruct.dist = 'Eucl.'; % PL., Eucl.
+ostruct.relamp = 0;  % relative amplitudes
+celsius_orig = neuron.params.celsius;
+neuron.params.celsius = 33;  % temperature
+neuron = t2n_Q10pas(neuron,neuron.params.celsius);
+neuron.experiment = sprintf('%s_%d°',neuron.experiment,neuron.params.celsius);
+if ~(ostruct.vmodel>=0)
+    neuron = manipulate_Ra(neuron,1,'axon'); % necessary because otherwise the axon spikes permanently after the buzz and Ca decay measurement is not possible
+    neuron.params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
+    neuron.params.accuracy = 1; % improve AIS segment number for more accurate simulation
+    ostruct.cstep = 1700*0.001; %nA %AH99 model, cstep has to be bigger otherwise not all cells fire
+else
+    ostruct.cstep = 1300*0.001; %nA
+end
+t2n_bAP(neuron,tree,targetfolder_data,ostruct)  % do the simulation
+
+neuron.params.celsius = celsius_orig; % back to normal temp
+[bAPdisthm,mveloc_dend,mveloc_farax,mveloc_nearax,fig] = t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
+%%  Calcium dynamics (Stocca 2008) Teil Ratte, Figure 4
+neuron = neuron_orig;
+ostruct.simple = 0;  % only recording along longest dendrite
+ostruct.reduce = 0;  % only measure every third node
+ostruct.dist = 'Eucl.'; % PL., Eucl.
+ostruct.relamp = 0;  % relative amplitudes
+celsius_orig = neuron.params.celsius;
+neuron.params.celsius = 24;  % temperature
+neuron = t2n_Q10pas(neuron,neuron.params.celsius);
+neuron.experiment = sprintf('%s_%d°',neuron.experiment,neuron.params.celsius);
+if ~(ostruct.vmodel>=0)
+    ostruct.cai = 'caim_Caold';  % AH99 model, does not have an own calcium buffer mechanism, thus variable has a different name
+    neuron = manipulate_Ra(neuron,1,'axon'); % necessary because otherwise the axon spikes permanently after the buzz and Ca decay measurement is not possible
+    neuron.params.nseg = 1;  % necessary because dlambda calculation takes to long with high Ra
+    neuron.params.accuracy = 1; % improve AIS segment number for more accurate simulation
+    ostruct.cstep = 1700*0.001; %nA %AH99 model, cstep has to be bigger otherwise not all cells fire
+else
+    ostruct.cai = 'cai';
+    ostruct.cstep = 1300*0.001; %nA
+end
+aGC_CaDyn(neuron,tree,targetfolder_data,ostruct)  % do the simulation
+
+neuron.params.celsius = celsius_orig; % back to normal temp
+aGC_plotCaDyn(targetfolder_data,targetfolder_results,neuron,ostruct);
+
 %% Sensitivity Matrix Fig. 5 & Suppl. Fig.
 changs = {'','cm','Ra','pas','Kir21','HCN','cAMP','na8st','Kv14','Kv21','Kv34','Kv42','Kv7','BK','SK','Cav12','Cav13','Cav22','Cav32','E_K','E_N_a','E_P_a_s','[Ca]o','temp'};
 rmatrix = -Inf(14,numel(changs));
