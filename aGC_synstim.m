@@ -360,4 +360,4 @@ switch type
         str3='';
 end
 str = sprintf('%s_%gsyn_%gnS',str,nsyn,mean(ppweight)*1000);
-save(fullfile(targetfolder_data,sprintf('Exp_%s_%s%s%s%d.mat',type,tree{1}.name,str,str2,str3)),'out','neuron','tree','indstim','recnode','thesesynids','nsyn','ppweight','freq','dd0','dt0')
+save(fullfile(targetfolder_data,sprintf('Exp_%s_%s%s%s%d.mat',type,neuron.experiment,str,str2,str3)),'out','neuron','tree','indstim','recnode','thesesynids','nsyn','ppweight','freq','dd0','dt0')

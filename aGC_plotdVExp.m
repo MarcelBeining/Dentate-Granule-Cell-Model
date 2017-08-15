@@ -106,6 +106,7 @@ hp = patch ([cstepsSpiking*1000 (fliplr (cstepsSpiking*1000))], [(mean(maxdv,1) 
 p = plot (cstepsSpiking*1000, mean(maxdv,1), 'k');
 uistack(p,'bottom')
 uistack(hp,'bottom')
+xlim([0 max(cstepsSpiking)*1000])
 ylim([0 700])
 FontResizer
 FigureResizer(ostruct.figureheight,ostruct.figurewidth,ostruct)

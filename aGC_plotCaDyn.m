@@ -13,7 +13,7 @@ end
 
 
 for n = 1:numel(nneuron)
-    load(t2n_catName(targetfolder_data,'Exp_CaDyn',nneuron{n}.experiment,'.mat'),'plotcaivals','params','nodes','neuron','tree','CaNodes','mCai','stdCai','mV','stdV','tim','tw','maxcai')
+    load(t2n_catName(targetfolder_data,'Exp_CaDyn',nneuron{n}.experiment,'.mat'),'plotcaivals','nodes','neuron','tree','CaNodes','mCai','stdCai','mV','stdV','tim','tw','maxcai')
     
     spiked = cellfun(@(x) any(x>0),mV(:,1));
     

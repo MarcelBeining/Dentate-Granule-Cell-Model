@@ -345,6 +345,7 @@ if ostruct.usemorph < 4  % mouse experiments
     
     %% Synaptic stimulation, Figure 7
     ostruct.handles = [];
+    neuron = neuron_orig;
     type = 'temporal'; % test, theta-burst stimulation, regular input, temporal shift in input, spatial shift in input
     ostruct.synmode = 1; % 1 = no adjustment of synapse number, 2 = newborns have only half of synapse number, 3 = adjust the number of synapses to get subthreshold response
     % ostruct.figureheight = 3;
@@ -356,6 +357,7 @@ else   % to avoid running through rat experiments when just running the script
     %% *********************************  RAT EXPERIMENTS **********************************
     
     %% passive parameter assessment rat
+    neuron = neuron_orig;
     ostruct.passtest = 'Std'; % different protocols to measure Rin/tau/capacitance/Vrest (not all can do everything): Mongiat Mongiat2 SH Brenner Std
     [Rin, tau, cap, Vrest] = t2n_passTests(neuron,tree,targetfolder_results,ostruct);
     %% IV rat, generate I-V relationship curve and additinally plot Rin measurements from rat, Figure 3
