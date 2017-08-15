@@ -1,4 +1,5 @@
 function aGC_APsomax(neuron,tree,treepath,targetfolder_results)
+exchfolder = neuron.params.exchfolder;
 
 disp('echte current injection 2 oder weniger nA. und nur 0.5 ms duration\n')
 disp('check das nochmal sobald passives modell steht. evt muss das axon weniger leaky sein?')
@@ -30,7 +31,7 @@ for t = 1:numel(tree)
 end
 
 
-out = t2n(tree,neuron,'-q-d-w');
+out = t2n(tree,neuron,'-q-d-w',exchfolder);
 
 if isfield(out,'error') && out.error > 0
     return

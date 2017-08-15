@@ -1,4 +1,5 @@
 function aGC_AHP(neuron,tree,targetfolder_data)
+exchfolder = neuron.params.exchfolder;
 
 LJP = 7;  % from the paper
 cd(path)
@@ -52,7 +53,7 @@ for s = 1:3
 end
 nneuron = t2n_as(1,nneuron);
 
-    [out, ~] = t2n(tree,nneuron,'-q-d-w');
+    [out, ~] = t2n(tree,nneuron,'-q-d-w',exchfolder);
     if isfield(out,'error')
         return
     end

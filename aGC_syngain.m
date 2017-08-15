@@ -1,4 +1,5 @@
 function aGC_syngain(nneuron,tree,targetfolder_data,ostruct)
+exchfolder = nneuron.params.exchfolder;
 
 nneuron_orig = nneuron;
 syn = 'Krueppel';
@@ -80,7 +81,7 @@ for s = nsyn:-1:1
         end
         neuron.pp{t}.IClamp = struct('node',1,'times',-200,'amp',hstep(t)); %n,del,dur,amp
     end
-    [out, ~] = t2n(tree,neuron,'-w-q-d');
+    [out, ~] = t2n(tree,neuron,'-w-q-d',exchfolder);
     
 %     figure(fig(1));p = plot(out.t,cat(2,out.record{t}.cell.v{thesesynids{t}}));
 %     figure(fig(2));p = plot(out.t,cat(2,out.record{t}.cell.v{1}));

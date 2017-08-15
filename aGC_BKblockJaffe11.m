@@ -1,4 +1,5 @@
 function aGC_BKblockJaffe11(neuron,tree,targetfolder_results)
+exchfolder = neuron.params.exchfolder;
 
 % cstep = 1.8; %nA !
 cstep = 0.3; % 300 pA
@@ -29,7 +30,7 @@ for s = 1:2
         nneuron{s} = neuron;
     end
 end
-[out] = t2n(tree,nneuron,'-q-d-w');
+[out] = t2n(tree,nneuron,'-q-d-w',exchfolder);
 % out = out{1};
 if isfield(out,'error')
     return

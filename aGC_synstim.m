@@ -2,11 +2,15 @@ function aGC_synstim(neuron,tree,type,ostruct,targetfolder_data)
 if nargin < 5
     targetfolder_data = 'D:/EphysModel';
 end
+
 if isstruct(neuron)
+    exchfolder = neuron.params.exchfolder;
     neuron = {neuron};
 else
+    exchfolder = neuron{1}.params.exchfolder;
     warndlg('why is neuron already a cell structure?')
 end
+
 
 % initial syn parameters...are changed later
 %
@@ -329,7 +333,7 @@ switch type
         neuron{1}.params.tstop = 2500;
 end
 
-[out, ~] = t2n(tree,neuron,'-w-q-d');
+[out, ~] = t2n(tree,neuron,'-w-q-d',exchfolder);
 str = '';
 if ostruct.newborn
     if ostruct.newborn == 2

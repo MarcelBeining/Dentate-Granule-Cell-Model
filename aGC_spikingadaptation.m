@@ -2,6 +2,7 @@ function aGC_spikingadaptation(neuron,tree,targetfolder_data,holding_voltage)
 %
 current = 150*0.001;
 
+exchfolder = neuron.params.exchfolder;
 
 neuron.params.celsius = 33;
 neuron.params.accuracy = 1;  % for more nseg in axon and soma!
@@ -22,7 +23,7 @@ for t = 1:numel(tree)
 end
 
 
-[out, ~] = t2n(tree,nneuron,'-q-d-w');
+[out, ~] = t2n(tree,nneuron,'-q-d-w',exchfolder);
 if out{1}.error
     return
 end

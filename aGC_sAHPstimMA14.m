@@ -1,4 +1,5 @@
 function aGC_sAHPstimMA14(neuron,tree,targetfolder)
+exchfolder = neuron.params.exchfolder;
 
 cstep = 0.2; %nA !
 neuron.params.accuracy = 1;  % for more nseg in axon and soma!
@@ -24,7 +25,7 @@ for s = 1:2
         nneuron{s} = neuron;
     end
 end
-out = t2n(tree,nneuron,'-q-d-w');
+out = t2n(tree,nneuron,'-q-d-w',exchfolder);
 % out = out{1};
 if isfield(out,'error')
     return
