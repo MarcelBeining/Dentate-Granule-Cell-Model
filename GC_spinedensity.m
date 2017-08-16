@@ -1,6 +1,4 @@
 function [strct] = GC_spinedensity(fac)
-% addsurf is relative additional surface (0.5 means 50% more surface)
-
 
 if nargin < 1 || isempty(fac)
     fac = 1;

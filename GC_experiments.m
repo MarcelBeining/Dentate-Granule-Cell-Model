@@ -351,7 +351,7 @@ if ostruct.usemorph < 4  % mouse experiments
     % ostruct.figureheight = 3;
     aGC_synstim(neuron,tree,type,ostruct,targetfolder_data)  % do the simulation
     
-    ostruct.handles = aGC_synstim_plot(tree,type,ostruct,targetfolder_data,targetfolder_results,0);
+    ostruct.handles = aGC_synstim_plot(neuron,type,ostruct,targetfolder_data,targetfolder_results,0);
     
 else   % to avoid running through rat experiments when just running the script
     %% *********************************  RAT EXPERIMENTS **********************************
