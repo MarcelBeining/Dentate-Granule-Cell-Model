@@ -71,7 +71,7 @@ ostruct.passtest = 'Mehranfard'; %Mongiat Mongiat2 SH Brenner
 %% voltage clamp simulation (Mongiat 2009)
 neuron = neuron_orig;
 
-ostruct.holding_voltage = -80; % mV
+holding_voltage = -80; % mV
 ostruct.subtract_hv = 1; % boolean subtract holding voltage current
 ostruct.show = 1:2; % 0= nothing, 1 = only exp data, 2 = only model data
 ostruct.coarse = 1;
@@ -79,7 +79,7 @@ neuron.params.cvode = 1;  % boolean if dt is constant (0) or variable (1)
 neuron.params.dt = 0.25;  % this is ignored if cvode = 1
 ostruct.single = 0;
 %
-t2n_VoltSteps(neuron,tree,targetfolder_data,ostruct);
+t2n_voltSteps(neuron,tree,-120:10:-40,[],holding_voltage,targetfolder_data)
 %
 t2n_IVplot(targetfolder_data,neuron,ostruct);
 if ostruct.dataset ~= 2.28
@@ -104,7 +104,7 @@ ostruct.ampprop = 65/1000;
 % neuron.params.celsius = 33
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-t2n_currsteps(neuron,tree,targetfolder_data,ostruct);
+t2n_currSteps(neuron,tree,targetfolder_data,ostruct);
 
 % % VI plot
 % % aGC_VIplot(targetfolder_data,neuron.experiment,ostruct)
@@ -116,7 +116,7 @@ t2n_plotCurrSteps(targetfolder_data,targetfolder_results,neuron,ostruct);
 % % AP properties during current clamp
 prop =     t2n_APprop(targetfolder_data,neuron,ostruct,tree);
 % % end
-t2n_FIplot(targetfolder_data,targetfolder_results,neuron,ostruct);
+t2n_FIplot(targetfolder_data,neuron,ostruct,targetfolder_results);
 
 %% Compare spike soma/axon with a axon bleb (simulation!) SH2010
 % aGC_APsomax(neuron,tree,fullfile(treepath,treename),targetfolder_results)
@@ -137,20 +137,19 @@ if ostruct.newborn
 else
     ostruct.dataset =3;
 end
-t2n_currsteps(neuron,tree,targetfolder_data,ostruct)
-shoulder = t2n_plotdV(targetfolder_data,targetfolder_results,neuron,ostruct);
+t2n_currSteps(neuron,tree,targetfolder_data,ostruct)
+t2n_plotdV(targetfolder_data,neuron,ostruct,targetfolder_results);
 
 %% bAP simulation (Krueppel 2011)
 neuron = neuron_orig;
 % neuron.params.celsius = 33; %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-ostruct.simple = 0;
-ostruct.reduce = 1;
+
 ostruct.dist = 'Eucl'; % PL, Eucl
 ostruct.relamp = 0;
 
-t2n_bAP(neuron,tree,targetfolder_data,ostruct)
+t2n_bAP(neuron,tree,[],targetfolder_data)
 
-t2n_plotbAP(targetfolder_data,targetfolder_results,neuron,ostruct);
+t2n_plotbAP(targetfolder_data,neuron,ostruct,targetfolder_results);
 
 %% mAHP/sAHP simulation ********************************************************************
 
