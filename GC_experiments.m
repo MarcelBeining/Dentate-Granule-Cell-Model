@@ -77,7 +77,7 @@ if ostruct.usemorph < 4  % mouse experiments
     dur = [105 100 105];
     
     ostruct.subtract_hv = 1; % boolean subtract holding voltage current
-    ostruct.single = 0;    % 1 = show I-V of each cell
+    ostruct.single = 0;      % 1 = show I-V of each cell
     ostruct.figureheight = 4;
     ostruct.figurewidth = 6;
     
@@ -129,7 +129,7 @@ if ostruct.usemorph < 4  % mouse experiments
     
     ostruct.figureheight = 4;
     ostruct.figurewidth = 6;
-    ostruct.amp = (0:5:120)/1000;% current steps in nA which are to be simulated
+    ostruct.amp = 80/1000;(0:5:120)/1000;% current steps in nA which are to be simulated
     neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;  % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     
@@ -293,7 +293,7 @@ if ostruct.usemorph < 4  % mouse experiments
     t2n_currsteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
     
     [maxdv,ostruct.handles] = t2n_plotdV(targetfolder_data,targetfolder_results,neuron,ostruct);  % plot the dV plot
-    aGC_plotdVExp(targetfolder_results,ostruct)
+    aGC_plotdVExp(targetfolder_results,ostruct);
     
     %% Kv1.1 overexpression, Figure 5, reproduce Kirchheim et al 2013, Kv1.1 overexpression after status epilepticus reduced FI and increases spiking delay
     steps = 70/1000;

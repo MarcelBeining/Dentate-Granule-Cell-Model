@@ -31,7 +31,7 @@ nneuron.params.tstop = 70;
 
 ntree = numel(tree);
 if strcmp(syn,'Krueppel')
-    tree{end+1} = struct('artificial','NetStim','params',struct('number',1,'start',10)); % add a netstim to activate the krueppel synapses
+    tree{end+1} = struct('artificial','NetStim','number',1,'start',10); % add a netstim to activate the krueppel synapses
     nneuron.params.cvode = 0;
     nneuron.params.dt = 0.05;
 else

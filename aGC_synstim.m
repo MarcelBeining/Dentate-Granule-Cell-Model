@@ -164,7 +164,7 @@ end
 switch type
     case 'test'
         indstim = numel(tree)+1;
-        tree{indstim} = struct('artificial','NetStim','params',struct('start',10,'interval',100,'number',1));
+        tree{indstim} = struct('artificial','NetStim','start',10,'interval',100,'number',1);
         if isfield(neuron{1},'con')
             neuron{1} = rmfield(neuron{1},'con');
         end
@@ -200,7 +200,7 @@ switch type
         indstim = numel(tree)+1;
         tree(indstim) = {struct('artificial','VecStim')};
 %         tree(indstim) =
-%         {struct('artificial','NetStim','params',struct('start',10,'interval',1000/freq(f),'number',1e9))};
+%         {struct('artificial','NetStim','params','start',10,'interval',1000/freq(f),'number',1e9)};
 %         % ist blöd weil dann brauch ich verschiedene trees....
         for t = 1:numel(tree)-1
             if ~isfield(neuron{1},'con')
@@ -310,10 +310,10 @@ switch type
         
         indstim = numel(tree)+1:numel(tree)+4;
         
-        tree{indstim(1)} = struct('artificial','NetStim','params',struct('start',delay,'interval',interval1,'number',repeat1));
-        tree{indstim(2)} = struct('artificial','NetStim','params',struct('start',-1,'interval',interval2,'number',repeat2));
-        tree{indstim(3)} = struct('artificial','NetStim','params',struct('start',-1,'interval',interval3,'number',repeat3));
-        tree{indstim(4)} = struct('artificial','NetStim','params',struct('start',10,'interval',times(end)+300,'number',2));  % test stim at beginning and end of protocol
+        tree{indstim(1)} = struct('artificial','NetStim','start',delay,'interval',interval1,'number',repeat1);
+        tree{indstim(2)} = struct('artificial','NetStim','start',-1,'interval',interval2,'number',repeat2);
+        tree{indstim(3)} = struct('artificial','NetStim','start',-1,'interval',interval3,'number',repeat3);
+        tree{indstim(4)} = struct('artificial','NetStim','start',10,'interval',times(end)+300,'number',2);  % test stim at beginning and end of protocol
         
         
         if isfield(neuron{1},'con')
