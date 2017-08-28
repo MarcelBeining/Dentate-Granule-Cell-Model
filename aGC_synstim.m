@@ -4,13 +4,10 @@ if nargin < 5
 end
 
 if isstruct(neuron)
-    exchfolder = neuron.params.exchfolder;
     neuron = {neuron};
 else
-    exchfolder = neuron{1}.params.exchfolder;
     warndlg('why is neuron already a cell structure?')
 end
-
 
 % initial syn parameters...are changed later
 %
@@ -333,7 +330,7 @@ switch type
         neuron{1}.params.tstop = 2500;
 end
 
-[out, ~] = t2n(tree,neuron,'-w-q-d',exchfolder);
+[out, ~] = t2n(neuron,tree,'-w-q-d');
 str = '';
 if ostruct.newborn
     if ostruct.newborn == 2

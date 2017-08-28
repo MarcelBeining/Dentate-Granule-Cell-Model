@@ -3,7 +3,6 @@ function aGC_Shruti_current(neuron,tree,ostruct)
 ostruct.holding_voltage = -80;
 % end
 elecnode = 1;
-exchfolder = neuron.params.exchfolder;
 
 neuron.params.prerun = 300;
 neuron.params.skiprun = 0;
@@ -23,7 +22,7 @@ nneuron{1} = t2n_blockchannel(neuron,{'na8st'},100);
 nneuron{2} = t2n_blockchannel(neuron,{'na8st','BK'},100,[],{'gbar','gakbar'});   % block with iberitoxin
 nneuron{3} = t2n_blockchannel(neuron,{'na8st','BK'},100);         % block with paxilline
 
-[out, ~] = t2n(tree,nneuron,'-q-d-w',exchfolder);
+[out, ~] = t2n(nneuron,tree,'-q-d-w');
 if any(cellfun(@(x) x.error,out))
     return
 end

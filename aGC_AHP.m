@@ -1,5 +1,4 @@
 function aGC_AHP(neuron,tree,targetfolder_data)
-exchfolder = neuron.params.exchfolder;
 
 LJP = 7;  % from the paper
 cd(path)
@@ -14,7 +13,7 @@ neuron.params.cvode = 1;
 meanhvol = -58 - LJP;   % corrected!!
 neuron.params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep2','var')
-    hstep2 = t2n_findCurr(tree,neuron,meanhvol,[],'-q-d');
+    hstep2 = t2n_findCurr(neuron,tree,meanhvol,[],'-q-d');
 end
 for t=1:numel(tree)
     neuron.APCount{t} = [1,-30];
@@ -53,7 +52,7 @@ for s = 1:3
 end
 nneuron = t2n_as(1,nneuron);
 
-    [out, ~] = t2n(tree,nneuron,'-q-d-w',exchfolder);
+    [out, ~] = t2n(nneuron,tree,'-q-d-w');
     if isfield(out,'error')
         return
     end

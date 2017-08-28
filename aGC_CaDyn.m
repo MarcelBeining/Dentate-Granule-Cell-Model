@@ -1,5 +1,4 @@
 function aGC_CaDyn(neuron,tree,targetfolder_data,ostruct)
-exchfolder = neuron.params.exchfolder;
 
 neuron.params.v_init = -85.4;
 
@@ -20,7 +19,7 @@ plotcaivals = nodes;
 CaNodes = nodes;
 ipar = nodes;
 
-hstep = t2n_findCurr(tree,neuron,neuron.params.v_init); %assuming a HP of xxx mV
+hstep = t2n_findCurr(neuron,tree,neuron.params.v_init); %assuming a HP of xxx mV
 
 
 for t = 1:numel(tree)
@@ -65,7 +64,7 @@ for t = 1:numel(tree)
     neuron.pp{t}.IClamp = struct('node',1,'times',[-200 30,32.5],'amp', [hstep(t) hstep(t)+ostruct.cstep hstep(t)]); %n,del,dur,amp
     eucl{t} = eucl_tree(tree{t});
 end
-[out, ~] = t2n(tree,neuron,'-w-q-d',exchfolder);
+[out, ~] = t2n(neuron,tree,'-w-q-d');
 tim = out.t;
 tw = NaN(numel(tree),4,max(cellfun(@(x) numel(x{4}),CaNodes)));
 maxcai = tw;

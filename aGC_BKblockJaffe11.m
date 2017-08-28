@@ -1,5 +1,4 @@
 function aGC_BKblockJaffe11(neuron,tree,targetfolder_results)
-exchfolder = neuron.params.exchfolder;
 
 % cstep = 1.8; %nA !
 cstep = 0.3; % 300 pA
@@ -11,7 +10,7 @@ neuron.params.skiprun = 0; %!!!!!!!!!
 if ~exist('hstep','var')
     hstep = [];
 end
-hstep = t2n_findCurr(tree,neuron,-80,hstep,'-q-d');
+hstep = t2n_findCurr(neuron,tree,-80,hstep,'-q-d');
 
 for t = 1:numel(tree)
 %     plen = Pvec_tree(tree{t});
@@ -30,7 +29,7 @@ for s = 1:2
         nneuron{s} = neuron;
     end
 end
-[out] = t2n(tree,nneuron,'-q-d-w',exchfolder);
+[out] = t2n(nneuron,tree,'-q-d-w');
 % out = out{1};
 if isfield(out,'error')
     return

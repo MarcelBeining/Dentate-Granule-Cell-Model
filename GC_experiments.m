@@ -798,7 +798,7 @@ for v = 1:numel(changs) %
     neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     ostruct.data = 2;
-    rmatrix(5,v) = nanmean(t2n_findCurr(tree,neuron,'spike'));
+    rmatrix(5,v) = nanmean(t2n_findCurr(neuron,tree,'spike'));
     
     t2n_currSteps(neuron,tree,targetfolder_data,ostruct)
     props = t2n_APprop(targetfolder_data,neuron,0.09);

@@ -1,5 +1,4 @@
 function aGC_APsomax(neuron,tree,treepath,targetfolder_results)
-exchfolder = neuron.params.exchfolder;
 
 disp('echte current injection 2 oder weniger nA. und nur 0.5 ms duration\n')
 disp('check das nochmal sobald passives modell steht. evt muss das axon weniger leaky sein?')
@@ -21,7 +20,7 @@ for t = 1:numel(tree)
 end
 tree = t2n_writeTrees(tree,[],strcat(treepath(1:end-4),'_bleb.mtr'));
     
-hstep = t2n_findCurr(tree,neuron,-80,[],'-q-d');
+hstep = t2n_findCurr(neuron,tree,-80,[],'-q-d');
 
 for t = 1:numel(tree)
 %     eucl{t} = eucl_tree(tree{t});
@@ -31,7 +30,7 @@ for t = 1:numel(tree)
 end
 
 
-out = t2n(tree,neuron,'-q-d-w',exchfolder);
+out = t2n(neuron,tree,'-q-d-w');
 
 if isfield(out,'error') && out.error > 0
     return
