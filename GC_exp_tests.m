@@ -83,7 +83,7 @@ t2n_voltSteps(neuron,tree,-120:10:-40,[],holding_voltage,targetfolder_data)
 %
 t2n_IVplot(targetfolder_data,neuron,ostruct);
 if ostruct.dataset ~= 2.28
-    t2n_plotVoltSteps(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct);
+    t2n_plotVoltSteps(targetfolder_data,neuron,[],ostruct.subtract_hv);
 end
 %% current clamp simulation (Mongiat 2009, Brenner 2005)
 neuron = neuron_orig;

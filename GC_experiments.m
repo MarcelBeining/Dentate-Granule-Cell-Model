@@ -89,7 +89,7 @@ if ostruct.usemorph < 4  % mouse experiments
     if ~ostruct.newborn
         ostruct.dataset =3;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
         ostruct.savename = sprintf('Fig2-IV_dyn-%s',neuron.experiment);
-        ostruct.handles = t2n_plotVoltSteps(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),ostruct);
+        ostruct.handles = t2n_plotVoltSteps(targetfolder_data,neuron,[],ostruct.subtract_hv);
         aGC_plotVoltStepsExp(t2n_catName(targetfolder_data,'Exp_VoltSteps',neuron.experiment,'.mat'),targetfolder_results,ostruct);
         ostruct.handles = [];
         savename = sprintf('Fig2-IV+Ba-%s',neuron.experiment);
@@ -682,6 +682,7 @@ end
 neuron = neuron_orig;
 ostruct.dist = 'Eucl.'; % PL., Eucl.
 ostruct.relamp = 0;  % relative amplitudes
+ostruct.plotData = 1; % plot experimental data
 celsius_orig = neuron.params.celsius;
 neuron.params.celsius = 33;  % temperature
 neuron = t2n_Q10pas(neuron,neuron.params.celsius);
