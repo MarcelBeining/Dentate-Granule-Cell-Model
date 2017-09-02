@@ -122,30 +122,30 @@ if ostruct.usemorph < 4  % mouse experiments
     FontResizer
     tprint(fullfile(targetfolder_results,savename),'-pdf');
     
-    %% Mongiat FI + Ba, simulate the F-I relationship with and without blocking Kir by application of Barium, Figure 2 & 6
+    %% Mongiat FI + Ba, simulate the F-I relationship with and without blocking Kir by application of Barium, Figure 3 & 7
     neuron = neuron_orig;
-    neuron.experiment = strcat(neuron.experiment,'_Fig26');
+    neuron.experiment = strcat(neuron.experiment,'_Fig37');
     ostruct.holding_voltage = -80; % mV % -80
     % exp_iclamp = load_ephys(ostruct.dataset,'CClamp');  % alternatively get holding voltage from experiment
     % ostruct.holding_voltage = mean(mean(exp_iclamp(:,:,1)));
     
     ostruct.figureheight = 4;
     ostruct.figurewidth = 6;
-    ostruct.amp = 80/1000;(0:5:120)/1000;% current steps in nA which are to be simulated
+    ostruct.amp = (10:10:120)/1000;%(0:5:120)/1000;% current steps in nA which are to be simulated
     neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;  % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     
     if ostruct.newborn
         ostruct.dataset = 2.28;
-        ostruct.savename = sprintf('Fig6_Final-%s',neuron.experiment);
-        ostruct.savename2 = sprintf('Fig6-FI-%s_young',neuron.experiment);
-        ostruct.savename3 = sprintf('Fig6-FI+Ba-%s_young',neuron.experiment);
+        ostruct.savename = sprintf('Fig7_Final-%s',neuron.experiment);
+        ostruct.savename2 = sprintf('Fig7-FI-%s_young',neuron.experiment);
+        ostruct.savename3 = sprintf('Fig7-FI+Ba-%s_young',neuron.experiment);
         steps = [10, 50]/1000;  % current step [pA] of which voltage trace is plotted
     else
         ostruct.dataset = 3;
-        ostruct.savename = sprintf('Fig2_Final-%s',neuron.experiment);
-        ostruct.savename2 = sprintf('Fig2-FI-%s',neuron.experiment);
-        ostruct.savename3 = sprintf('Fig2-FI+Ba-%s',neuron.experiment);
+        ostruct.savename = sprintf('Fig3_Final-%s',neuron.experiment);
+        ostruct.savename2 = sprintf('Fig3-FI-%s',neuron.experiment);
+        ostruct.savename3 = sprintf('Fig3-FI+Ba-%s',neuron.experiment);
         if isnan(ostruct.vmodel) % AH99 model. This is different to our model because no spiking occurred at 75 pA in the AH99 GC model
             steps = [30, 90]/1000;  % current step [pA] of which voltage trace is plotted
         else
@@ -268,7 +268,7 @@ if ostruct.usemorph < 4  % mouse experiments
     end
     
     
-    %% Mongiat dV / dt curve,Figure 2 & 6, phase plots, extra simulation needed because a small dt is necessary to correctly assess maximal dV/dt's
+    %% Mongiat dV / dt curve,Figure 3 & 7, phase plots, extra simulation needed because a small dt is necessary to correctly assess maximal dV/dt's
     neuron = neuron_orig;
     
     neuron.experiment = strcat(neuron.experiment,'_dV');
@@ -282,10 +282,10 @@ if ostruct.usemorph < 4  % mouse experiments
     ostruct.ampprop = 0.090;  % plot this current step [nA] in the single figure
     if ostruct.newborn
         ostruct.dataset =2.28;
-        ostruct.savename = sprintf('Fig6_-%s',neuron.experiment);
+        ostruct.savename = sprintf('Fig7_-%s',neuron.experiment);
     else
         ostruct.dataset =3;
-        ostruct.savename = sprintf('Fig2_-%s',neuron.experiment);
+        ostruct.savename = sprintf('Fig3_-%s',neuron.experiment);
     end
     if ostruct.usemorph >= 4  % = rat morphology
         ostruct.dataset = 0;
@@ -297,12 +297,12 @@ if ostruct.usemorph < 4  % mouse experiments
     [maxdv,ostruct.handles] = t2n_plotdV(targetfolder_data,neuron,ostruct,targetfolder_results);  % plot the dV plot
     aGC_plotdVExp(targetfolder_results,ostruct);
     
-    %% Kv1.1 overexpression, Figure 5, reproduce Kirchheim et al 2013, Kv1.1 overexpression after status epilepticus reduced FI and increases spiking delay
+    %% Kv1.1 overexpression, Figure 6, reproduce Kirchheim et al 2013, Kv1.1 overexpression after status epilepticus reduced FI and increases spiking delay
     steps = 70/1000;
     neuron = neuron_orig;
     ostruct.handles = [];
     ostruct.holding_voltage = -80; %mV
-    neuron.experiment = strcat(neuron.experiment,'_Fig5');
+    neuron.experiment = strcat(neuron.experiment,'_Fig6');
     ostruct.figureheight = 4;
     ostruct.figurewidth = 6;
     ostruct.duration = 200;
@@ -311,8 +311,8 @@ if ostruct.usemorph < 4  % mouse experiments
     ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     
     ostruct.dataset =3;
-    ostruct.savename1 = sprintf('Fig5_Kv11-%s',neuron.experiment);
-    ostruct.savename2 = sprintf('Fig5-FI-Kv11-%s',neuron.experiment);
+    ostruct.savename1 = sprintf('Fig6_Kv11-%s',neuron.experiment);
+    ostruct.savename2 = sprintf('Fig6-FI-Kv11-%s',neuron.experiment);
     
     t2n_currSteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
     handles1 = figure;
@@ -345,7 +345,7 @@ if ostruct.usemorph < 4  % mouse experiments
     ostruct.handles = [];
     ostruct.savename = [];
     
-    %% Synaptic stimulation, Figure 7
+    %% Synaptic stimulation, Figure 8
     ostruct.handles = [];
     neuron = neuron_orig;
     type = 'temporal'; % test, theta-burst stimulation, regular input, temporal shift in input, spatial shift in input
@@ -362,7 +362,7 @@ else   % to avoid running through rat experiments when just running the script
     neuron = neuron_orig;
     ostruct.passtest = 'Std'; % different protocols to measure Rin/tau/capacitance/Vrest (not all can do everything): Mongiat Mongiat2 SH Brenner Std
     [Rin, tau, cap, Vrest] = t2n_passTests(neuron,tree,targetfolder_results,ostruct);
-    %% IV rat, generate I-V relationship curve and additinally plot Rin measurements from rat, Figure 3
+    %% IV rat, generate I-V relationship curve and additinally plot Rin measurements from rat, Figure 4
     neuron = neuron_orig;
     vstepsModel =  -130:5:-40;
     dur = [105 100 105];
@@ -374,7 +374,7 @@ else   % to avoid running through rat experiments when just running the script
     
     t2n_voltSteps(neuron,tree,vstepsModel,dur,holding_voltage,targetfolder_data);  % do the simulation
     
-    ostruct.savename = sprintf('Fig3-IV_Mehranfard15-%s',neuron.experiment);
+    ostruct.savename = sprintf('Fig4-IV_Mehranfard15-%s',neuron.experiment);
     if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
         ostruct.savename = strcat(ostruct.savename,'_ratadjust');
     end
@@ -391,7 +391,7 @@ else   % to avoid running through rat experiments when just running the script
     
     tprint(fullfile(targetfolder_results,ostruct.savename),'-pdf');
     
-    %% Rat FI curve, Figure 3, similar to Mehranfard 2015 Plos One
+    %% Rat FI curve, Figure 4, similar to Mehranfard 2015 Plos One
     neuron = neuron_orig;
     if isfield(ostruct,'handles')
         ostruct = rmfield(ostruct,'handles');
@@ -406,21 +406,21 @@ else   % to avoid running through rat experiments when just running the script
     t2n_currSteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
     
     ostruct.dataset = 0;  % 1 = old mature dataset, 2 = old young dataset, 3 = new mature dataset, 4 = new young dataset, 5 = new mature BaCl dataset, 6 = new young BaCl dataset
-    ostruct.savename = sprintf('Fig3_FI_Mehranfahrd15-%s',neuron.experiment);
+    ostruct.savename = sprintf('Fig4_FI_Mehranfahrd15-%s',neuron.experiment);
     if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
         ostruct.savename = strcat(ostruct.savename,'_ratadjust');
     end
     ostruct.handles = t2n_FIplot(targetfolder_data,neuron,ostruct,targetfolder_results);
     aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,ostruct)
     
-    ostruct.savename = sprintf('Fig3_Final-%s',neuron.experiment);
+    ostruct.savename = sprintf('Fig4_Final-%s',neuron.experiment);
     if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
         ostruct.savename = strcat(ostruct.savename,'_ratadjust');
     end
     figure; hold all
     t2n_plotCurrSteps(targetfolder_data,neuron,0.1);
     
-    %% ISI spike adaptaption Figure 5, similar to MA14 Fig 8
+    %% ISI spike adaptaption Figure 6, similar to MA14 Fig 8
     neuron = neuron_orig;
     %!!!
     neuron.params.celsius = 33;
@@ -439,7 +439,7 @@ else   % to avoid running through rat experiments when just running the script
     ostruct.duration = 100;
     neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.ampprop = 200/1000;
-    ostruct.savename = 'Fig5-ISIadapt100ms_MA14';
+    ostruct.savename = 'Fig6-ISIadapt100ms_MA14';
     if ostruct.ratadjust && isempty(strfind(neuron.experiment,'AH99'))
         ostruct.savename = strcat(ostruct.savename,'_ratadjust');
     end
@@ -504,12 +504,12 @@ else   % to avoid running through rat experiments when just running the script
     Masterplotter(dstruct,gstruct,[],ostruct);
     neuron = neuron_orig;
     neuron.experiment = strcat(sprintf('MA14Fig8_freq%g_%dC_',ostruct.numAP,neuron.params.celsius),neuron.experiment);
-    tprint(t2n_catName(targetfolder_results,'Fig.5-ISIadapt',neuron.experiment),'-pdf')
+    tprint(t2n_catName(targetfolder_results,'Fig.6-ISIadapt',neuron.experiment),'-pdf')
     
     neuron.params.celsius = 24;
     ostruct = rmfield(ostruct,'numAP');
     
-    %% AP width BK/Kv34 + spike adaptation, Figure 5
+    %% AP width BK/Kv34 + spike adaptation, Figure 6
     neuron = neuron_orig;
     neuron.experiment = strcat(neuron.experiment,'_APwidth');
     ostruct.amp = [90,250]/1000; % nA  < 10 HZ and höher
@@ -519,9 +519,9 @@ else   % to avoid running through rat experiments when just running the script
     ostruct.holding_voltage = -80;
     ostruct.ampprop = 90/1000;
     if ostruct.newborn
-        ostruct.savename = 'Fig5-APprop_newborn';
+        ostruct.savename = 'Fig6-APprop_newborn';
     else
-        ostruct.savename = 'Fig5-APprop';
+        ostruct.savename = 'Fig6-APprop';
     end
     
     t2n_currSteps(neuron,tree,targetfolder_data,ostruct)  % do the simulation
@@ -630,15 +630,15 @@ else   % to avoid running through rat experiments when just running the script
     % if ostruct.newborn
     %     tprint(fullfile(targetfolder_results,'RobustnessMatrix_newborn'),'-pdf');
     % else
-    tprint(fullfile(targetfolder_results,sprintf('Fig.5_APwidthSpiking_%s',neuron.experiment)),'-pdf');
+    tprint(fullfile(targetfolder_results,sprintf('Fig.6_APwidthSpiking_%s',neuron.experiment)),'-pdf');
     
     % end
     ostruct.gap = 0.3;
     handle = Masterplotter(dstruct,gstruct,[],ostruct);
     figure(handle{1})
-    tprint(fullfile(targetfolder_results,sprintf('Fig.5_APhalfwidth_%s',neuron.experiment)),'-pdf');
+    tprint(fullfile(targetfolder_results,sprintf('Fig.6_APhalfwidth_%s',neuron.experiment)),'-pdf');
     figure(handle{2})
-    tprint(fullfile(targetfolder_results,sprintf('Fig.5_APwidth_%s',neuron.experiment)),'-pdf');
+    tprint(fullfile(targetfolder_results,sprintf('Fig.6_APwidth_%s',neuron.experiment)),'-pdf');
     
     %% resonance test with Ba and ZD application, Figure_6-figure supplement2
     neuron = neuron_orig;
@@ -673,12 +673,12 @@ else   % to avoid running through rat experiments when just running the script
         FigureResizer(ostruct.figureheight,ostruct.figurewidth)
     end
         
-    tprint(fullfile(targetfolder_results,sprintf('Fig5-Resonance_%s%s',neuron.experiment,str)),'-pdf');
+    tprint(fullfile(targetfolder_results,sprintf('Fig6-Resonance_%s%s',neuron.experiment,str)),'-pdf');
     
     %%
 end
 %% here are simulations done in both mouse and rat
-%% bAP simulation (Krueppel 2011) Teil Ratte, Figure 4
+%% bAP simulation Figure 5, mimicking Krueppel et al 2011
 neuron = neuron_orig;
 ostruct.dist = 'Eucl.'; % PL., Eucl.
 ostruct.relamp = 0;  % relative amplitudes
@@ -699,7 +699,7 @@ t2n_bAP(neuron,tree,amp,targetfolder_data)  % do the simulation
 
 neuron.params.celsius = celsius_orig; % back to normal temp
 [bAPdisthm,mveloc_dend,mveloc_farax,mveloc_nearax,fig] = t2n_plotbAP(targetfolder_data,neuron,ostruct,targetfolder_results);
-%%  Calcium dynamics (Stocca 2008) Teil Ratte, Figure 4
+%%  Calcium dynamics Figure 5, mimicking Stocca et al 2008
 neuron = neuron_orig;
 ostruct.simple = 0;  % only recording along longest dendrite
 ostruct.reduce = 0;  % only measure every third node
@@ -724,7 +724,7 @@ aGC_CaDyn(neuron,tree,targetfolder_data,ostruct)  % do the simulation
 neuron.params.celsius = celsius_orig; % back to normal temp
 aGC_plotCaDyn(targetfolder_data,targetfolder_results,neuron,ostruct);
 
-%% Sensitivity Matrix Fig. 5 & Suppl. Fig.
+%% Sensitivity Matrix Fig. 6 & Suppl. Fig.
 changs = {'','cm','Ra','pas','Kir21','HCN','cAMP','na8st','Kv14','Kv21','Kv34','Kv42','Kv7','BK','SK','Cav12','Cav13','Cav22','Cav32','E_K','E_N_a','E_P_a_s','[Ca]o','temp'};
 rmatrix = -Inf(14,numel(changs));
 
@@ -861,9 +861,9 @@ o.image = 0;
 o.border = [8,2];
 FigureResizer(8,20,[],o)
 if ostruct.newborn
-    save(fullfile(targetfolder_data,sprintf('Fig.5_SensitivityMatrix_%s_newborn_%s.mat',type,neuron.experiment)),'rmatrix')
-    tprint(fullfile(targetfolder_results,sprintf('Fig.5_SensitivityMatrix_%s_newborn_%s',type,neuron.experiment)),'-pdf');
+    save(fullfile(targetfolder_data,sprintf('Fig.6_SensitivityMatrix_%s_newborn_%s.mat',type,neuron.experiment)),'rmatrix')
+    tprint(fullfile(targetfolder_results,sprintf('Fig.6_SensitivityMatrix_%s_newborn_%s',type,neuron.experiment)),'-pdf');
 else
-    save(fullfile(targetfolder_data,sprintf('Fig.5_SensitivityMatrix_%s_%s.mat',type,neuron.experiment)),'rmatrix')
-    tprint(fullfile(targetfolder_results,sprintf('Fig.5_SensitivityMatrix_%s_%s',type,neuron.experiment)),'-pdf');
+    save(fullfile(targetfolder_data,sprintf('Fig.6_SensitivityMatrix_%s_%s.mat',type,neuron.experiment)),'rmatrix')
+    tprint(fullfile(targetfolder_results,sprintf('Fig.6_SensitivityMatrix_%s_%s',type,neuron.experiment)),'-pdf');
 end
