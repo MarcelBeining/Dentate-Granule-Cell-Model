@@ -74,7 +74,6 @@ if exist('steps','var') && ~isempty(intersect(cstepsSpiking,steps))
     ylabel('Membrane voltage [mV]')
     xlim([0 350])
     ylim([-85 -30])
-    tprint(fullfile(targetfolder_results,'Fig.2-SpikingExp'),'-HR-pdf');
     if isfield(ostruct,'savename') && ~isempty(ostruct.savename)
         tprint(fullfile(targetfolder_results,strcat(ostruct.savename,'-SpikingExp')),'-pdf');
     else

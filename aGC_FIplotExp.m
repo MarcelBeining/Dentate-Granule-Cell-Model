@@ -3,6 +3,9 @@ function fig = aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,ostru
 if ~isfield(ostruct,'duration') && ostruct.dataset < 7
     ostruct.duration = 200;
 end
+if ~isfield(ostruct,'spikeThresh')
+    ostruct.spikeThresh = -10; % std spike thresh of -10 mV
+end
 
 load(t2n_catName(targetfolder_data,'Exp_Spiking',neuron.experiment,'.mat'),'voltVec','timeVec','numspikes','cstepsSpikingModel','tree','nneuron')
 
@@ -16,8 +19,8 @@ else
 end
 if ostruct.duration == 200 && ostruct.dataset ~= 0
     x = cstepsSpiking*1000;
-    mFI = mean (squeeze((sum(diff(exp_iclamp > 0,1,1) == -1,1))));
-    stdFI = std (squeeze((sum(diff(exp_iclamp > 0,1,1) == -1,1))));
+    mFI = mean (squeeze((sum(diff(exp_iclamp > ostruct.spikeThresh,1,1) == -1,1))));
+    stdFI = std (squeeze((sum(diff(exp_iclamp > ostruct.spikeThresh,1,1) == -1,1))));
     mFI = mFI(1:numel(x));
     stdFI= stdFI(1:numel(x));
     hp = patch ([x (fliplr (x))], [(mFI + stdFI) (fliplr (mFI - stdFI))],[0.7 0.7 0.7],'edgecolor','none' );

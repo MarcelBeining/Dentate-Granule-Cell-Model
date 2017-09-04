@@ -212,8 +212,8 @@ switch type
         neuron = t2n_as(1,neuron);
     case 'temporal'
         freq = [10,20,40,75]; % Hz later -> MHz
-%             dt0 = -25:5:25 % ms
-            dt0 = -50:5:50;
+            dt0 = -25:5:25; % ms
+%             dt0 = -50:5:50;
         neuron{1}.params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
         neuron{1}.params.tstop = 500;
         indstim = numel(tree)+1:numel(tree)+2;

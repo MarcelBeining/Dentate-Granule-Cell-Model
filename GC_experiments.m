@@ -61,6 +61,7 @@ if ostruct.newborn
     oldexpname = neuron.experiment;
     neuron = t2n_blockchannel(neuron,{'Kir21','Kv42','na8st','BK','Cav13','Kv21','Kv723','BK'},[73,50,25,40,50,50,50,100],[],{'','','','gakbar','','','','gabkbar'});
     neuron.experiment = strcat(oldexpname,'_newborn');
+    disp('young abGC version')
 end
 neuron_orig = neuron;
 
@@ -131,7 +132,7 @@ if ostruct.usemorph < 4  % mouse experiments
     
     ostruct.figureheight = 4;
     ostruct.figurewidth = 6;
-    ostruct.amp = (10:10:120)/1000;%(0:5:120)/1000;% current steps in nA which are to be simulated
+    ostruct.amp = (0:5:120)/1000;% current steps in nA which are to be simulated
     neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;  % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     
@@ -158,18 +159,25 @@ if ostruct.usemorph < 4  % mouse experiments
     ostruct.handles = figure;
     t2n_plotCurrSteps(targetfolder_data,neuron,steps);
     if ~ostruct.reducecells && numel(ostruct.amp) == 25
+        vec = true(numel(tree)*2,1);
         if ostruct.newborn
-            delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,0,1,1,0,0,1,1],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
+            vec(cat(2,[1,3,7],[1,3,7]+1)) = false;
+%             delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,0,1,1,0,0,1,1],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
         else
-            delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,1,1,1,0,0,1,0],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
+            vec(cat(2,[9,11,15],[9,11,15]+1)) = false;
+%             delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,1,1,1,0,0,1,0],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
         end
+        delete(ostruct.handles.Children.Children(vec))
     end
     FontResizer
     FigureResizer(ostruct.figureheight,ostruct.figurewidth)
     xlim([0 350])
     ylim([-85 -30])
-    tprint(fullfile(targetfolder_results,strcat('Fig.2-SpikingModel_',neuron.experiment)),'-pdf');
-    
+    if ostruct.newborn
+        tprint(fullfile(targetfolder_results,strcat('Fig.7-SpikingModel_',neuron.experiment)),'-pdf');
+    else
+        tprint(fullfile(targetfolder_results,strcat('Fig.3-SpikingModel_',neuron.experiment)),'-pdf');
+    end
     ostruct.handles = figure;
     t2n_plotCurrSteps(targetfolder_data,neuron);
     aGC_plotCurrStepsExp(targetfolder_data,targetfolder_results,neuron,ostruct,steps)
@@ -210,7 +218,7 @@ if ostruct.usemorph < 4  % mouse experiments
         else
             switch f
                 case 6
-                    xlim([-60 -30])
+                    xlim(yl(2,:))
                     if ostruct.newborn
                         ylim([-10 30])
                     else
@@ -218,7 +226,7 @@ if ostruct.usemorph < 4  % mouse experiments
                     end
                 case 7
                     xlim(yl(5,:))
-                    ylim([0 2])
+                    ylim(yl(1,:))
                 case 8
                     xlim([20 70])
                     if ostruct.newborn
@@ -306,7 +314,7 @@ if ostruct.usemorph < 4  % mouse experiments
     ostruct.figureheight = 4;
     ostruct.figurewidth = 6;
     ostruct.duration = 200;
-    ostruct.amp = (10:10:120)/1000; % nA
+    ostruct.amp = (0:5:120)/1000; % nA
     neuron.params.cvode = 0;  % boolean if dt is constant (0) or variable (1)
     ostruct.coarse = 0.5;   % 0 = dt of 0.025, 0.5 = dt of 0.05, 1 = dt of 0.1 and nseg = 1
     
@@ -341,6 +349,7 @@ if ostruct.usemorph < 4  % mouse experiments
     ostruct.savename = ostruct.savename2;
     ostruct.handles = ostruct.handles2;
     ostruct.color = [1 0 0];
+    figure(ostruct.handles2(1));ylim([0 8]),set(gca,'YTick',0:2:8)
     t2n_FIplot(targetfolder_data,neuron,ostruct,targetfolder_results);
     ostruct.handles = [];
     ostruct.savename = [];
@@ -682,7 +691,7 @@ end
 neuron = neuron_orig;
 ostruct.dist = 'Eucl.'; % PL., Eucl.
 ostruct.relamp = 0;  % relative amplitudes
-ostruct.plotData = 1; % plot experimental data
+ostruct.plotData = ostruct.usemorph>=4; % plot experimental data
 celsius_orig = neuron.params.celsius;
 neuron.params.celsius = 33;  % temperature
 neuron = t2n_Q10pas(neuron,neuron.params.celsius);
