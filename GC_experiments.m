@@ -164,7 +164,12 @@ if ostruct.usemorph < 4  % mouse experiments
             vec(cat(2,[1,3,7],[1,3,7]+1)) = false;
 %             delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,0,1,1,0,0,1,1],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
         else
-            vec(cat(2,[9,11,15],[9,11,15]+1)) = false;
+            switch ostruct.usemorph
+                case 1
+                    vec(cat(2,[9,11,15],[9,11,15]+1)) = false;
+                case 2
+                    vec(cat(2,[1,27,29],[1,27,29]+1)) = false;
+            end
 %             delete(ostruct.handles.Children.Children(reshape(logical(repmat([1,1,1,1,0,0,1,0],2,1)),16,1))) % only keep 3 of the 8 morphs for visibility
         end
         delete(ostruct.handles.Children.Children(vec))
@@ -256,7 +261,7 @@ if ostruct.usemorph < 4  % mouse experiments
     end
     ostruct.handles = t2n_FIplot(targetfolder_data,neuron,ostruct,targetfolder_results);
     aGC_FIplotExp(targetfolder_data,targetfolder_results,neuron,ostruct)
-    
+
     if ~ostruct.newborn
         neuron = t2n_blockchannel(neuron,{'Kir21','pas'},[99 30]);
         if ostruct.newborn

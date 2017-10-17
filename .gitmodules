@@ -1,4 +1,0 @@
-[submodule "auxFunctions/Masterplotter"]
-	path = auxFunctions/Masterplotter
-	url = git@bitbucket.org:cuntzlab/masterplotter.git
-	branch = master
