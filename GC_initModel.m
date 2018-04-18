@@ -170,7 +170,7 @@ for t = 1:numel(tree)
 end
 
 if ostruct.scalespines
-    neuron = scale_spines(neuron);
+    neuron = t2n_implicitSpines(neuron);
 end
 %%% This is the Hay 2013 implementation of adjusting soma and AIS
 %%% conductance according to dendritic morphology
