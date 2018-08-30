@@ -1,3 +1,10 @@
+[![GitHub tag](https://img.shields.io/github/tag/MarcelBeining/Dentate-Granule-Cell-Model.svg?style=for-the-badge)](https://github.com/MarcelBeining/Dentate-Granule-Cell-Model/releases)
+![GitHub top language](https://img.shields.io/github/languages/top/MarcelBeining/Dentate-Granule-Cell-Model.svg?style=for-the-badge)
+[![GitHub](https://img.shields.io/github/license/MarcelBeining/Dentate-Granule-Cell-Model.svg?style=for-the-badge)](https://github.com/MarcelBeining/Dentate-Granule-Cell-Model/blob/master/LICENSE)
+[![GitHub contributors](https://img.shields.io/github/contributors/MarcelBeining/Dentate-Granule-Cell-Model.svg?style=for-the-badge)](https://github.com/MarcelBeining/Dentate-Granule-Cell-Model/graphs/contributors)
+![GitHub repo size in bytes](https://img.shields.io/github/repo-size/MarcelBeining/Dentate-Granule-Cell-Model.svg?style=for-the-badge)
+[![GitHub issues](https://img.shields.io/github/issues/MarcelBeining/Dentate-Granule-Cell-Model.svg?style=for-the-badge)](https://github.com/MarcelBeining/Dentate-Granule-Cell-Model/issues)
+
 # Dentate granule cell model
 This GC compartmental model accompanies the manuscript 
 [Beining et al (2017): T2N as a new tool for robust electrophysiological modeling demonstrated for mature and adult-born dentate granule cells. eLife](https://elifesciences.org/articles/26517)
