@@ -32,22 +32,18 @@ freq = NaN;
 dd0 = NaN;
 dt0 = NaN;
 
-% -floor(100/freq(f))*5 : 5 : floor(100/freq(f))*5
-
 neuron{1}.params.dt = 0.05;
 neuron{1}.params.cvode = 0;
 
 recnode = cell(numel(tree),1);
 if ~isempty(strfind(type,'spatial'))
-%     nsyn = 10;
-    dd0 = 0:10:100;  % µm !!!!!!!!!!!!!!!!!!!!!!!!!!!
-    thesesynids =cell(numel(dd0),numel(tree));
+    dd0 = 0:10:100;  % µm !!
+    thesesynidTags = cell(numel(dd0),numel(tree));
 else
-    thesesynids =recnode;
+    thesesynidTags = recnode;
 end
 s = RandStream.create('mt19937ar','Seed',1204); % be sure to always hit the same "random" nodes in order to assure comparability
 
-%  for n = 1:nsyn   % ampa and nmda per synapse
 for t = 1:numel(tree)
     plen = Pvec_tree(tree{t});
     recnode{t} = [1,find(abs(plen-100)<0.5 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon')),1),find(abs(plen-200)<0.5 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon')),1)];
@@ -61,15 +57,12 @@ for t = 1:numel(tree)
 %             ppweight = 0.0005;% SH07 = 0.1-1nS ....%weight =  µS
             idpar = idpar_tree(tree{t});
             synids1 = find(tree{t}.R == find(strcmp(tree{t}.rnames,'adendMML')) & tree{t}.R(idpar) == find(strcmp(tree{t}.rnames,'adendIML'))); %get all branch starts in MML
-%             synids1 = find(abs(plen-120)<1 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon')));
             for n = 1:numel(dd0)
                 [~, ind] = min([std(tree{t}.X(synids1)),std(tree{t}.Y(synids1)),std(tree{t}.Z(synids1))]); % find direction of tree layering
                 synids2 = find(abs(tree{t}.(dirs{ind}) - mean(tree{t}.(dirs{ind})(synids1)) - dd0(n)) < 1 & (tree{t}.R == find(strcmp(tree{t}.rnames,'adendMML')) | tree{t}.R == find(strcmp(tree{t}.rnames,'adendOML')))); % find nodes at a distance dd0 from the IML/MML border
                 synids2 = setdiff(synids2,idpar(synids2));  % delete all direct parent nodes (due to rough distance search)
-%                 synids2 = find(abs(plen-(120+dd0(n)))<1 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon')));
-                thesesynids{n,t} = [synids1(1:min(ceil(nsyn/2),numel(synids1)));synids1(randi(s,numel(synids1),ceil(nsyn/2)-numel(synids1),1));synids2(1:min(floor(nsyn/2),numel(synids2)));synids2(randi(s,numel(synids2),floor(nsyn/2)-numel(synids2),1))]';  % ensure that each branch is there at least once
-                %             thesesynids{n,t} = [synids1(randi(numel(synids1),ceil(nsyn/2),1));synids2(randi(numel(synids2),floor(nsyn/2),1))]';
-                neuron{n}.pp{t}.Exp2Syn = struct('node',thesesynids{n,t},'tau1',0.2,'tau2',2.5,'e',0);%,'i',0.05,'e',0,'tau1',0.05,'tau2',2); tau values as SH07 %alt:tau1 1.5 tau2 5.5
+                thesesynids = [synids1(1:min(ceil(nsyn/2),numel(synids1)));synids1(randi(s,numel(synids1),ceil(nsyn/2)-numel(synids1),1));synids2(1:min(floor(nsyn/2),numel(synids2)));synids2(randi(s,numel(synids2),floor(nsyn/2)-numel(synids2),1))]';  % ensure that each branch is there at least once
+                [neuron{n}.pp{t}.Exp2Syn , thesesynidTags{n,t}] = addExp2Syn(t,thesesynids);
             end
         case 'spatial2'
                         dirs = {'X','Y','Z'};
@@ -82,36 +75,23 @@ for t = 1:numel(tree)
             [~, ind] = min([std(tree{t}.X(synids1)),std(tree{t}.Y(synids1)),std(tree{t}.Z(synids1))]); % find direction of tree layering
             [~,thisone] = max(tree{t}.(dirs{ind}));
             [~,~,thisone] = intersect(ipar(thisone,:),synids1);
-%             synids1 = find(abs(plen-120)<1 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon')));
             for n = 1:numel(dd0)
-                
-                
                 synids2 = find(any(ipar == synids1(thisone),2) & abs(tree{t}.(dirs{ind}) - mean(tree{t}.(dirs{ind})(synids1)) - dd0(n)) < 1);
-%                 synids2 = find(abs(tree{t}.(dirs{ind}) - mean(tree{t}.(dirs{ind})(synids1)) - dd0(n)) < 1 & (tree{t}.R == find(strcmp(tree{t}.rnames,'adendMML')) | tree{t}.R == find(strcmp(tree{t}.rnames,'adendOML')))); % find nodes at a distance dd0 from the IML/MML border
                 synids2 = setdiff(synids2,idpar(synids2));  % delete all direct parent nodes (due to rough distance search)
-%                 synids2 = find(abs(plen-(120+dd0(n)))<1 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon')));
-                thesesynids{n,t} = [synids1(thisone);synids2(1)]';  % ensure that each branch is there at least once
-                %             thesesynids{n,t} = [synids1(randi(numel(synids1),ceil(nsyn/2),1));synids2(randi(numel(synids2),floor(nsyn/2),1))]';
-                neuron{n}.pp{t}.Exp2Syn = struct('node',thesesynids{n,t},'tau1',0.2,'tau2',2.5,'e',0);%,'i',0.05,'e',0,'tau1',0.05,'tau2',2); tau values as SH07 %alt:tau1 1.5 tau2 5.5
+                thesesynids = [synids1(thisone);synids2(1)]';  % ensure that each branch is there at least once
+                [neuron{n}.pp{t}.Exp2Syn , thesesynidTags{n,t}] = addExp2Syn(t,thesesynids);
             end
         case 'test'
             synids1 = find(abs(plen-150)<1 & tree{t}.R ~= find(strcmp(tree{t}.rnames,'axon')));
-            thesesynids{t} = synids1(randi(s,numel(synids1),nsyn,1));
-            neuron{1}.pp{t}.Exp2Syn = struct('node',thesesynids{t},'tau1',0.2,'tau2',2.5,'e',0);%,'i',0.05,'e',0,'tau1',0.05,'tau2',2); tau values as SH07 %alt:tau1 1.5 tau2 5.5
+            thesesynids = synids1(randi(s,numel(synids1),nsyn,1));
+            [neuron{1}.pp{t}.Exp2Syn , thesesynidTags{t}] = addExp2Syn(t,thesesynids);
         otherwise
             synids1 = find(tree{t}.R == find(strcmp(tree{t}.rnames,'adendMML')));  %
             synids2 = find(tree{t}.R == find(strcmp(tree{t}.rnames,'adendOML')));  %
-            thesesynids{t} = [synids1(randi(s,numel(synids1),ceil(nsyn/2),1));synids2(randi(s,numel(synids2),floor(nsyn/2),1))]; % other idea was bad as it then only used nodes that were beside each other..now use pseudorandom
-%             thesesynids{t} = [synids1(1:min(ceil(nsyn/2),numel(synids1)));synids1(randi(s,numel(synids1),ceil(nsyn/2)-numel(synids1),1));synids2(1:min(floor(nsyn/2),numel(synids2)));synids2(randi(s,numel(synids2),floor(nsyn/2)-numel(synids2),1))]';  % ensure that each branch is there at least once
-            neuron{1}.pp{t}.Exp2Syn = struct('node',thesesynids{t},'tau1',0.2,'tau2',2.5,'e',0);%,'i',0.05,'e',0,'tau1',0.05,'tau2',2); tau values as SH07 %alt:tau1 1.5 tau2 5.5
+            thesesynids = [synids1(randi(s,numel(synids1),ceil(nsyn/2),1));synids2(randi(s,numel(synids2),floor(nsyn/2),1))]; 
+            [neuron{1}.pp{t}.Exp2Syn , thesesynidTags{t}] = addExp2Syn(t,thesesynids);
     end
-    
-    
-    %     if ~isempty(thesesynids{t})
-    %         neuron{1}.record{t}.Exp2Syn = struct('node',thesesynids{t}(1),'record',{'i'});
-    %     end
 end
-% ppweight = t2n_findSubthreshWeight(neuron,tree,ppweight,ostruct);
 
 if ostruct.synmode == 3
         if ~isempty(strfind(tree{1}.name,'SH07all2'))
@@ -141,21 +121,18 @@ if ostruct.synmode == 3
                 switch type
                     case 'temporal'
                         if ostruct.newborn
-                            ppweight = t2n_findSubthreshWeight(neuron,tree,ppweight,10);
+                            %ppweight = t2n_findSubthreshWeight(neuron,tree,ppweight,10);
                             ppweight = []*1e-3;
                         else
-                            ppweight = t2n_findSubthreshWeight(neuron,tree,ppweight,10);
+                            %ppweight = t2n_findSubthreshWeight(neuron,tree,ppweight,10);
                             ppweight = []*1e-3;
                         end
                     case 'spatial'
-                        ppweight = t2n_findSubthreshWeight(neuron,tree,ppweight,10);
+                        %ppweight = t2n_findSubthreshWeight(neuron,tree,ppweight,10);
                         ppweight = []*1e-3;
                 end
         end
 end
-
-%      neuron.syn{1}(2*n,:) = {'KrueppelNMDAnew',thesesynids(n),struct('gbar',1.63e-5,'tau1',0.33,'tau2b',254,'wtau2b',0,'mg',1.3)};
-
 
 %% Test pulse protocol
 switch type
@@ -166,7 +143,7 @@ switch type
             neuron{1} = rmfield(neuron{1},'con');
         end
         for t = 1:numel(tree)-1
-            neuron{1}.con(t) = struct('source',struct('cell',indstim,'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
+            neuron{1}.con(t) = struct('source',struct('cell',indstim,'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
         end
         
         neuron{1}.params.tstop = 50;
@@ -183,9 +160,9 @@ switch type
             neuron{1}.play{indstim(in)}.cell =  struct('node',1,'play','spike','times',tvec(spikeMat(in,:)));
             for t = 1:numel(tree)-numel(indstim)
                 if ~isfield(neuron,'con')
-                    neuron{1}.con(1) = struct('source',struct('cell',indstim(in),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}(in)),'weight',ppweight(t),'delay',0,'threshold',0.5);
+                    neuron{1}.con(1) = struct('source',struct('cell',indstim(in),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}(in)),'weight',ppweight(t),'delay',0,'threshold',0.5);
                 else
-                    neuron{1}.con(end+1) = struct('source',struct('cell',indstim(in),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}(in)),'weight',ppweight(t),'delay',0,'threshold',0.5);
+                    neuron{1}.con(end+1) = struct('source',struct('cell',indstim(in),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}(in)),'weight',ppweight(t),'delay',0,'threshold',0.5);
                 end
             end
         end
@@ -196,14 +173,11 @@ switch type
         neuron{1}.params.tstop = 1000;
         indstim = numel(tree)+1;
         tree(indstim) = {struct('artificial','VecStim')};
-%         tree(indstim) =
-%         {struct('artificial','NetStim','params','start',10,'interval',1000/freq(f),'number',1e9)};
-%         % ist blöd weil dann brauch ich verschiedene trees....
         for t = 1:numel(tree)-1
             if ~isfield(neuron{1},'con')
-                neuron{1}.con(1) = struct('source',struct('cell',indstim,'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
+                neuron{1}.con(1) = struct('source',struct('cell',indstim,'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
             else
-                neuron{1}.con(end+1) = struct('source',struct('cell',indstim,'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
+                neuron{1}.con(end+1) = struct('source',struct('cell',indstim,'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
             end
         end
         for f = 1:numel(freq)
@@ -221,11 +195,11 @@ switch type
         tree(indstim(2)) = {struct('artificial','VecStim')};
         for t = 1:numel(tree)-2
             if ~isfield(neuron{1},'con')
-                neuron{1}.con(1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}(1:ceil(nsyn/2))),'weight',ppweight(t),'delay',0,'threshold',0.5);  % connect stim1 to MML syns
+                neuron{1}.con(1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}(1:ceil(nsyn/2))),'weight',ppweight(t),'delay',0,'threshold',0.5);  % connect stim1 to MML syns
             else
-                neuron{1}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}(1:ceil(nsyn/2))),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim1 to MML syns
+                neuron{1}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}(1:ceil(nsyn/2))),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim1 to MML syns
             end
-            neuron{1}.con(end+1) = struct('source',struct('cell',indstim(2),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}(ceil(nsyn/2)+1:end)),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim2 to OML syns
+            neuron{1}.con(end+1) = struct('source',struct('cell',indstim(2),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}(ceil(nsyn/2)+1:end)),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim2 to OML syns
         end
         for f = 1:numel(freq)
             for n = 1:numel(dt0)
@@ -245,9 +219,9 @@ switch type
         for t = 1:numel(tree)-1
             for n = 1:numel(dd0)
                 if ~isfield(neuron{n},'con') || ~isstruct(neuron{n}.con)
-                    neuron{n}.con(1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5);  % connect stim1 to MML syns %(1:ceil(nsyn/2))
+                    neuron{n}.con(1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5);  % connect stim1 to MML syns %(1:ceil(nsyn/2))
                 else
-                    neuron{n}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim1 to MML syns
+                    neuron{n}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim1 to MML syns
                 end
             end
         end
@@ -264,7 +238,7 @@ switch type
         end
     case 'spatial2'
 
-        freq = [10];%,20,40,75]; % Hz later -> MHz
+        freq = 10;%,20,40,75]; % Hz later -> MHz
             ppweight = ones(1,numel(tree))*0.0065;
         neuron{1}.params.cvode = 0;  % with white noise, no cvode recommended for high nsyn
         neuron{1}.params.tstop = 500;
@@ -273,9 +247,9 @@ switch type
         for t = 1:numel(tree)-1
             for n = 1:numel(dd0)
                 if ~isfield(neuron{n},'con') || ~isstruct(neuron{n}.con)
-                    neuron{n}.con(1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5);  % connect stim1 to MML syns %(1:ceil(nsyn/2))
+                    neuron{n}.con(1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5);  % connect stim1 to MML syns %(1:ceil(nsyn/2))
                 else
-                    neuron{n}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim1 to MML syns
+                    neuron{n}.con(end+1) = struct('source',struct('cell',indstim(1),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{n,t}),'weight',ppweight(t),'delay',0,'threshold',0.5); % connect stim1 to MML syns
                 end
             end
         end
@@ -318,8 +292,8 @@ switch type
         end
         
         for t = 1:numel(tree)-numel(indstim)
-            neuron{1}.con(2*(t-1)+1) = struct('source',struct('cell',indstim(3),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
-            neuron{1}.con(2*t) = struct('source',struct('cell',indstim(4),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','node',thesesynids{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
+            neuron{1}.con(2*(t-1)+1) = struct('source',struct('cell',indstim(3),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
+            neuron{1}.con(2*t) = struct('source',struct('cell',indstim(4),'watch','on'),'target',struct('cell',t,'pp','Exp2Syn','tag',thesesynidTags{t}),'weight',ppweight(t),'delay',0,'threshold',0.5);
             neuron{1}.pp{t}.IClamp = struct('node',1,'del',-1e5,'dur',1e15,'times',[-100,times],'amp', [0,repmat([0.1,0],[1,repeat1*repeat2])]);  % paired 100pA current injection
         end
         
@@ -332,6 +306,7 @@ end
 
 [out, ~] = t2n(neuron,tree,'-w-q-d');
 str = '';
+
 if ostruct.newborn
     if ostruct.newborn == 2
         str = strcat(str,'_newborn_nopas');
@@ -339,9 +314,11 @@ if ostruct.newborn
         str = strcat(str,'_newborn');
     end
 end
+
 if ~ (ostruct.vmodel >= 0)
     str = strcat(str,'_AH99');
 end
+
 switch ostruct.synmode 
     case 3
         str2 = '_subthresh';
@@ -350,15 +327,21 @@ switch ostruct.synmode
     otherwise
         str2 =  '_noadj';
 end
+
 switch type
     case 'temporal'
         str3 = dt0(end);
     case 'spatial'
-        str3 = unique(diff(dd0));
-%     case 'regular'
-%         
+        str3 = unique(diff(dd0));     
     otherwise
         str3='';
 end
+
 str = sprintf('%s_%gsyn_%gnS',str,nsyn,mean(ppweight)*1000);
 save(fullfile(targetfolder_data,sprintf('Exp_%s_%s%s%s%d.mat',type,neuron{1}.experiment,str,str2,str3)),'out','neuron','tree','indstim','recnode','thesesynids','nsyn','ppweight','freq','dd0','dt0')
+end
+
+function [strct, tags] = addExp2Syn(t,theseSynIds)
+    tags = string(compose('Tree%03d_syn%d',t,1:numel(theseSynIds)))';
+    strct = struct('node',theseSynIds,'tag',tags,'tau1',0.2,'tau2',2.5,'e',0);%,'i',0.05,'e',0,'tau1',0.05,'tau2',2); tau values as SH07 %alt:tau1 1.5 tau2 5.5
+end

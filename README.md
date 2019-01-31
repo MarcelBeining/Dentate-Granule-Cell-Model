@@ -11,6 +11,7 @@ This GC compartmental model accompanies the manuscript
 
 # Getting started
 Note! Be sure to add the Modules subfolder to your Matlab path, as this folder contains the [T2N](https://github.com/MarcelBeining/T2N) and [treestoolbox](http://www.treestoolbox.org/) packages!
+Matlab2009b or higher is required, some functionality in the model, requires Matlab2016b or higher!
 
 T2N automatically compiles the .mod files in the lib_mech folder necessary for the model to be working. 
 
